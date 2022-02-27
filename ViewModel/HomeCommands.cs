@@ -303,16 +303,24 @@ namespace ImageProcessingFramework.ViewModel
 
         public void CropImage(object parameter)
         {
-            if (VectorOfMousePosition.Count <= 1)
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
                 return;
+            }
+
+            if (VectorOfMousePosition.Count <= 1)
+            {
+                MessageBox.Show("Please select an area first.");
+                return;
+            }
 
             var firstPosition = VectorOfMousePosition[VectorOfMousePosition.Count - 2];
-            var secondPosition = VectorOfMousePosition[VectorOfMousePosition.Count - 1];
 
-            int leftTopX = (int)Math.Min(firstPosition.X, secondPosition.X);
-            int leftTopY = (int)Math.Min(firstPosition.Y, secondPosition.Y);
-            int rightBottomX = (int)Math.Max(firstPosition.X, secondPosition.X);
-            int rightBottomY = (int)Math.Max(firstPosition.Y, secondPosition.Y);
+            int leftTopX = (int)Math.Min(firstPosition.X, LastPosition.X);
+            int leftTopY = (int)Math.Min(firstPosition.Y, LastPosition.Y);
+            int rightBottomX = (int)Math.Max(firstPosition.X, LastPosition.X);
+            int rightBottomY = (int)Math.Max(firstPosition.Y, LastPosition.Y);
 
             DrawHelper.DrawRectangle(InitialCanvas, leftTopX, leftTopY, rightBottomX, rightBottomY, 1, Brushes.Red);
 
@@ -328,7 +336,6 @@ namespace ImageProcessingFramework.ViewModel
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }
-            else MessageBox.Show("Please add an image!");
         }
 
         public void MirrorImageVertically(object parameter)
