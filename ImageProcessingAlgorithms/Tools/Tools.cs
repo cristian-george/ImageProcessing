@@ -94,7 +94,7 @@ namespace ImageProcessingAlgorithms.Tools
 
             return result;
         }
-     
+
         public static Image<Bgr, byte> CropImage(Image<Bgr, byte> inputImage, int leftTopX, int leftTopY, int rightBottomX, int rightBottomY)
         {
             Image<Bgr, byte> result = new Image<Bgr, byte>(rightBottomX - leftTopX, rightBottomY - leftTopY);

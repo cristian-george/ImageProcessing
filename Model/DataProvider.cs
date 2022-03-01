@@ -1,7 +1,10 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Shapes;
+using Ellipse = System.Windows.Shapes.Ellipse;
 using PointCollection = System.Windows.Media.PointCollection;
 
 namespace ImageProcessingFramework.Model
@@ -85,5 +88,29 @@ namespace ImageProcessingFramework.Model
             get;
             set;
         }
+        public static Collection<Line> VectorOfLines
+        {
+            get;
+            set;
+        }
+
+        public static Collection<Rectangle> VectorOfRectangles
+        {
+            get;
+            set;
+        }
+
+        public static Collection<Ellipse> VectorOfEllipses
+        {
+            get;
+            set;
+        }
+
+        public static Collection<Polygon> VectorOfPolygons
+        {
+            get;
+            set;
+        }
+
     }
 }

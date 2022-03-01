@@ -35,7 +35,7 @@ namespace ImageProcessingFramework.ViewModel
         private ICommand m_convertToGrayImage;
         private ICommand m_magnifier;
         private ICommand m_thresholding;
-        private ICommand m_clearInitialCanvas;
+        private ICommand m_removeAllElements;
         private ICommand m_cropImage;
         private ICommand m_mirrorImage;
 
@@ -322,7 +322,7 @@ namespace ImageProcessingFramework.ViewModel
             int rightBottomX = (int)Math.Max(firstPosition.X, LastPosition.X);
             int rightBottomY = (int)Math.Max(firstPosition.Y, LastPosition.Y);
 
-            DrawHelper.DrawRectangle(InitialCanvas, leftTopX, leftTopY, rightBottomX, rightBottomY, 1, Brushes.Red);
+            VectorOfRectangles.Add(DrawHelper.DrawRectangle(InitialCanvas, leftTopX, leftTopY, rightBottomX, rightBottomY, 1, Brushes.Red));
 
             if (GrayInitialImage != null)
             {
@@ -355,13 +355,12 @@ namespace ImageProcessingFramework.ViewModel
             else MessageBox.Show("Please add an image!");
         }
 
-        public void ClearInitialCanvas(object parameter)
+        public void RemoveAllDrawnElements(object parameter)
         {
-            if (InitialCanvas.Children == null)
-                return;
-
-            while (InitialCanvas.Children.Count != 1)
-                InitialCanvas.Children.RemoveAt(InitialCanvas.Children.Count - 1);
+            UiHelper.RemoveAllDrawnLines(InitialCanvas, ProcessedCanvas, VectorOfLines);
+            UiHelper.RemoveAllDrawnRectangles(InitialCanvas, ProcessedCanvas, VectorOfRectangles);
+            UiHelper.RemoveAllDrawnEllipses(InitialCanvas, ProcessedCanvas, VectorOfEllipses);
+            UiHelper.RemoveAllDrawnPolygons(InitialCanvas, ProcessedCanvas, VectorOfPolygons);
         }
 
         public ICommand AddColorImage
@@ -485,13 +484,13 @@ namespace ImageProcessingFramework.ViewModel
             }
         }
 
-        public ICommand ClearICanvas
+        public ICommand RemoveAllElements
         {
             get
             {
-                if (m_clearInitialCanvas == null)
-                    m_clearInitialCanvas = new RelayCommand(ClearInitialCanvas);
-                return m_clearInitialCanvas;
+                if (m_removeAllElements == null)
+                    m_removeAllElements = new RelayCommand(RemoveAllDrawnElements);
+                return m_removeAllElements;
             }
         }
 
@@ -505,7 +504,7 @@ namespace ImageProcessingFramework.ViewModel
             }
         }
 
-        public ICommand MirrorImage
+        public ICommand MirrorVertically
         {
             get
             {

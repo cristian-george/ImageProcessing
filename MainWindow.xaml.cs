@@ -4,6 +4,8 @@ using System.Windows.Input;
 using PointCollection = System.Windows.Media.PointCollection;
 using static ImageProcessingFramework.Model.DataProvider;
 using static ImageProcessingFramework.Model.UiHelper;
+using System.Collections.ObjectModel;
+using System.Windows.Shapes;
 
 namespace ImageProcessingFramework
 {
@@ -20,6 +22,11 @@ namespace ImageProcessingFramework
             LastPosition = MousePosition;
             InitialCanvas = canvasOriginalImage;
             ProcessedCanvas = canvasProcessedImage;
+
+            VectorOfLines = new Collection<Line>();
+            VectorOfRectangles = new Collection<Rectangle>();
+            VectorOfEllipses = new Collection<Ellipse>();
+            VectorOfPolygons = new Collection<Polygon>();
         }
 
         private void ImageMouseMove(object sender, MouseEventArgs e)

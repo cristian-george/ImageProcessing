@@ -54,8 +54,8 @@
 
             <MenuItem Header="Tools" 
                       Background="#A3F7B5">
-                <MenuItem Header="Clear initial canvas"
-                           Command="{Binding Path=ClearICanvas}"/>
+                <MenuItem Header="Remove drawn elements"
+                           Command="{Binding Path=RemoveAllElements}"/>
                 <MenuItem Header="Magnifier"
                            Command="{Binding Path=Magnifier}"/>
                 <MenuItem Header="GLevelsRow" 
@@ -70,8 +70,8 @@
                           Command="{Binding Path=Thresholding}" />
                 <MenuItem Header="Crop"
                           Command="{Binding Path=Crop}" />
-                <MenuItem Header="Mirror image"
-                          Command="{Binding Path=MirrorImage}" />
+                <MenuItem Header="Mirror image vertically"
+                          Command="{Binding Path=MirrorVertically}" />
             </MenuItem>
 
             <MenuItem Header="Filters" 
