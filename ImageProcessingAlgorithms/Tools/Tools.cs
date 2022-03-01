@@ -1,5 +1,6 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
+using System;
 
 namespace ImageProcessingAlgorithms.Tools
 {
@@ -110,6 +111,68 @@ namespace ImageProcessingAlgorithms.Tools
             }
 
             return result;
+        }
+
+        public static double Mean(Image<Gray, byte> image)
+        {
+            double sumOfPixels = 0;
+
+            for (int y = 0; y < image.Height; y++)
+            {
+                for (int x = 0; x < image.Width; x++)
+                {
+                    sumOfPixels += image.Data[y, x, 0];
+                }
+            }
+
+            return sumOfPixels / (image.Height * image.Width);
+        }
+
+        public static double Mean(Image<Bgr, byte> image)
+        {
+            double sumOfPixels = 0;
+
+            for (int y = 0; y < image.Height; y++)
+            {
+                for (int x = 0; x < image.Width; x++)
+                {
+                    sumOfPixels += (image.Data[y, x, 0] + image.Data[y, x, 1] + image.Data[y, x, 2]) / 3;
+                }
+            }
+
+            return sumOfPixels / (image.Height * image.Width);
+        }
+
+        public static double StandardDeviation(Image<Gray, byte> image)
+        {
+            double sumOfSquares = 0;
+            double mean = Mean(image);
+
+            for (int y = 0; y < image.Height; y++)
+            {
+                for (int x = 0; x < image.Width; x++)
+                {
+                    sumOfSquares += Math.Pow(image.Data[y, x, 0] - mean, 2);
+                }
+            }
+
+            return Math.Sqrt(sumOfSquares / (image.Height * image.Width));
+        }
+
+        public static double StandardDeviation(Image<Bgr, byte> image)
+        {
+            double sumOfSquares = 0;
+            double mean = Mean(image);
+
+            for (int y = 0; y < image.Height; y++)
+            {
+                for (int x = 0; x < image.Width; x++)
+                {
+                    sumOfSquares += Math.Pow((image.Data[y, x, 0] + image.Data[y, x, 1] + image.Data[y, x, 2]) / 3 - mean, 2);
+                }
+            }
+
+            return Math.Sqrt(sumOfSquares / (image.Height * image.Width));
         }
 
         public static Image<Gray, byte> MirrorVertically(Image<Gray, byte> inputImage)

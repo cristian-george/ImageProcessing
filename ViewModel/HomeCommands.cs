@@ -330,12 +330,18 @@ namespace ImageProcessingFramework.ViewModel
                 GrayProcessedImage = Tools.CropImage(GrayInitialImage, leftTopX, leftTopY, rightBottomX, rightBottomY);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 OnPropertyChanged("ProcessedImage");
+
+                MessageBox.Show("Mean: " + Tools.Mean(GrayProcessedImage) + "\n" +
+                                "Standard deviation: " + Tools.StandardDeviation(GrayProcessedImage));
             }
             else if (ColorInitialImage != null)
             {
                 ColorProcessedImage = Tools.CropImage(ColorInitialImage, leftTopX, leftTopY, rightBottomX, rightBottomY);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                 OnPropertyChanged("ProcessedImage");
+
+                MessageBox.Show("Mean: " + Tools.Mean(ColorProcessedImage) + "\n" +
+                                "Standard deviation: " + Tools.StandardDeviation(ColorProcessedImage));
             }
         }
 
