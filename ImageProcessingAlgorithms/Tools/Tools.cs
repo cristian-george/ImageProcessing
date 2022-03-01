@@ -40,7 +40,7 @@ namespace ImageProcessingAlgorithms.Tools
             {
                 for (int x = 0; x < image.Width; x++)
                 {
-                    result.Data[y, x, 0] = (byte)(image.Data[y, x, 0]);
+                    result.Data[y, x, 0] = image.Data[y, x, 0];
                 }
             }
             return image;
@@ -53,7 +53,7 @@ namespace ImageProcessingAlgorithms.Tools
             {
                 for (int x = 0; x < image.Width; x++)
                 {
-                    result.Data[y, x, 0] = (byte)(image.Data[y, x, 0]);
+                    result.Data[y, x, 0] = image.Data[y, x, 0];
                 }
             }
             return image;
@@ -138,6 +138,38 @@ namespace ImageProcessingAlgorithms.Tools
                     result.Data[y, x, 0] = inputImage.Data[y, inputImage.Width - x - 1, 0];
                     result.Data[y, x, 1] = inputImage.Data[y, inputImage.Width - x - 1, 1];
                     result.Data[y, x, 2] = inputImage.Data[y, inputImage.Width - x - 1, 2];
+                }
+            }
+
+            return result;
+        }
+
+        public static Image<Gray, byte> MirrorHorizontally(Image<Gray, byte> inputImage)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+
+            for (int y = 0; y < inputImage.Height; y++)
+            {
+                for (int x = 0; x < inputImage.Width; x++)
+                {
+                    result.Data[y, x, 0] = inputImage.Data[inputImage.Height - y - 1, x, 0];
+                }
+            }
+
+            return result;
+        }
+
+        public static Image<Bgr, byte> MirrorHorizontally(Image<Bgr, byte> inputImage)
+        {
+            Image<Bgr, byte> result = new Image<Bgr, byte>(inputImage.Size);
+
+            for (int y = 0; y < inputImage.Height; y++)
+            {
+                for (int x = 0; x < inputImage.Width; x++)
+                {
+                    result.Data[y, x, 0] = inputImage.Data[inputImage.Height - y - 1, x, 0];
+                    result.Data[y, x, 1] = inputImage.Data[inputImage.Height - y - 1, x, 1];
+                    result.Data[y, x, 2] = inputImage.Data[inputImage.Height - y - 1, x, 2];
                 }
             }
 

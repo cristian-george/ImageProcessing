@@ -72,6 +72,8 @@
                           Command="{Binding Path=Crop}" />
                 <MenuItem Header="Mirror image vertically"
                           Command="{Binding Path=MirrorVertically}" />
+                <MenuItem Header="Mirror image horizontally"
+                          Command="{Binding Path=MirrorHorizontally}" />
             </MenuItem>
 
             <MenuItem Header="Filters" 

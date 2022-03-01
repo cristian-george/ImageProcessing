@@ -37,7 +37,8 @@ namespace ImageProcessingFramework.ViewModel
         private ICommand m_thresholding;
         private ICommand m_removeAllElements;
         private ICommand m_cropImage;
-        private ICommand m_mirrorImage;
+        private ICommand m_mirrorVertically;
+        private ICommand m_mirrorHorizontally;
 
         private bool m_isColorImage;
         private bool m_isPressedConvertButton;
@@ -355,6 +356,23 @@ namespace ImageProcessingFramework.ViewModel
             else MessageBox.Show("Please add an image!");
         }
 
+        public void MirrorImageHorizontally(object parameter)
+        {
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = Tools.MirrorHorizontally(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+            else if (ColorInitialImage != null)
+            {
+                ColorProcessedImage = Tools.MirrorHorizontally(ColorInitialImage);
+                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+            else MessageBox.Show("Please add an image!");
+        }
+
         public void RemoveAllDrawnElements(object parameter)
         {
             UiHelper.RemoveAllDrawnLines(InitialCanvas, ProcessedCanvas, VectorOfLines);
@@ -508,9 +526,19 @@ namespace ImageProcessingFramework.ViewModel
         {
             get
             {
-                if (m_mirrorImage == null)
-                    m_mirrorImage = new RelayCommand(MirrorImageVertically);
-                return m_mirrorImage;
+                if (m_mirrorVertically == null)
+                    m_mirrorVertically = new RelayCommand(MirrorImageVertically);
+                return m_mirrorVertically;
+            }
+        }
+
+        public ICommand MirrorHorizontally
+        {
+            get
+            {
+                if (m_mirrorHorizontally == null)
+                    m_mirrorHorizontally = new RelayCommand(MirrorImageHorizontally);
+                return m_mirrorHorizontally;
             }
         }
 
