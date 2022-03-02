@@ -115,10 +115,10 @@ namespace ImageProcessingFramework.ViewModel
 
         private System.Windows.Media.ImageSource GetBitmap(Bitmap bitmap)
         {
-             return Imaging.CreateBitmapSourceFromHBitmap(bitmap.GetHbitmap(),
-                IntPtr.Zero,
-                Int32Rect.Empty,
-                BitmapSizeOptions.FromEmptyOptions());
+            return Imaging.CreateBitmapSourceFromHBitmap(bitmap.GetHbitmap(),
+               IntPtr.Zero,
+               Int32Rect.Empty,
+               BitmapSizeOptions.FromEmptyOptions());
         }
     }
 }

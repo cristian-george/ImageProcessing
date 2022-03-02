@@ -39,6 +39,8 @@ namespace ImageProcessingFramework.ViewModel
         private ICommand m_cropImage;
         private ICommand m_mirrorVertically;
         private ICommand m_mirrorHorizontally;
+        private ICommand m_rotateClockwise;
+        private ICommand m_rotateAntiClockwise;
 
         private bool m_isColorImage;
         private bool m_isPressedConvertButton;
@@ -250,12 +252,12 @@ namespace ImageProcessingFramework.ViewModel
                 ColorProcessedImage = null;
                 OnPropertyChanged("ProcessedImage");
                 m_isPressedConvertButton = true;
-                //m_isColorImage = false;
+                m_isColorImage = false;
                 return;
             }
 
             System.Windows.MessageBox.Show(ColorInitialImage != null
-               ? "It is possible to copy only colored images."
+               ? "It is possible to convert only colored images."
                : "Please add a colored image first.");
         }
 
@@ -323,7 +325,7 @@ namespace ImageProcessingFramework.ViewModel
             int rightBottomX = (int)Math.Max(firstPosition.X, LastPosition.X);
             int rightBottomY = (int)Math.Max(firstPosition.Y, LastPosition.Y);
 
-            VectorOfRectangles.Add(DrawHelper.DrawRectangle(InitialCanvas, leftTopX, leftTopY, rightBottomX, rightBottomY, 1, Brushes.Red));
+            VectorOfRectangles.Add(DrawHelper.DrawRectangle(InitialCanvas, leftTopX, leftTopY, rightBottomX, rightBottomY, 2, Brushes.Red));
 
             if (GrayInitialImage != null)
             {
@@ -373,6 +375,40 @@ namespace ImageProcessingFramework.ViewModel
             else if (ColorInitialImage != null)
             {
                 ColorProcessedImage = Tools.MirrorHorizontally(ColorInitialImage);
+                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+            else MessageBox.Show("Please add an image!");
+        }
+
+        public void RotateImageClockwise(object parameter)
+        {
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = Tools.RotateClockwise(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+            else if (ColorInitialImage != null)
+            {
+                ColorProcessedImage = Tools.RotateClockwise(ColorInitialImage);
+                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+            else MessageBox.Show("Please add an image!");
+        }
+
+        public void RotateImageAntiClockwise(object parameter)
+        {
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = Tools.RotateAntiClockwise(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+            else if (ColorInitialImage != null)
+            {
+                ColorProcessedImage = Tools.RotateAntiClockwise(ColorInitialImage);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }
@@ -545,6 +581,26 @@ namespace ImageProcessingFramework.ViewModel
                 if (m_mirrorHorizontally == null)
                     m_mirrorHorizontally = new RelayCommand(MirrorImageHorizontally);
                 return m_mirrorHorizontally;
+            }
+        }
+
+        public ICommand RotateClockwise
+        {
+            get
+            {
+                if (m_rotateClockwise == null)
+                    m_rotateClockwise = new RelayCommand(RotateImageClockwise);
+                return m_rotateClockwise;
+            }
+        }
+
+        public ICommand RotateAntiClockwise
+        {
+            get
+            {
+                if (m_rotateAntiClockwise == null)
+                    m_rotateAntiClockwise = new RelayCommand(RotateImageAntiClockwise);
+                return m_rotateAntiClockwise;
             }
         }
 

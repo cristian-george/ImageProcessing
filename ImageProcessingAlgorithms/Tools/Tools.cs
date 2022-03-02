@@ -238,5 +238,61 @@ namespace ImageProcessingAlgorithms.Tools
 
             return result;
         }
+
+        private static Image<Gray, byte> Transpose(Image<Gray, byte> image)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(image.Width, image.Height);
+
+            for (int y = 0; y < image.Height; y++)
+            {
+                for (int x = 0; x < image.Width; x++)
+                {
+                    result.Data[x, y, 0] = image.Data[y, x, 0];
+                }
+            }
+
+            return result;
+        }
+
+        private static Image<Bgr, byte> Transpose(Image<Bgr, byte> image)
+        {
+            Image<Bgr, byte> result = new Image<Bgr, byte>(image.Width, image.Height);
+
+            for (int y = 0; y < image.Height; y++)
+            {
+                for (int x = 0; x < image.Width; x++)
+                {
+                    result.Data[x, y, 0] = image.Data[y, x, 0];
+                    result.Data[x, y, 1] = image.Data[y, x, 1];
+                    result.Data[x, y, 2] = image.Data[y, x, 2];
+                }
+            }
+
+            return result;
+        }
+
+        public static Image<Gray, byte> RotateClockwise(Image<Gray, byte> inputImage)
+        {
+            Image<Gray, byte> transpose = Transpose(inputImage);
+            return MirrorVertically(transpose);
+        }
+
+        public static Image<Bgr, byte> RotateClockwise(Image<Bgr, byte> inputImage)
+        {
+            Image<Bgr, byte> transpose = Transpose(inputImage);
+            return MirrorVertically(transpose);
+        }
+
+        public static Image<Gray, byte> RotateAntiClockwise(Image<Gray, byte> inputImage)
+        {
+            Image<Gray, byte> transpose = Transpose(inputImage);
+            return MirrorHorizontally(transpose);
+        }
+
+        public static Image<Bgr, byte> RotateAntiClockwise(Image<Bgr, byte> inputImage)
+        {
+            Image<Bgr, byte> transpose = Transpose(inputImage);
+            return MirrorHorizontally(transpose);
+        }
     }
 }
