@@ -112,5 +112,10 @@ namespace ImageProcessingFramework.Model
             set;
         }
 
+        public static Slider SliderZoom
+        {
+            get;
+            set;
+        }
     }
 }

@@ -11,9 +11,7 @@ using ImageProcessingAlgorithms.Tools;
 using ImageConverter = ImageProcessingFramework.Model.ImageConverter;
 using static ImageProcessingFramework.Model.DataProvider;
 using ImageProcessingFramework.View;
-using System.Collections.Generic;
 using ImageProcessingFramework.Model;
-using System;
 
 namespace ImageProcessingFramework.ViewModel
 {
@@ -36,6 +34,7 @@ namespace ImageProcessingFramework.ViewModel
         private ICommand m_magnifier;
         private ICommand m_thresholding;
         private ICommand m_removeAllElements;
+        private ICommand m_clearUi;
         private ICommand m_cropImage;
         private ICommand m_mirrorVertically;
         private ICommand m_mirrorHorizontally;
@@ -45,19 +44,30 @@ namespace ImageProcessingFramework.ViewModel
         private bool m_isColorImage;
         private bool m_isPressedConvertButton;
 
+        private void ResetInitialCanvas()
+        {
+            GrayInitialImage = null;
+            ColorInitialImage = null;
+            InitialImage = null;
+            OnPropertyChanged("InitialImage");
+        }
+
+        private void ResetProcessedCanvas()
+        {
+            GrayProcessedImage = null;
+            ColorProcessedImage = null;
+            ProcessedImage = null;
+            OnPropertyChanged("ProcessedImage");
+        }
+
         private void ResetUiToInitial(object parameter)
         {
-            ColorInitialImage = null;
-            ColorProcessedImage = null;
-            GrayInitialImage = null;
-            GrayProcessedImage = null;
-            InitialImage = null;
-            ProcessedImage = null;
+            ResetInitialCanvas();
+            ResetProcessedCanvas();
+
             m_isPressedConvertButton = false;
             MagnifierOn = false;
             GLevelsrowOn = false;
-            OnPropertyChanged("InitialImage");
-            OnPropertyChanged("ProcessedImage");
 
             ResetZoom(parameter);
 
@@ -144,7 +154,7 @@ namespace ImageProcessingFramework.ViewModel
 
             var encoderParams = new EncoderParameters(1);
             encoderParams.Param[0] = new EncoderParameter(
-                System.Drawing.Imaging.Encoder.Quality,
+                Encoder.Quality,
                 (long)100
             );
 
@@ -179,7 +189,7 @@ namespace ImageProcessingFramework.ViewModel
                     {
                         if (ColorProcessedImage == null && GrayProcessedImage == null)
                         {
-                            System.Windows.MessageBox.Show("Doesn't exist processed image.");
+                            MessageBox.Show("Doesn't exist processed image.");
                             return;
                         }
 
@@ -206,7 +216,7 @@ namespace ImageProcessingFramework.ViewModel
                     {
                         if (GrayProcessedImage == null)
                         {
-                            System.Windows.MessageBox.Show("Doesn't exist processed image.");
+                            MessageBox.Show("Doesn't exist processed image.");
                             return;
                         }
 
@@ -240,23 +250,25 @@ namespace ImageProcessingFramework.ViewModel
                     return;
                 }
             }
-            System.Windows.MessageBox.Show("Please add an image.");
+            MessageBox.Show("Please add an image.");
         }
 
         public void ConvertToGray(object parameter)
         {
             if (m_isColorImage == true)
             {
-                GrayProcessedImage = Tools.Convert(ColorInitialImage);
-                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                ColorProcessedImage = null;
-                OnPropertyChanged("ProcessedImage");
+                GrayInitialImage = Tools.Convert(ColorInitialImage);
+                InitialImage = ImageConverter.Convert(GrayInitialImage);
+                OnPropertyChanged("InitialImage");
+
+                ColorInitialImage = null;
+                ResetProcessedCanvas();
                 m_isPressedConvertButton = true;
                 m_isColorImage = false;
                 return;
             }
 
-            System.Windows.MessageBox.Show(ColorInitialImage != null
+            MessageBox.Show(ColorInitialImage != null
                ? "It is possible to convert only colored images."
                : "Please add a colored image first.");
         }
@@ -282,13 +294,15 @@ namespace ImageProcessingFramework.ViewModel
             if (GrayInitialImage != null)
             {
                 DialogBox dialogBox = new DialogBox();
-                List<string> prop = new List<string>();
-                prop.Add("Threshold value");
+                System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Threshold value"
+                };
 
                 dialogBox.CreateDialogBox(prop);
                 dialogBox.ShowDialog();
 
-                List<double> response = dialogBox.GetResponseTexts();
+                System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
                 if (response != null)
                 {
                     int threshold = (int)response[0];
@@ -318,14 +332,16 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
-            var firstPosition = VectorOfMousePosition[VectorOfMousePosition.Count - 2];
+            System.Windows.Point firstPosition = VectorOfMousePosition[VectorOfMousePosition.Count - 2];
 
-            int leftTopX = (int)Math.Min(firstPosition.X, LastPosition.X);
-            int leftTopY = (int)Math.Min(firstPosition.Y, LastPosition.Y);
-            int rightBottomX = (int)Math.Max(firstPosition.X, LastPosition.X);
-            int rightBottomY = (int)Math.Max(firstPosition.Y, LastPosition.Y);
+            int leftTopX = (int)System.Math.Min(firstPosition.X, LastPosition.X);
+            int leftTopY = (int)System.Math.Min(firstPosition.Y, LastPosition.Y);
+            int rightBottomX = (int)System.Math.Max(firstPosition.X, LastPosition.X);
+            int rightBottomY = (int)System.Math.Max(firstPosition.Y, LastPosition.Y);
 
-            VectorOfRectangles.Add(DrawHelper.DrawRectangle(InitialCanvas, leftTopX, leftTopY, rightBottomX, rightBottomY, 2, Brushes.Red));
+            System.Windows.Shapes.Rectangle rectangle = DrawHelper.DrawRectangle(InitialCanvas, leftTopX, leftTopY, rightBottomX, rightBottomY, 2, Brushes.Red);
+            VectorOfRectangles.Add(rectangle);
+            SliderZoom.Value += 0.01; SliderZoom.Value -= 0.01;
 
             if (GrayInitialImage != null)
             {
@@ -385,15 +401,19 @@ namespace ImageProcessingFramework.ViewModel
         {
             if (GrayInitialImage != null)
             {
-                GrayProcessedImage = Tools.RotateClockwise(GrayInitialImage);
-                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
+                GrayInitialImage = Tools.RotateClockwise(GrayInitialImage);
+                InitialImage = ImageConverter.Convert(GrayInitialImage);
+                OnPropertyChanged("InitialImage");
+
+                ResetProcessedCanvas();
             }
             else if (ColorInitialImage != null)
             {
-                ColorProcessedImage = Tools.RotateClockwise(ColorInitialImage);
-                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                OnPropertyChanged("ProcessedImage");
+                ColorInitialImage = Tools.RotateClockwise(ColorInitialImage);
+                InitialImage = ImageConverter.Convert(ColorInitialImage);
+                OnPropertyChanged("InitialImage");
+
+                ResetProcessedCanvas();
             }
             else MessageBox.Show("Please add an image!");
         }
@@ -402,15 +422,19 @@ namespace ImageProcessingFramework.ViewModel
         {
             if (GrayInitialImage != null)
             {
-                GrayProcessedImage = Tools.RotateAntiClockwise(GrayInitialImage);
-                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
+                GrayInitialImage = Tools.RotateAntiClockwise(GrayInitialImage);
+                InitialImage = ImageConverter.Convert(GrayInitialImage);
+                OnPropertyChanged("InitialImage");
+
+                ResetProcessedCanvas();
             }
             else if (ColorInitialImage != null)
             {
-                ColorProcessedImage = Tools.RotateAntiClockwise(ColorInitialImage);
-                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                OnPropertyChanged("ProcessedImage");
+                ColorInitialImage = Tools.RotateAntiClockwise(ColorInitialImage);
+                InitialImage = ImageConverter.Convert(ColorInitialImage);
+                OnPropertyChanged("InitialImage");
+
+                ResetProcessedCanvas();
             }
             else MessageBox.Show("Please add an image!");
         }
@@ -421,6 +445,12 @@ namespace ImageProcessingFramework.ViewModel
             UiHelper.RemoveAllDrawnRectangles(InitialCanvas, ProcessedCanvas, VectorOfRectangles);
             UiHelper.RemoveAllDrawnEllipses(InitialCanvas, ProcessedCanvas, VectorOfEllipses);
             UiHelper.RemoveAllDrawnPolygons(InitialCanvas, ProcessedCanvas, VectorOfPolygons);
+        }
+
+        public void ClearUi(object parameter)
+        {
+            RemoveAllDrawnElements(parameter);
+            ResetUiToInitial(parameter);
         }
 
         public ICommand AddColorImage
@@ -471,6 +501,26 @@ namespace ImageProcessingFramework.ViewModel
                 if (m_saveAsOriginalImage == null)
                     m_saveAsOriginalImage = new RelayCommand(SaveAsOriginal);
                 return m_saveAsOriginalImage;
+            }
+        }
+
+        public ICommand RemoveAllElements
+        {
+            get
+            {
+                if (m_removeAllElements == null)
+                    m_removeAllElements = new RelayCommand(RemoveAllDrawnElements);
+                return m_removeAllElements;
+            }
+        }
+
+        public ICommand Clear
+        {
+            get
+            {
+                if (m_clearUi == null)
+                    m_clearUi = new RelayCommand(ClearUi);
+                return m_clearUi;
             }
         }
 
@@ -544,16 +594,6 @@ namespace ImageProcessingFramework.ViewModel
             }
         }
 
-        public ICommand RemoveAllElements
-        {
-            get
-            {
-                if (m_removeAllElements == null)
-                    m_removeAllElements = new RelayCommand(RemoveAllDrawnElements);
-                return m_removeAllElements;
-            }
-        }
-
         public ICommand Crop
         {
             get
@@ -603,6 +643,9 @@ namespace ImageProcessingFramework.ViewModel
                 return m_rotateAntiClockwise;
             }
         }
+
+        public System.Windows.DependencyProperty LeftProperty { get; private set; }
+        public System.Windows.DependencyProperty TopProperty { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

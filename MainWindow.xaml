@@ -56,6 +56,8 @@
                       Background="#A3F7B5">
                 <MenuItem Header="Remove drawn elements"
                            Command="{Binding Path=RemoveAllElements}"/>
+                <MenuItem Header="Clear"
+                           Command="{Binding Path=Clear}"/>
                 <Separator/>
                 <MenuItem Header="Magnifier"
                            Command="{Binding Path=Magnifier}"/>
@@ -189,7 +191,8 @@
                     TickPlacement="BottomRight" 
                     TickFrequency="0.05"
                     Height="27" 
-                    Margin="5,0,30.333,0"/>
+                    Margin="5,0,30.333,0"
+                    ValueChanged="SliderZoom_ValueChanged"/>
         </StackPanel>
 
         <TextBlock Text="{Binding Value, ElementName=SliderZoom}" 

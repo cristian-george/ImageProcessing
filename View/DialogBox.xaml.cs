@@ -29,10 +29,6 @@ namespace ImageProcessingFramework.View
 
         public void CreateDialogBox(List<string> values)
         {
-            /*First, we need to set the height of the window:
-             for each text we need a TextBlock(22) and a TextBox(22)=> 40
-             for ok button we have 50 
-             so the heright of the window must be number of texts * 2 * 22 + 50.*/
             dialogBoxWindow.Height = values.Count * 2 * 25 + 75;
             int index = 1;
             foreach (var val in values)
@@ -49,7 +45,7 @@ namespace ImageProcessingFramework.View
             }
         }
 
-        private void OKButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void OKButton_Click(object sender, RoutedEventArgs e)
         {
             dialogBoxWindow.Close();
         }
