@@ -128,13 +128,18 @@ namespace ImageProcessingFramework
             DrawLine(sender, e as MouseButtonEventArgs);
         }
 
-        private static readonly Dictionary<Shape, KeyValuePair<double, double>> map = new Dictionary<Shape, KeyValuePair<double, double>>();
+        private static readonly Dictionary<Shape, KeyValuePair<double, double>> shapesProperties = new Dictionary<Shape, KeyValuePair<double, double>>();
 
         private void SliderZoom_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (InitialCanvas != null)
             {
                 IEnumerable<Shape> shapes = InitialCanvas.Children.OfType<Shape>();
+                if (shapes == null)
+                {
+                    shapesProperties.Clear();
+                    return;
+                }
 
                 ScaleTransform scaleTransform = new ScaleTransform
                 {
@@ -144,16 +149,16 @@ namespace ImageProcessingFramework
 
                 foreach (Shape shape in shapes)
                 {
-                    if (!map.ContainsKey(shape))
+                    if (!shapesProperties.ContainsKey(shape))
                     {
                         double leftProperty = (double)shape.GetValue(LeftProperty);
                         double topProperty = (double)shape.GetValue(TopProperty);
 
-                        map.Add(shape, new KeyValuePair<double, double>(leftProperty, topProperty));
+                        shapesProperties.Add(shape, new KeyValuePair<double, double>(leftProperty, topProperty));
                     }
 
-                    Canvas.SetLeft(shape, map[shape].Key * SliderZoom.Value);
-                    Canvas.SetTop(shape, map[shape].Value * SliderZoom.Value);
+                    Canvas.SetLeft(shape, shapesProperties[shape].Key * SliderZoom.Value);
+                    Canvas.SetTop(shape, shapesProperties[shape].Value * SliderZoom.Value);
 
                     if (!(shape.LayoutTransform is ScaleTransform))
                     {

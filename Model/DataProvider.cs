@@ -59,6 +59,12 @@ namespace ImageProcessingFramework.Model
             set;
         }
 
+        public static bool HermiteSplineOn
+        {
+            get;
+            set;
+        }
+
         public static PointCollection VectorOfMousePosition
         {
             get;

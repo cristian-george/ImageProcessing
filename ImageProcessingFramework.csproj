@@ -106,12 +106,16 @@
     <Compile Include="Model\DrawHelper.cs" />
     <Compile Include="Model\ImageConverter.cs" />
     <Compile Include="Model\UiHelper.cs" />
+    <Compile Include="ViewModel\HermiteSplineCommands.cs" />
     <Compile Include="ViewModel\MagnifierCommands.cs" />
     <Compile Include="View\DialogBox.xaml.cs">
       <DependentUpon>DialogBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\GraphWindow.xaml.cs">
       <DependentUpon>GraphWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\HermiteSplineWindow.xaml.cs">
+      <DependentUpon>HermiteSplineWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MagnifierWindow.xaml.cs">
       <DependentUpon>MagnifierWindow.xaml</DependentUpon>
@@ -139,6 +143,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\GraphWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\HermiteSplineWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

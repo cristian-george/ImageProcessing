@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Emgu.CV;
+﻿using Emgu.CV;
 using Emgu.CV.Structure;
 using ImageProcessingFramework.Model;
 using OxyPlot;
 using OxyPlot.Axes;
+using System.Collections.Generic;
 using LinearAxis = OxyPlot.Axes.LinearAxis;
 using LineSeries = OxyPlot.Series.LineSeries;
 
@@ -12,34 +11,34 @@ namespace ImageProcessingFramework.ViewModel
 {
     class RowDisplayCommands
     {
-        public PlotModel plotImage { get; private set; }
+        public PlotModel PlotImage { get; private set; }
 
-        public String Xpos
+        public string Xpos
         {
             get
             {
-                return "X: " + ((int)(DataProvider.MousePosition.X)).ToString();
+                return "X: " + ((int)DataProvider.MousePosition.X).ToString();
             }
         }
 
-        public String Ypos
+        public string Ypos
         {
             get
             {
-                return "Y: " + ((int)(DataProvider.MousePosition.Y)).ToString();
+                return "Y: " + ((int)DataProvider.MousePosition.Y).ToString();
             }
         }
 
-        private LineSeries GenerateSeriesForColor(Image<Bgr, byte> colorImage, int chanel, String color)
+        private LineSeries GenerateSeriesForColor(Image<Bgr, byte> colorImage, int channel, string color)
         {
-            var chanelValues = new List<int>();
+            List<int> channelValues = new List<int>();
 
             for (int x = 0; x < colorImage.Width; x++)
-                chanelValues.Add(colorImage.Data[(int)DataProvider.MousePosition.Y, x, chanel]);
+                channelValues.Add(colorImage.Data[(int)DataProvider.MousePosition.Y, x, channel]);
 
             if (color.Equals("Blue"))
             {
-                var series = new LineSeries
+                LineSeries series = new LineSeries
                 {
                     MarkerType = MarkerType.None,
                     MarkerSize = 1,
@@ -48,15 +47,15 @@ namespace ImageProcessingFramework.ViewModel
                     Color = OxyColors.Blue
                 };
 
-                for (int index = 0; index < chanelValues.Count; ++index)
-                    series.Points.Add(new DataPoint(index, chanelValues[index]));
+                for (int index = 0; index < channelValues.Count; ++index)
+                    series.Points.Add(new DataPoint(index, channelValues[index]));
 
                 return series;
             }
 
             if (color.Equals("Green"))
             {
-                var series = new LineSeries
+                LineSeries series = new LineSeries
                 {
                     MarkerType = MarkerType.None,
                     MarkerSize = 1,
@@ -65,15 +64,15 @@ namespace ImageProcessingFramework.ViewModel
                     Color = OxyColors.Green
                 };
 
-                for (int index = 0; index < chanelValues.Count; ++index)
-                    series.Points.Add(new DataPoint(index, chanelValues[index]));
+                for (int index = 0; index < channelValues.Count; ++index)
+                    series.Points.Add(new DataPoint(index, channelValues[index]));
 
                 return series;
             }
 
             if (color.Equals("Red"))
             {
-                var series = new LineSeries
+                LineSeries series = new LineSeries
                 {
                     MarkerType = MarkerType.None,
                     MarkerSize = 1,
@@ -82,8 +81,8 @@ namespace ImageProcessingFramework.ViewModel
                     Color = OxyColors.Red
                 };
 
-                for (int index = 0; index < chanelValues.Count; ++index)
-                    series.Points.Add(new DataPoint(index, chanelValues[index]));
+                for (int index = 0; index < channelValues.Count; ++index)
+                    series.Points.Add(new DataPoint(index, channelValues[index]));
 
                 return series;
             }
@@ -91,16 +90,16 @@ namespace ImageProcessingFramework.ViewModel
             return null;
         }
 
-        private LineSeries GenerateSerieForGray(Image<Gray, byte> grayImage, int chanel, String color)
+        private LineSeries GenerateSerieForGray(Image<Gray, byte> grayImage, int channel, string color)
         {
-            var chanelValues = new List<int>();
+            List<int> chanelValues = new List<int>();
 
             for (int x = 0; x < grayImage.Width; x++)
-                chanelValues.Add(grayImage.Data[(int)DataProvider.MousePosition.Y, x, chanel]);
+                chanelValues.Add(grayImage.Data[(int)DataProvider.MousePosition.Y, x, channel]);
 
             if (color.Equals("Gray"))
             {
-                var series = new LineSeries
+                LineSeries series = new LineSeries
                 {
                     MarkerType = MarkerType.None,
                     MarkerSize = 1,
@@ -120,56 +119,82 @@ namespace ImageProcessingFramework.ViewModel
 
         public PlotModel PlotColorImage(Image<Bgr, byte> colorImage)
         {
-            plotImage = new PlotModel();
-            plotImage.Series.Clear();
-            plotImage.Axes.Add(new LinearAxis
+            PlotImage = new PlotModel();
+            PlotImage.MouseDown += MouseClickPressed;
+
+            PlotImage.Series.Clear();
+            PlotImage.Axes.Add(new LinearAxis
             {
                 Position = AxisPosition.Bottom,
                 Maximum = colorImage.Width + 30,
-                Minimum = 0
+                Minimum = 0,
             });
 
-            plotImage.Axes.Add(new LinearAxis
+            PlotImage.Axes.Add(new LinearAxis
             {
                 Position = AxisPosition.Left,
                 Maximum = 300,
-                Minimum = 0
+                Minimum = 0,
             });
 
-            var seriesGreen = GenerateSeriesForColor(colorImage, 1, "Green");
-            var seriesRed = GenerateSeriesForColor(colorImage, 2, "Red");
-            var seriesBlue = GenerateSeriesForColor(colorImage, 0, "Blue");
+            LineSeries seriesBlue = GenerateSeriesForColor(colorImage, 0, "Blue");
+            LineSeries seriesGreen = GenerateSeriesForColor(colorImage, 1, "Green");
+            LineSeries seriesRed = GenerateSeriesForColor(colorImage, 2, "Red");
 
-            plotImage.Series.Add(seriesGreen);
-            plotImage.Series.Add(seriesRed);
-            plotImage.Series.Add(seriesBlue);
+            PlotImage.Series.Add(seriesBlue);
+            PlotImage.Series.Add(seriesGreen);
+            PlotImage.Series.Add(seriesRed);
 
-            return plotImage;
+            return PlotImage;
         }
 
         public PlotModel PlotGrayImage(Image<Gray, byte> grayImage)
         {
-            plotImage = new PlotModel();
-            plotImage.Series.Clear();
-            plotImage.Axes.Add(new LinearAxis
+            PlotImage = new PlotModel();
+            PlotImage.MouseDown += MouseClickPressed;
+
+            PlotImage.Series.Clear();
+            PlotImage.Axes.Add(new LinearAxis
             {
                 Position = AxisPosition.Bottom,
                 Maximum = grayImage.Width + 30,
-                Minimum = 0
+                Minimum = 0,
             });
 
-            plotImage.Axes.Add(new LinearAxis
+            PlotImage.Axes.Add(new LinearAxis
             {
                 Position = AxisPosition.Left,
                 Maximum = 300,
-                Minimum = 0
+                Minimum = 0,
             });
 
-            var seriesGray = GenerateSerieForGray(grayImage, 0, "Gray");
+            LineSeries seriesGray = GenerateSerieForGray(grayImage, 0, "Gray");
 
-            plotImage.Series.Add(seriesGray);
+            PlotImage.Series.Add(seriesGray);
 
-            return plotImage;
+            return PlotImage;
+        }
+
+        private void MouseClickPressed(object sender, OxyMouseDownEventArgs e)
+        {
+            DataPoint point = Axis.InverseTransform(e.Position, PlotImage.Axes[0], PlotImage.Axes[1]);
+            AddPointToPlot(point);
+        }
+
+        public void AddPointToPlot(DataPoint point)
+        {
+            LineSeries series = new LineSeries
+            {
+                MarkerType = MarkerType.Circle,
+                MarkerSize = 3,
+                MarkerStroke = OxyColors.Red,
+                MarkerFill = OxyColors.Red,
+                Color = OxyColors.Red
+            };
+
+            series.Points.Add(point);
+
+            PlotImage.Series.Add(series);
         }
     }
 }

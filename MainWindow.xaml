@@ -84,6 +84,9 @@
                           Command="{Binding Path=RotateClockwise}" />
                 <MenuItem Header="Rotate image anti-clockwise"
                           Command="{Binding Path=RotateAntiClockwise}" />
+                <Separator/>
+                <MenuItem Header="Cubic Hermite spline"
+                          Command="{Binding Path=HermiteSplineDisplay}" />
             </MenuItem>
 
             <MenuItem Header="Filters" 

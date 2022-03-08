@@ -7,11 +7,12 @@ namespace ImageProcessingFramework
 {
     public partial class RowDisplayWindow : Window
     {
-        private Point LastPosition;
+        private readonly RowDisplayCommands RowDisplayCommands;
 
         public RowDisplayWindow()
         {
             InitializeComponent();
+            RowDisplayCommands = new RowDisplayCommands();
 
             if (ColorInitialImage != null)
                 DisplayColor();
@@ -25,8 +26,8 @@ namespace ImageProcessingFramework
             if (LastPosition != MousePosition)
             {
                 LastPosition = MousePosition;
-                xPos.Text = "X: " + ((int)(MousePosition.X)).ToString();
-                yPos.Text = "Y: " + ((int)(MousePosition.Y)).ToString();
+                xPos.Text = "X: " + ((int)MousePosition.X).ToString();
+                yPos.Text = "Y: " + ((int)MousePosition.Y).ToString();
                 if (GrayInitialImage != null)
                     DisplayGray();
 
@@ -41,19 +42,17 @@ namespace ImageProcessingFramework
 
         private void DisplayGray()
         {
-            var rowDisplayCommands = new RowDisplayCommands();
             if (GrayInitialImage != null)
-                originalImageView.Model = rowDisplayCommands.PlotGrayImage(GrayInitialImage);
+                originalImageView.Model = RowDisplayCommands.PlotGrayImage(GrayInitialImage);
             if (GrayProcessedImage != null)
-                processedImageView.Model = rowDisplayCommands.PlotGrayImage(GrayProcessedImage);
+                processedImageView.Model = RowDisplayCommands.PlotGrayImage(GrayProcessedImage);
         }
 
         private void DisplayColor()
         {
-            var rowDisplayCommands = new RowDisplayCommands();
-            originalImageView.Model = rowDisplayCommands.PlotColorImage(ColorInitialImage);
+            originalImageView.Model = RowDisplayCommands.PlotColorImage(ColorInitialImage);
             if (ColorProcessedImage != null)
-                processedImageView.Model = rowDisplayCommands.PlotColorImage(ColorProcessedImage);
+                processedImageView.Model = RowDisplayCommands.PlotColorImage(ColorProcessedImage);
             checkBoxBlue.Visibility = Visibility.Visible;
             checkBoxGreen.Visibility = Visibility.Visible;
             checkBoxRed.Visibility = Visibility.Visible;
@@ -61,7 +60,7 @@ namespace ImageProcessingFramework
             DisplayGray();
         }
 
-        private void AddGreenSeries(object sender, RoutedEventArgs e)
+        private void AddBlueSeries(object sender, RoutedEventArgs e)
         {
             if (ColorInitialImage != null)
                 SetVisibility(originalImageView.Model, 0, true);
@@ -69,7 +68,7 @@ namespace ImageProcessingFramework
                 SetVisibility(processedImageView.Model, 0, true);
         }
 
-        private void RemoveGreenSeries(object sender, RoutedEventArgs e)
+        private void RemoveBlueSeries(object sender, RoutedEventArgs e)
         {
             if (ColorInitialImage != null)
                 SetVisibility(originalImageView.Model, 0, false);
@@ -77,7 +76,7 @@ namespace ImageProcessingFramework
                 SetVisibility(processedImageView.Model, 0, false);
         }
 
-        private void AddRedSeries(object sender, RoutedEventArgs e)
+        private void AddGreenSeries(object sender, RoutedEventArgs e)
         {
             if (ColorInitialImage != null)
                 SetVisibility(originalImageView.Model, 1, true);
@@ -85,7 +84,7 @@ namespace ImageProcessingFramework
                 SetVisibility(processedImageView.Model, 1, true);
         }
 
-        private void RemoveRedSeries(object sender, RoutedEventArgs e)
+        private void RemoveGreenSeries(object sender, RoutedEventArgs e)
         {
             if (ColorInitialImage != null)
                 SetVisibility(originalImageView.Model, 1, false);
@@ -93,7 +92,7 @@ namespace ImageProcessingFramework
                 SetVisibility(processedImageView.Model, 1, false);
         }
 
-        private void AddBlueSeries(object sender, RoutedEventArgs e)
+        private void AddRedSeries(object sender, RoutedEventArgs e)
         {
             if (ColorInitialImage != null)
                 SetVisibility(originalImageView.Model, 2, true);
@@ -101,7 +100,7 @@ namespace ImageProcessingFramework
                 SetVisibility(processedImageView.Model, 2, true);
         }
 
-        private void RemoveBlueSeries(object sender, RoutedEventArgs e)
+        private void RemoveRedSeries(object sender, RoutedEventArgs e)
         {
             if (ColorInitialImage != null)
                 SetVisibility(originalImageView.Model, 2, false);

@@ -15,7 +15,7 @@ namespace ImageProcessingFramework.View
             graphView.Model = PlotGraph(firstList, secondList);
         }
 
-        public PlotModel plotImage { get; private set; }
+        public PlotModel PlotImage { get; private set; }
 
         public PlotModel PlotGraph(List<double> firstList, List<double> secondList)
         {
@@ -28,16 +28,16 @@ namespace ImageProcessingFramework.View
             double maxim = firstMax > secondMax ? firstMax : secondMax;
             double minim = firstMin < secondMin ? firstMin : secondMin;
 
-            plotImage = new PlotModel();
-            plotImage.Series.Clear();
-            plotImage.Axes.Add(new LinearAxis
+            PlotImage = new PlotModel();
+            PlotImage.Series.Clear();
+            PlotImage.Axes.Add(new LinearAxis
             {
                 Position = AxisPosition.Bottom,
                 Maximum = maxim,
                 Minimum = 0
             });
 
-            plotImage.Axes.Add(new LinearAxis
+            PlotImage.Axes.Add(new LinearAxis
             {
                 Position = AxisPosition.Left,
                 Maximum = maxim,
@@ -47,10 +47,10 @@ namespace ImageProcessingFramework.View
             var seriesRed = GenerateSeries(firstList, OxyColors.Red);
             var seriesBlue = GenerateSeries(secondList, OxyColors.Blue);
 
-            plotImage.Series.Add(seriesRed);
-            plotImage.Series.Add(seriesBlue);
+            PlotImage.Series.Add(seriesRed);
+            PlotImage.Series.Add(seriesBlue);
 
-            return plotImage;
+            return PlotImage;
         }
 
         private LineSeries GenerateSeries(List<double> values, OxyColor color)

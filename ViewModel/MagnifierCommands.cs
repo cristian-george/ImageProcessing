@@ -1,8 +1,5 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
-using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
 using ImageProcessingFramework.Model;
 using System.Drawing;
 using System.Windows.Interop;

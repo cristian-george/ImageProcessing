@@ -1,5 +1,6 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
+using ImageProcessingFramework.ViewModel;
 using System.ComponentModel;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -40,6 +41,7 @@ namespace ImageProcessingFramework.ViewModel
         private ICommand m_mirrorHorizontally;
         private ICommand m_rotateClockwise;
         private ICommand m_rotateAntiClockwise;
+        private ICommand m_cubicHermiteSpline;
 
         private bool m_isColorImage;
         private bool m_isPressedConvertButton;
@@ -62,6 +64,7 @@ namespace ImageProcessingFramework.ViewModel
 
         private void ResetUiToInitial(object parameter)
         {
+            RemoveAllDrawnElements(parameter);
             ResetInitialCanvas();
             ResetProcessedCanvas();
 
@@ -87,7 +90,7 @@ namespace ImageProcessingFramework.ViewModel
             var op = new OpenFileDialog
             {
                 Title = "Select a picture",
-                Filter = "Image files(*.jpg, *.jpeg, *.jpe, *.bmp, *.png) | *.jpg; *.jpeg; *.jpe; *.bmp; *.png"
+                Filter = "Image files(*.jpg, *.jpeg, *.jfif, *.jpe, *.bmp, *.png) | *.jpg; *.jpeg; *.jfif; *.jpe; *.bmp; *.png"
             };
             op.ShowDialog();
             if (op.FileName.CompareTo("") == 0)
@@ -106,7 +109,7 @@ namespace ImageProcessingFramework.ViewModel
             var op = new OpenFileDialog
             {
                 Title = "Select a picture",
-                Filter = "Image files(*.jpg, *.jpeg, *.jpe, *.bmp, *.png) | *.jpg; *.jpeg; *.jpe; *.bmp; *.png"
+                Filter = "Image files(*.jpg, *.jpeg, *.jfif, *.jpe, *.bmp, *.png) | *.jpg; *.jpeg; *.jfif; *.jpe; *.bmp; *.png"
             };
             op.ShowDialog();
             if (op.FileName.CompareTo("") == 0)
@@ -147,7 +150,7 @@ namespace ImageProcessingFramework.ViewModel
             SaveFileDialog saveFile = new SaveFileDialog
             {
                 FileName = "image.jpg",
-                Filter = "Image files(*.jpg, *.jpeg, *.jpe, *.bmp, *.png) | *.jpg; *.jpeg; *.jpe; *.bmp; *.png"
+                Filter = "Image files(*.jpg, *.jpeg, *.jfif, *.jpe, *.bmp, *.png) | *.jpg; *.jpeg; *.jfif; *.jpe; *.bmp; *.png"
             };
 
             saveFile.ShowDialog();
@@ -183,6 +186,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void SaveAsOriginal(object parameter)
         {
+            RemoveAllDrawnElements(parameter);
             switch (m_isColorImage)
             {
                 case true:
@@ -289,6 +293,14 @@ namespace ImageProcessingFramework.ViewModel
             MagnifierOn = true;
         }
 
+        private void HermiteSplineShow(object parameter)
+        {
+            if (HermiteSplineOn == true) return;
+            var splineShow = new HermiteSplineWindow();
+            splineShow.Show();
+            HermiteSplineOn = true;
+        }
+
         public void ThresholdingImage(object parameter)
         {
             if (GrayInitialImage != null)
@@ -339,8 +351,8 @@ namespace ImageProcessingFramework.ViewModel
             int rightBottomX = (int)System.Math.Max(firstPosition.X, LastPosition.X);
             int rightBottomY = (int)System.Math.Max(firstPosition.Y, LastPosition.Y);
 
-            System.Windows.Shapes.Rectangle rectangle = DrawHelper.DrawRectangle(InitialCanvas, leftTopX, leftTopY, rightBottomX, rightBottomY, 2, Brushes.Red);
-            VectorOfRectangles.Add(rectangle);
+            RemoveAllDrawnElements(parameter);
+            VectorOfRectangles.Add(DrawHelper.DrawRectangle(InitialCanvas, leftTopX, leftTopY, rightBottomX, rightBottomY, 3, Brushes.Red));
             SliderZoom.Value += 0.01; SliderZoom.Value -= 0.01;
 
             if (GrayInitialImage != null)
@@ -641,6 +653,16 @@ namespace ImageProcessingFramework.ViewModel
                 if (m_rotateAntiClockwise == null)
                     m_rotateAntiClockwise = new RelayCommand(RotateImageAntiClockwise);
                 return m_rotateAntiClockwise;
+            }
+        }
+
+        public ICommand HermiteSplineDisplay
+        {
+            get
+            {
+                if (m_cubicHermiteSpline == null)
+                    m_cubicHermiteSpline = new RelayCommand(HermiteSplineShow);
+                return m_cubicHermiteSpline;
             }
         }
 
