@@ -279,7 +279,20 @@ namespace ImageProcessingFramework.ViewModel
 
         public void GrayLevelsRow(object parameter)
         {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
             if (GLevelsrowOn == true) return;
+
+            if (VectorOfMousePosition.Count == 0)
+            {
+                MessageBox.Show("Please select an area first.");
+                return;
+            }
+
             var rowDisplayWindow = new RowDisplayWindow();
             rowDisplayWindow.Show();
             GLevelsrowOn = true;
@@ -287,7 +300,20 @@ namespace ImageProcessingFramework.ViewModel
 
         public void MagnifierShow(object parameter)
         {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
             if (MagnifierOn == true) return;
+
+            if (VectorOfMousePosition.Count == 0)
+            {
+                MessageBox.Show("Please select an area first.");
+                return;
+            }
+
             var magnifierWindow = new MagnifierWindow();
             magnifierWindow.Show();
             MagnifierOn = true;
@@ -295,8 +321,14 @@ namespace ImageProcessingFramework.ViewModel
 
         private void HermiteSplineShow(object parameter)
         {
+            //if (GrayInitialImage == null && ColorInitialImage == null)
+            //{
+            //    MessageBox.Show("Please add an image!");
+            //    return;
+            //}
+
             if (HermiteSplineOn == true) return;
-            var splineShow = new HermiteSplineWindow();
+            var splineShow = new SplineWindow();
             splineShow.Show();
             HermiteSplineOn = true;
         }
@@ -665,9 +697,6 @@ namespace ImageProcessingFramework.ViewModel
                 return m_cubicHermiteSpline;
             }
         }
-
-        public System.Windows.DependencyProperty LeftProperty { get; private set; }
-        public System.Windows.DependencyProperty TopProperty { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

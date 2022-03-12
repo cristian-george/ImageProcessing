@@ -120,9 +120,8 @@ namespace ImageProcessingFramework.ViewModel
         public PlotModel PlotColorImage(Image<Bgr, byte> colorImage)
         {
             PlotImage = new PlotModel();
-            PlotImage.MouseDown += MouseClickPressed;
-
             PlotImage.Series.Clear();
+
             PlotImage.Axes.Add(new LinearAxis
             {
                 Position = AxisPosition.Bottom,
@@ -151,9 +150,8 @@ namespace ImageProcessingFramework.ViewModel
         public PlotModel PlotGrayImage(Image<Gray, byte> grayImage)
         {
             PlotImage = new PlotModel();
-            PlotImage.MouseDown += MouseClickPressed;
-
             PlotImage.Series.Clear();
+
             PlotImage.Axes.Add(new LinearAxis
             {
                 Position = AxisPosition.Bottom,
@@ -173,28 +171,6 @@ namespace ImageProcessingFramework.ViewModel
             PlotImage.Series.Add(seriesGray);
 
             return PlotImage;
-        }
-
-        private void MouseClickPressed(object sender, OxyMouseDownEventArgs e)
-        {
-            DataPoint point = Axis.InverseTransform(e.Position, PlotImage.Axes[0], PlotImage.Axes[1]);
-            AddPointToPlot(point);
-        }
-
-        public void AddPointToPlot(DataPoint point)
-        {
-            LineSeries series = new LineSeries
-            {
-                MarkerType = MarkerType.Circle,
-                MarkerSize = 3,
-                MarkerStroke = OxyColors.Red,
-                MarkerFill = OxyColors.Red,
-                Color = OxyColors.Red
-            };
-
-            series.Points.Add(point);
-
-            PlotImage.Series.Add(series);
         }
     }
 }
