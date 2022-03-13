@@ -1,12 +1,16 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows;
 using ImageProcessingFramework.ViewModel;
+using OxyPlot;
 using static ImageProcessingFramework.Model.DataProvider;
 
 namespace ImageProcessingFramework.View
 {
     public partial class SplineWindow : Window
     {
-        private readonly SplineCommands GraphViewCommands;
+        private SplineCommands GraphViewCommands;
+        private SplineCommands HermiteSplineCommands;
 
         public SplineWindow()
         {
@@ -28,7 +32,7 @@ namespace ImageProcessingFramework.View
 
         private void AddHermiteSpline(object sender, RoutedEventArgs e)
         {
-            SplineCommands HermiteSplineCommands = new SplineCommands();
+            HermiteSplineCommands = new SplineCommands();
             splineView.Model = HermiteSplineCommands.CubicSplines(GraphViewCommands.Points);
         }
 
@@ -39,6 +43,49 @@ namespace ImageProcessingFramework.View
                 splineView.Model.Series.Clear();
                 splineView.Model.Axes.Clear();
                 splineView.Model.InvalidatePlot(true);
+            }
+
+            HermiteSplineCommands = null;
+        }
+
+        private void ClearPlots(object sender, RoutedEventArgs e)
+        {
+            checkBox.IsChecked = false;
+            RemoveHermiteSpline(sender, e);
+
+            GraphViewCommands = new SplineCommands();
+            graphView.Model = GraphViewCommands.InteractivePlot(0, 0, 255, 255);
+        }
+
+        private void ApplyEffect(object sender, RoutedEventArgs e)
+        {
+            if (HermiteSplineCommands != null)
+            {
+                List<int> frequenceOfKeys = new List<int>();
+                List<double> sumOfValues = new List<double>();
+
+                for (int key = 0; key < 256; ++key)
+                {
+                    frequenceOfKeys.Add(0);
+                    sumOfValues.Add(0);
+                }
+
+                List<DataPoint> curvePoints = HermiteSplineCommands.GetCurvePoints();
+                foreach (DataPoint point in curvePoints)
+                {
+                    ++frequenceOfKeys[(int)(point.X + 0.5)];
+                    sumOfValues[(int)(point.X + 0.5)] += point.Y;
+                }
+
+                HermiteSplineLUT = new Collection<int>();
+                for (int key = 0; key < 256; key++)
+                {
+                    int value = (int)sumOfValues[key] / frequenceOfKeys[key];
+                    if (value > 255)
+                        value = 255;
+
+                    HermiteSplineLUT.Add(value);
+                }
             }
         }
     }

@@ -1,9 +1,9 @@
 ﻿using OxyPlot;
 using OxyPlot.Axes;
-using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using LinearAxis = OxyPlot.Axes.LinearAxis;
 using LineSeries = OxyPlot.Series.LineSeries;
 
@@ -175,31 +175,37 @@ namespace ImageProcessingFramework.ViewModel
             return (H00(t) * p1) + (H10(t) * m1) + (H01(t) * p2) + (H11(t) * m2);
         }
 
-        private List<DataPoint> SplineDataPoints(List<double> slopesX, List<double> slopesY)
+        private List<DataPoint> curvePoints;
+        private void SetSplineCurvePoints(List<double> slopesX, List<double> slopesY)
         {
-            List<DataPoint> dataPoints = new List<DataPoint>();
+            curvePoints = new List<DataPoint>();
 
             for (int index = 1; index < Points.Count - 2; ++index)
             {
                 for (double t = 0; t <= 1; t += 0.0001)
                 {
-                    dataPoints.Add(
-                        new DataPoint(
+                    curvePoints.Add(new DataPoint(
                         P(t, Points[index].X, slopesX[index], Points[index + 1].X, slopesX[index + 1]),
                         P(t, Points[index].Y, slopesY[index], Points[index + 1].Y, slopesY[index + 1])
                         ));
                 }
             }
-
-            return dataPoints;
         }
 
-        private void SetSlope(double tau, List<double> slopes)
+        private void SetSlopes(double tau, List<double> slopes, char coordinate)
         {
             for (int index = 1; index < Points.Count - 1; ++index)
             {
-                double slopeX = GetSlope(tau, Points[index - 1].X, Points[index + 1].X);
-                slopes.Add(slopeX);
+                if (coordinate.Equals('X'))
+                {
+                    double slope = GetSlope(tau, Points[index - 1].X, Points[index + 1].X);
+                    slopes.Add(slope);
+                }
+                else if (coordinate.Equals('Y'))
+                {
+                    double slope = GetSlope(tau, Points[index - 1].Y, Points[index + 1].Y);
+                    slopes.Add(slope);
+                }
             }
         }
 
@@ -224,17 +230,22 @@ namespace ImageProcessingFramework.ViewModel
             Points = Points.OrderBy(point => point.X).ToList();
         }
 
+        public List<DataPoint> GetCurvePoints()
+        {
+            return curvePoints;
+        }
+
         public PlotModel CubicSplines(List<DataPoint> GraphViewPoints)
         {
             InitSplinePlot(GraphViewPoints);
 
             List<double> slopesX = new List<double> { 0 };
             List<double> slopesY = new List<double> { 0 };
-            SetSlope(0.5, slopesX);
-            SetSlope(0.5, slopesY);
+            SetSlopes(0.5, slopesX, 'X');
+            SetSlopes(0.5, slopesY, 'Y');
 
-            List<DataPoint> seriesPoints = SplineDataPoints(slopesX, slopesY);
-            Plot.Series.Add(GenerateSeries(seriesPoints, 5, OxyColors.Blue, LineStyle.Solid));
+            SetSplineCurvePoints(slopesX, slopesY);
+            Plot.Series.Add(GenerateSeries(curvePoints, 1, OxyColors.Blue, LineStyle.Solid));
 
             return Plot;
         }

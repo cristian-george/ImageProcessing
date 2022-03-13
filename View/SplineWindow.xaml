@@ -90,5 +90,21 @@
                      Checked="AddHermiteSpline"
                      Unchecked="RemoveHermiteSpline"
                      Visibility="Visible"/>
+        <Button Grid.Row="1"
+                Grid.Column="1"
+                Name="clearButton"
+                Content="Clear plots"
+                Margin="40,50,40,320"
+                Height="30"
+                Click="ClearPlots"
+                Visibility="Visible" />
+        <Button Grid.Row="1"
+                Grid.Column="1"
+                Name="applyButton"
+                Content="Apply changes"
+                Margin="40,50,40,250"
+                Height="30"
+                Click="ApplyEffect"
+                Visibility="Visible" />
     </Grid>
 </Window>

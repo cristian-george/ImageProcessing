@@ -55,12 +55,12 @@
             <MenuItem Header="Tools" 
                       Background="#A3F7B5">
                 <MenuItem Header="Remove drawn elements"
-                           Command="{Binding Path=RemoveAllElements}"/>
+                          Command="{Binding Path=RemoveAllElements}"/>
                 <MenuItem Header="Clear"
-                           Command="{Binding Path=Clear}"/>
+                          Command="{Binding Path=Clear}"/>
                 <Separator/>
                 <MenuItem Header="Magnifier"
-                           Command="{Binding Path=Magnifier}"/>
+                          Command="{Binding Path=Magnifier}"/>
                 <MenuItem Header="GLevelsRow" 
                           Command="{Binding Path=RowDisplay}"/>
                 <MenuItem Header="Invert" 
@@ -70,23 +70,35 @@
                 <MenuItem Header="Transform to gray image"
                           Command="{Binding Path=ConvertToGrayImage}" />
                 <Separator/>
-                <MenuItem Header="Thresholding"
-                          Command="{Binding Path=Thresholding}" />
                 <MenuItem Header="Crop image"
                           Command="{Binding Path=Crop}" />
+                <MenuItem Header="Mirror image">
+                    <MenuItem Header="Vertically"
+                              Command="{Binding Path=MirrorVertically}" />
+                    <MenuItem Header="Horizontally"
+                              Command="{Binding Path=MirrorHorizontally}" />
+                </MenuItem>
+
                 <Separator/>
-                <MenuItem Header="Mirror image vertically"
-                          Command="{Binding Path=MirrorVertically}" />
-                <MenuItem Header="Mirror image horizontally"
-                          Command="{Binding Path=MirrorHorizontally}" />
-                <Separator/>
-                <MenuItem Header="Rotate image clockwise"
-                          Command="{Binding Path=RotateClockwise}" />
-                <MenuItem Header="Rotate image anti-clockwise"
-                          Command="{Binding Path=RotateAntiClockwise}" />
-                <Separator/>
-                <MenuItem Header="Cubic Hermite spline"
-                          Command="{Binding Path=HermiteSplineDisplay}" />
+
+                <MenuItem Header="Rotate image">
+                    <MenuItem Header="Clockwise"
+                              Command="{Binding Path=RotateClockwise}" />
+                    <MenuItem Header="Anti-clockwise"
+                              Command="{Binding Path=RotateAntiClockwise}" />
+                </MenuItem>
+                <MenuItem Header="Cubic Hermite spline">
+                    <MenuItem Header="Interactive plot"
+                              Command="{Binding Path=HermiteSplineDisplay}" />
+                    <MenuItem Header="Adjust brightness and contrast"
+                              Command="{Binding Path=HermiteSplineInterpolation}" />
+                </MenuItem>
+                <MenuItem Header="Thresholding">
+                    <MenuItem Header="With a given value"
+                              Command="{Binding Path=Thresholding}" />
+                    <MenuItem Header="Otsu two-threshold segmentation"
+                              Command="{Binding Path=OtsuTwoThreshold}" />
+                </MenuItem>
             </MenuItem>
 
             <MenuItem Header="Filters" 

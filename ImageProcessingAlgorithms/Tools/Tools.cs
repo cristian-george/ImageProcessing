@@ -1,5 +1,6 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
+using System.Collections.ObjectModel;
 
 namespace ImageProcessingAlgorithms.Tools
 {
@@ -292,6 +293,38 @@ namespace ImageProcessingAlgorithms.Tools
         {
             Image<Bgr, byte> transpose = Transpose(inputImage);
             return MirrorHorizontally(transpose);
+        }
+
+        public static Image<Gray, byte> HermiteSplineInterpolation(Image<Gray, byte> inputImage, Collection<int> LUT)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+
+            for (int y = 0; y < inputImage.Height; y++)
+            {
+                for (int x = 0; x < inputImage.Width; x++)
+                {
+                    result.Data[y, x, 0] = (byte)LUT[inputImage.Data[y, x, 0]];
+                }
+            }
+
+            return result;
+        }
+
+        public static Image<Bgr, byte> HermiteSplineInterpolation(Image<Bgr, byte> inputImage, Collection<int> LUT)
+        {
+            Image<Bgr, byte> result = new Image<Bgr, byte>(inputImage.Size);
+
+            for (int y = 0; y < inputImage.Height; y++)
+            {
+                for (int x = 0; x < inputImage.Width; x++)
+                {
+                    result.Data[y, x, 0] = (byte)LUT[inputImage.Data[y, x, 0]];
+                    result.Data[y, x, 1] = (byte)LUT[inputImage.Data[y, x, 1]];
+                    result.Data[y, x, 2] = (byte)LUT[inputImage.Data[y, x, 2]];
+                }
+            }
+
+            return result;
         }
     }
 }

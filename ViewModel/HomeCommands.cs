@@ -1,6 +1,5 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
-using ImageProcessingFramework.ViewModel;
 using System.ComponentModel;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -42,6 +41,8 @@ namespace ImageProcessingFramework.ViewModel
         private ICommand m_rotateClockwise;
         private ICommand m_rotateAntiClockwise;
         private ICommand m_cubicHermiteSpline;
+        private ICommand m_cubicHermiteSplineInterpolation;
+        private ICommand m_otsuTwoThreshold;
 
         private bool m_isColorImage;
         private bool m_isPressedConvertButton;
@@ -321,16 +322,36 @@ namespace ImageProcessingFramework.ViewModel
 
         private void HermiteSplineShow(object parameter)
         {
-            //if (GrayInitialImage == null && ColorInitialImage == null)
-            //{
-            //    MessageBox.Show("Please add an image!");
-            //    return;
-            //}
-
             if (HermiteSplineOn == true) return;
             var splineShow = new SplineWindow();
             splineShow.Show();
             HermiteSplineOn = true;
+        }
+
+        public void HermiteSplineInterpolationImage(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            if (HermiteSplineLUT != null)
+            {
+                if (GrayInitialImage != null)
+                {
+                    GrayProcessedImage = Tools.HermiteSplineInterpolation(GrayInitialImage, HermiteSplineLUT);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                    OnPropertyChanged("ProcessedImage");
+                }
+                else if (ColorInitialImage != null)
+                {
+                    ColorProcessedImage = Tools.HermiteSplineInterpolation(ColorInitialImage, HermiteSplineLUT);
+                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                    OnPropertyChanged("ProcessedImage");
+                }
+            }
+            else MessageBox.Show("No look-up table available! Please compute it first.");
         }
 
         public void ThresholdingImage(object parameter)
@@ -360,6 +381,10 @@ namespace ImageProcessingFramework.ViewModel
                 }
             }
             else MessageBox.Show("No grayscale image!");
+        }
+
+        public void OtsuTwoThresholdSegmentation(object parameter)
+        {
         }
 
         public void CropImage(object parameter)
@@ -695,6 +720,26 @@ namespace ImageProcessingFramework.ViewModel
                 if (m_cubicHermiteSpline == null)
                     m_cubicHermiteSpline = new RelayCommand(HermiteSplineShow);
                 return m_cubicHermiteSpline;
+            }
+        }
+
+        public ICommand HermiteSplineInterpolation
+        {
+            get
+            {
+                if (m_cubicHermiteSplineInterpolation == null)
+                    m_cubicHermiteSplineInterpolation = new RelayCommand(HermiteSplineInterpolationImage);
+                return m_cubicHermiteSplineInterpolation;
+            }
+        }
+
+        public ICommand OtsuTwoThreshold
+        {
+            get
+            {
+                if (m_otsuTwoThreshold == null)
+                    m_otsuTwoThreshold = new RelayCommand(OtsuTwoThresholdSegmentation);
+                return m_otsuTwoThreshold;
             }
         }
 

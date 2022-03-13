@@ -65,6 +65,12 @@ namespace ImageProcessingFramework.Model
             set;
         }
 
+        public static Collection<int> HermiteSplineLUT
+        {
+            get;
+            set;
+        }
+
         public static PointCollection VectorOfMousePosition
         {
             get;
