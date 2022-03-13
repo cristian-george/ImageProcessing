@@ -310,7 +310,7 @@ namespace ImageProcessingAlgorithms.Tools
             return result;
         }
 
-        public static Image<Bgr, byte> HermiteSplineInterpolation(Image<Bgr, byte> inputImage, Collection<int> LUT)
+        public static Image<Bgr, byte> HermiteSplineInterpolation(Image<Bgr, byte> inputImage, Collection<int> lookUpTable)
         {
             Image<Bgr, byte> result = new Image<Bgr, byte>(inputImage.Size);
 
@@ -318,9 +318,105 @@ namespace ImageProcessingAlgorithms.Tools
             {
                 for (int x = 0; x < inputImage.Width; x++)
                 {
-                    result.Data[y, x, 0] = (byte)LUT[inputImage.Data[y, x, 0]];
-                    result.Data[y, x, 1] = (byte)LUT[inputImage.Data[y, x, 1]];
-                    result.Data[y, x, 2] = (byte)LUT[inputImage.Data[y, x, 2]];
+                    result.Data[y, x, 0] = (byte)lookUpTable[inputImage.Data[y, x, 0]];
+                    result.Data[y, x, 1] = (byte)lookUpTable[inputImage.Data[y, x, 1]];
+                    result.Data[y, x, 2] = (byte)lookUpTable[inputImage.Data[y, x, 2]];
+                }
+            }
+
+            return result;
+        }
+
+        private static double[] GetHistogram(Image<Gray, byte> inputImage)
+        {
+            int numberOfPixels = inputImage.Height * inputImage.Width;
+            double[] histogram = new double[256];
+
+            for (int y = 0; y < inputImage.Height; y++)
+            {
+                for (int x = 0; x < inputImage.Width; x++)
+                {
+                    ++histogram[inputImage.Data[y, x, 0]];
+                }
+            }
+
+            for (int color = 0; color < 256; color++)
+            {
+                histogram[color] = histogram[color] / numberOfPixels;
+            }
+
+            return histogram;
+        }
+
+        private static System.Tuple<int, int> GetThresholdValues(Image<Gray, byte> inputImage)
+        {
+            double[] histogram = GetHistogram(inputImage);
+            double mu = Mean(inputImage);
+
+            double maxInterclassVariance = 0;
+            int threshold1 = -1, threshold2 = -1;
+
+            for (int k1 = 0; k1 < 254; ++k1)
+            {
+                double P1 = 0, mu1 = 0;
+                for (int k = 0; k <= k1; ++k)
+                {
+                    P1 += histogram[k];
+                    mu1 += k * histogram[k];
+                }
+                mu1 /= P1;
+
+                for (int k2 = k1 + 1; k1 < 254 && k2 < 255; ++k2)
+                {
+                    double P2 = 0, mu2 = 0;
+                    for (int k = k1 + 1; k <= k2; ++k)
+                    {
+                        P2 += histogram[k];
+                        mu2 += k * histogram[k];
+                    }
+                    mu2 /= P2;
+
+                    double P3 = 1 - P1 - P2, mu3 = 0;
+                    for (int k = k2 + 1; k <= 255; ++k)
+                    {
+                        mu3 += k * histogram[k];
+                    }
+                    mu3 /= P3;
+
+                    double interclassVariance =
+                        (P1 * System.Math.Pow(mu1 - mu, 2)) +
+                        (P2 * System.Math.Pow(mu2 - mu, 2)) +
+                        (P3 * System.Math.Pow(mu3 - mu, 2));
+
+                    if (interclassVariance > maxInterclassVariance)
+                    {
+                        maxInterclassVariance = interclassVariance;
+                        threshold1 = k1;
+                        threshold2 = k2;
+                    }
+                }
+            }
+            return new System.Tuple<int, int>(threshold1, threshold2);
+        }
+
+        public static Image<Gray, byte> OtsuTwoThreshold(Image<Gray, byte> inputImage)
+        {
+            System.Tuple<int, int> thresholdValues = GetThresholdValues(inputImage);
+
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+            for (int y = 0; y < inputImage.Height; y++)
+            {
+                for (int x = 0; x < inputImage.Width; x++)
+                {
+                    if (inputImage.Data[y, x, 0] > thresholdValues.Item1 &&
+                        inputImage.Data[y, x, 0] <= thresholdValues.Item2)
+                    {
+                        result.Data[y, x, 0] = 128;
+                    }
+                    else if (inputImage.Data[y, x, 0] > thresholdValues.Item2)
+                    {
+                        result.Data[y, x, 0] = 255;
+                    }
                 }
             }
 

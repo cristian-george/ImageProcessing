@@ -385,6 +385,13 @@ namespace ImageProcessingFramework.ViewModel
 
         public void OtsuTwoThresholdSegmentation(object parameter)
         {
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = Tools.OtsuTwoThreshold(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+            else MessageBox.Show("No grayscale image!");
         }
 
         public void CropImage(object parameter)
@@ -520,6 +527,7 @@ namespace ImageProcessingFramework.ViewModel
         {
             RemoveAllDrawnElements(parameter);
             ResetUiToInitial(parameter);
+            HermiteSplineLUT = null;
         }
 
         public ICommand AddColorImage
