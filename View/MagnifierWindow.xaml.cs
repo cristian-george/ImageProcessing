@@ -44,8 +44,6 @@ namespace ImageProcessingFramework.View
             MagnifierOn = false;
         }
 
-        public object Controls { get; private set; }
-
         private void MagnifierUpdate(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (LastPosition != MousePosition)

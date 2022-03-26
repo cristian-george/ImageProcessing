@@ -15,7 +15,8 @@
     <Window.DataContext>
         <local:HomeCommands/>
     </Window.DataContext>
-    <Grid Background="#E5F9E0">
+
+    <Grid Background="#FF3E3E40">
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
             <RowDefinition Height="20"/>
@@ -27,7 +28,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Menu Background="#2F9C95"
+        <Menu Background="MediumSlateBlue"
               Grid.Row="0" 
               Grid.ColumnSpan="2">
             <Menu.ItemsPanel>
@@ -37,7 +38,7 @@
             </Menu.ItemsPanel>
 
             <MenuItem Header="File" 
-                      Background="#A3F7B5">
+                      Background="AliceBlue">
                 <MenuItem Header="Load grayscale image" 
                           Command="{Binding Path=AddGrayImage}"
                           CommandParameter="{Binding ElementName=SliderZoom}"/>
@@ -53,20 +54,22 @@
             </MenuItem>
 
             <MenuItem Header="Tools" 
-                      Background="#A3F7B5">
+                      Background="AliceBlue">
                 <MenuItem Header="Remove drawn elements"
                           Command="{Binding Path=RemoveAllElements}"/>
-                <MenuItem Header="Clear"
+                <MenuItem Header="Clear all elements"
                           Command="{Binding Path=Clear}"/>
                 <Separator/>
                 <MenuItem Header="Magnifier"
                           Command="{Binding Path=Magnifier}"/>
                 <MenuItem Header="GLevelsRow" 
                           Command="{Binding Path=RowDisplay}"/>
-                <MenuItem Header="Invert" 
-                          Command="{Binding Path=Invert}"/>
+                <MenuItem Header="GLevelsColumn" 
+                          Command="{Binding Path=ColumnDisplay}"/>
                 <MenuItem Header="Copy" 
                           Command="{Binding Path=Copy}"/>
+                <MenuItem Header="Invert" 
+                          Command="{Binding Path=Invert}"/>
                 <MenuItem Header="Transform to gray image"
                           Command="{Binding Path=ConvertToGrayImage}" />
                 <Separator/>
@@ -78,34 +81,40 @@
                     <MenuItem Header="Horizontally"
                               Command="{Binding Path=MirrorHorizontally}" />
                 </MenuItem>
-
-                <Separator/>
-
                 <MenuItem Header="Rotate image">
                     <MenuItem Header="Clockwise"
                               Command="{Binding Path=RotateClockwise}" />
                     <MenuItem Header="Anti-clockwise"
                               Command="{Binding Path=RotateAntiClockwise}" />
                 </MenuItem>
-                <MenuItem Header="Cubic Hermite spline">
-                    <MenuItem Header="Interactive plot"
+                <Separator/>
+
+                <MenuItem Header="Adjust brightness and contrast">
+                    <MenuItem Header="Based on Cubic Hermite spline">
+                        <MenuItem Header="Interactive plot"
                               Command="{Binding Path=HermiteSplineDisplay}" />
-                    <MenuItem Header="Adjust brightness and contrast"
+                        <MenuItem Header="Apply changes"
                               Command="{Binding Path=HermiteSplineInterpolation}" />
+                    </MenuItem>
                 </MenuItem>
+
                 <MenuItem Header="Thresholding">
                     <MenuItem Header="With a given value"
                               Command="{Binding Path=Thresholding}" />
-                    <MenuItem Header="Otsu two-threshold segmentation"
+                    <MenuItem Header="Otsu two-threshold"
                               Command="{Binding Path=OtsuTwoThreshold}" />
                 </MenuItem>
             </MenuItem>
 
             <MenuItem Header="Filters" 
-                      Background="#A3F7B5">
+                      Background="AliceBlue">
+                <MenuItem Header="Low-pass">
+                    <MenuItem Header="Fast Median"
+                              Command="{Binding Path=FastMedian}"/>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="Save as original image" 
-                      Background="#A3F7B5" 
+                      Background="AliceBlue"
                       HorizontalAlignment="Right" 
                       Command="{Binding Path=SaveAsOriginalImage}"/>
         </Menu>
@@ -115,7 +124,7 @@
                Width="auto" 
                Height="auto" 
                Margin="10,10,30,10"
-               BorderBrush="#664147" 
+               BorderBrush="#FF252526" 
                BorderThickness="5.0"
                VerticalContentAlignment="Center" 
                HorizontalContentAlignment="Center"
@@ -123,24 +132,22 @@
             <ScrollViewer x:Name="ScrollViewerInitial"
                           HorizontalScrollBarVisibility="Auto" 
                           VerticalScrollBarVisibility="Auto" 
-                          ScrollChanged="ScrollChanged"
-                          >
-                <Canvas 
-                    x:Name="canvasOriginalImage"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Width="{Binding ElementName=lbl, Path=ActualWidth}"
-                    Height="{Binding ElementName=lbl, Path=ActualHeight}"
-                    MouseLeftButtonUp="DrawRectangle"
-                    MouseLeftButtonDown="DrawLine">
+                          ScrollChanged="ScrollChanged">
+                <Canvas x:Name="canvasOriginalImage"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Width="{Binding ElementName=lbl, Path=ActualWidth}"
+                        Height="{Binding ElementName=lbl, Path=ActualHeight}"
+                        MouseLeftButtonUp="DrawRectangle"
+                        MouseLeftButtonDown="DrawLine">
                     <Image x:Name="initialImage"
-                       Mouse.MouseMove="ImageMouseMove"
-                       MouseLeftButtonDown="MouseLeftPressed"
-                       MouseRightButtonDown="MouseRightPressed"
-                       Source="{Binding InitialImage}">
+                           Mouse.MouseMove="ImageMouseMove"
+                           MouseLeftButtonDown="MouseLeftPressed"
+                           MouseRightButtonDown="MouseRightPressed"
+                           Source="{Binding InitialImage}">
                         <Image.LayoutTransform>
                             <ScaleTransform ScaleX="{Binding ElementName=SliderZoom, Path=Value}" 
-                                        ScaleY="{Binding ElementName=SliderZoom, Path=Value}"/>
+                                            ScaleY="{Binding ElementName=SliderZoom, Path=Value}"/>
                         </Image.LayoutTransform>
                     </Image>
                 </Canvas>
@@ -151,30 +158,28 @@
                Grid.Row="2"
                Width="auto" 
                Height="auto" 
-               Margin="10,10,30,10"
-               BorderBrush="#664147" 
+               Margin="30,10,10,10"
+               BorderBrush="#FF252526" 
                BorderThickness="5.0"
                VerticalContentAlignment="Center" 
                HorizontalContentAlignment="Center">
             <ScrollViewer x:Name="ScrollViewerProcessed"
                           HorizontalScrollBarVisibility="Auto" 
                           VerticalScrollBarVisibility="Auto" 
-                          ScrollChanged="ScrollChanged"
-                          >
-                <Canvas 
-                    x:Name="canvasProcessedImage"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Width="{Binding ElementName=lbl, Path=ActualWidth}"
-                    Height="{Binding ElementName=lbl, Path=ActualHeight}"
-                    MouseLeftButtonUp="DrawRectangle">
+                          ScrollChanged="ScrollChanged">
+                <Canvas x:Name="canvasProcessedImage"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Width="{Binding ElementName=lbl, Path=ActualWidth}"
+                        Height="{Binding ElementName=lbl, Path=ActualHeight}"
+                        MouseLeftButtonUp="DrawRectangle">
                     <Image x:Name="processedImage"
-                       Mouse.MouseMove="ImageMouseMove"
-                       MouseLeftButtonDown="MouseLeftPressed"
-                       Source="{Binding ProcessedImage}">
+                           Mouse.MouseMove="ImageMouseMove"
+                           MouseLeftButtonDown="MouseLeftPressed"
+                           Source="{Binding ProcessedImage}">
                         <Image.LayoutTransform>
                             <ScaleTransform ScaleX="{Binding ElementName=SliderZoom, Path=Value}" 
-                                        ScaleY="{Binding ElementName=SliderZoom, Path=Value}"/>
+                                            ScaleY="{Binding ElementName=SliderZoom, Path=Value}"/>
                         </Image.LayoutTransform>
                     </Image>
                 </Canvas>
@@ -185,7 +190,9 @@
                 Content="Reset"
                 Command="{Binding Path=Reset}" 
                 CommandParameter="{Binding ElementName=SliderZoom}" 
-                Background="#A3F7B5"
+                Background="AliceBlue"
+                BorderThickness="2"
+                BorderBrush="MediumSlateBlue"
                 Grid.Row="3" 
                 Margin="10,26,0,42"
                 Width="80"
@@ -211,6 +218,7 @@
         </StackPanel>
 
         <TextBlock Text="{Binding Value, ElementName=SliderZoom}" 
+                   Foreground="#FFF1F1F1"
                    TextAlignment="Center"
                    FontSize="15" 
                    Margin="0,0,27.333,46" 
@@ -222,6 +230,7 @@
                    Width="63"/>
         <Label Content="x" 
                FontSize="15"
+               Foreground="#FFF1F1F1"
                HorizontalContentAlignment="Center"
                VerticalContentAlignment="Center" 
                Grid.Column="1" 
@@ -231,18 +240,22 @@
                Width="44"/>
         <TextBlock Grid.Row="1"
                    Grid.Column="0"
+                   Foreground="#FFF1F1F1"
                    Text="Original Image"
-                   FontSize="15" 
+                   FontSize="15"
                    Width="120"
                    Height="20"
-                   HorizontalAlignment="Center"/>
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
         <TextBlock Grid.Row="1"
                    Grid.Column="1"
+                   Foreground="#FFF1F1F1"
                    Text="Processed Image"
                    Width="120"
                    Height="20"
-                   FontSize="15" 
-                   HorizontalAlignment="Center"/>
+                   FontSize="15"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
 
         <Grid Grid.Column="0" 
               Grid.Row="4"
@@ -260,34 +273,40 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0" 
-                   Grid.Row="1" 
-                   x:Name="xPos" 
-                   FontSize="15" 
-                   HorizontalAlignment="Right"/>
+                       Grid.Row="1"
+                       Foreground="#FFF1F1F1"
+                       x:Name="xPos" 
+                       FontSize="15" 
+                       HorizontalAlignment="Right"/>
             <TextBlock Grid.Column="1" 
-                   Grid.Row="0" 
-                   x:Name="yPos" 
-                   FontSize="15" 
-                   HorizontalAlignment="Left"/>
+                       Grid.Row="0"
+                       Foreground="#FFF1F1F1"
+                       x:Name="yPos" 
+                       FontSize="15" 
+                       HorizontalAlignment="Left"/>
 
             <TextBlock Grid.Column="2"
                        Grid.Row="1"
+                       Foreground="#FFF1F1F1"
                        x:Name="grayValue"
                        FontSize="15"
                        HorizontalAlignment="Left"/>
 
             <TextBlock Grid.Column="3"
                        Grid.Row="1"
+                       Foreground="#FFF1F1F1"
                        x:Name="rValue"
                        FontSize="15"
                        HorizontalAlignment="Center"/>
             <TextBlock Grid.Column="4"
                        Grid.Row="1"
+                       Foreground="#FFF1F1F1"
                        x:Name="gValue"
                        FontSize="15"
                        HorizontalAlignment="Center"/>
             <TextBlock Grid.Column="5"
                        Grid.Row="1"
+                       Foreground="#FFF1F1F1"
                        x:Name="bValue"
                        FontSize="15"
                        HorizontalAlignment="Center"/>

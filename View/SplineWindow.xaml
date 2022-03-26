@@ -20,7 +20,7 @@
         <local:SplineCommands/>
     </Window.DataContext>
 
-    <Grid Background="#E5F9E0">
+    <Grid Background="#FF3E3E40">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
@@ -33,13 +33,15 @@
 
         <Label Grid.Row="1"
                Grid.Column="0">
-            <oxy:PlotView Name="graphView"
+            <oxy:PlotView Background="AliceBlue"
+                          Name="graphView"
                           Width="440"
                           Height="440"/>
         </Label>
         <Label Grid.Row="1"
                Grid.Column="2">
-            <oxy:PlotView Name="splineView"
+            <oxy:PlotView Background="AliceBlue"
+                          Name="splineView"
                           Width="440"
                           Height="440"/>
         </Label>
@@ -47,12 +49,14 @@
         <TextBlock Grid.Row="0"
                    Grid.Column="0"
                    FontSize="15" 
+                   Foreground="#FFF1F1F1"
                    Width="120"
                    Height="20"
                    HorizontalAlignment="Center"><Run Text="Interactive plot"/><LineBreak/><Run/></TextBlock>
         <TextBlock Grid.Row="0"
                    Grid.Column="2"
                    Text="Cubic Hermite spline"
+                   Foreground="#FFF1F1F1"
                    Width="160"
                    Height="20"
                    FontSize="15" 
@@ -60,12 +64,14 @@
         <TextBlock Grid.Row="0"
                    Grid.Column="1"
                    Text="Settings"
+                   Foreground="#FFF1F1F1"
                    Width="60"
                    Height="20"
                    FontSize="15" 
                    HorizontalAlignment="Center"/>
         <TextBlock Grid.Row="1" 
                    Grid.Column="1"
+                   Foreground="#FFF1F1F1"
                    Height="30"
                    Width="70"
                    Margin="10,10,138.667,414"
@@ -74,6 +80,7 @@
                    Text="{Binding Path=Xpos, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
         <TextBlock Grid.Row="1" 
                    Grid.Column="1"
+                   Foreground="#FFF1F1F1"
                    Width="70"
                    Height="30"
                    Margin="139,10,9.667,414"
@@ -81,17 +88,21 @@
                    Name="yPos"
                    Text="{Binding Path=Ypos, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
         <CheckBox Grid.Row="1"
-                     Grid.Column="1"
-                     Name="checkBox"
-                     Content="Compute Hermite spline" 
-                     Margin="15,44.6,9.6,378.2"
-                     Height="30"
-                     IsChecked="False"
-                     Checked="AddHermiteSpline"
-                     Unchecked="RemoveHermiteSpline"
-                     Visibility="Visible"/>
+                  Grid.Column="1"
+                  Name="checkBox"
+                  Content="Compute Hermite spline" 
+                  Foreground="#FFF1F1F1"
+                  Margin="15,44.6,9.6,378.2"
+                  Height="30"
+                  IsChecked="False"
+                  Checked="AddHermiteSpline"
+                  Unchecked="RemoveHermiteSpline"
+                  Visibility="Visible"/>
         <Button Grid.Row="1"
                 Grid.Column="1"
+                Background="AliceBlue"
+                BorderThickness="2"
+                BorderBrush="MediumSlateBlue"
                 Name="clearButton"
                 Content="Clear plots"
                 Margin="40,50,40,320"
@@ -100,8 +111,11 @@
                 Visibility="Visible" />
         <Button Grid.Row="1"
                 Grid.Column="1"
+                Background="AliceBlue"
+                BorderThickness="2"
+                BorderBrush="MediumSlateBlue"
                 Name="applyButton"
-                Content="Apply changes"
+                Content="Generate look-up table"
                 Margin="40,50,40,250"
                 Height="30"
                 Click="ApplyEffect"

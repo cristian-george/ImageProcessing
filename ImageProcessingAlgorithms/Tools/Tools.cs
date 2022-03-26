@@ -6,9 +6,10 @@ namespace ImageProcessingAlgorithms.Tools
 {
     public class Tools
     {
+        #region Invert
         public static Image<Gray, byte> Invert(Image<Gray, byte> inputImage)
         {
-            var result = new Image<Gray, byte>(inputImage.Size);
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
             for (int y = 0; y < inputImage.Height; y++)
             {
                 for (int x = 0; x < inputImage.Width; x++)
@@ -21,7 +22,7 @@ namespace ImageProcessingAlgorithms.Tools
 
         public static Image<Bgr, byte> Invert(Image<Bgr, byte> inputImage)
         {
-            var result = new Image<Bgr, byte>(inputImage.Size);
+            Image<Bgr, byte> result = new Image<Bgr, byte>(inputImage.Size);
             for (int y = 0; y < inputImage.Height; y++)
             {
                 for (int x = 0; x < inputImage.Width; x++)
@@ -33,10 +34,12 @@ namespace ImageProcessingAlgorithms.Tools
             }
             return result;
         }
+        #endregion
 
+        #region Copy
         public static Image<Bgr, byte> Copy(Image<Bgr, byte> image)
         {
-            var result = new Image<Bgr, byte>(image.Size);
+            Image<Bgr, byte> result = new Image<Bgr, byte>(image.Size);
             for (int y = 0; y < image.Height; y++)
             {
                 for (int x = 0; x < image.Width; x++)
@@ -49,7 +52,7 @@ namespace ImageProcessingAlgorithms.Tools
 
         public static Image<Gray, byte> Copy(Image<Gray, byte> image)
         {
-            var result = new Image<Gray, byte>(image.Size);
+            Image<Gray, byte> result = new Image<Gray, byte>(image.Size);
             for (int y = 0; y < image.Height; y++)
             {
                 for (int x = 0; x < image.Width; x++)
@@ -59,14 +62,18 @@ namespace ImageProcessingAlgorithms.Tools
             }
             return image;
         }
+        #endregion
 
+        #region Convert
         public static Image<Gray, byte> Convert(Image<Bgr, byte> coloredImage)
         {
-            var grayImage = coloredImage.Convert<Gray, byte>();
+            Image<Gray, byte> grayImage = coloredImage.Convert<Gray, byte>();
 
             return grayImage;
         }
+        #endregion
 
+        #region Thresholding
         public static Image<Gray, byte> Thresholding(Image<Gray, byte> inputImage, int threshold)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
@@ -80,7 +87,9 @@ namespace ImageProcessingAlgorithms.Tools
             }
             return result;
         }
+        #endregion
 
+        #region Crop
         public static Image<Gray, byte> CropImage(Image<Gray, byte> inputImage, int leftTopX, int leftTopY, int rightBottomX, int rightBottomY)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(rightBottomX - leftTopX, rightBottomY - leftTopY);
@@ -112,7 +121,9 @@ namespace ImageProcessingAlgorithms.Tools
 
             return result;
         }
+        #endregion
 
+        #region Calculate mean
         public static double Mean(Image<Gray, byte> image)
         {
             double sumOfPixels = 0;
@@ -142,7 +153,9 @@ namespace ImageProcessingAlgorithms.Tools
 
             return sumOfPixels / (image.Height * image.Width);
         }
+        #endregion
 
+        #region Calculate standard deviation
         public static double StandardDeviation(Image<Gray, byte> image)
         {
             double sumOfSquares = 0;
@@ -174,7 +187,9 @@ namespace ImageProcessingAlgorithms.Tools
 
             return System.Math.Sqrt(sumOfSquares / (image.Height * image.Width));
         }
+        #endregion
 
+        #region Mirroring
         public static Image<Gray, byte> MirrorVertically(Image<Gray, byte> inputImage)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
@@ -238,7 +253,9 @@ namespace ImageProcessingAlgorithms.Tools
 
             return result;
         }
+        #endregion
 
+        #region Transpose
         private static Image<Gray, byte> Transpose(Image<Gray, byte> image)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(image.Height, image.Width);
@@ -270,7 +287,9 @@ namespace ImageProcessingAlgorithms.Tools
 
             return result;
         }
+        #endregion
 
+        #region Rotate
         public static Image<Gray, byte> RotateClockwise(Image<Gray, byte> inputImage)
         {
             Image<Gray, byte> transpose = Transpose(inputImage);
@@ -294,8 +313,10 @@ namespace ImageProcessingAlgorithms.Tools
             Image<Bgr, byte> transpose = Transpose(inputImage);
             return MirrorHorizontally(transpose);
         }
+        #endregion
 
-        public static Image<Gray, byte> HermiteSplineInterpolation(Image<Gray, byte> inputImage, Collection<int> LUT)
+        #region Cubic Hermite spline
+        public static Image<Gray, byte> HermiteSplineInterpolation(Image<Gray, byte> inputImage, Collection<byte> lookUpTable)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
 
@@ -303,14 +324,14 @@ namespace ImageProcessingAlgorithms.Tools
             {
                 for (int x = 0; x < inputImage.Width; x++)
                 {
-                    result.Data[y, x, 0] = (byte)LUT[inputImage.Data[y, x, 0]];
+                    result.Data[y, x, 0] = lookUpTable[inputImage.Data[y, x, 0]];
                 }
             }
 
             return result;
         }
 
-        public static Image<Bgr, byte> HermiteSplineInterpolation(Image<Bgr, byte> inputImage, Collection<int> lookUpTable)
+        public static Image<Bgr, byte> HermiteSplineInterpolation(Image<Bgr, byte> inputImage, Collection<byte> lookUpTable)
         {
             Image<Bgr, byte> result = new Image<Bgr, byte>(inputImage.Size);
 
@@ -318,15 +339,17 @@ namespace ImageProcessingAlgorithms.Tools
             {
                 for (int x = 0; x < inputImage.Width; x++)
                 {
-                    result.Data[y, x, 0] = (byte)lookUpTable[inputImage.Data[y, x, 0]];
-                    result.Data[y, x, 1] = (byte)lookUpTable[inputImage.Data[y, x, 1]];
-                    result.Data[y, x, 2] = (byte)lookUpTable[inputImage.Data[y, x, 2]];
+                    result.Data[y, x, 0] = lookUpTable[inputImage.Data[y, x, 0]];
+                    result.Data[y, x, 1] = lookUpTable[inputImage.Data[y, x, 1]];
+                    result.Data[y, x, 2] = lookUpTable[inputImage.Data[y, x, 2]];
                 }
             }
 
             return result;
         }
+        #endregion
 
+        #region Compute histogram
         private static double[] GetHistogram(Image<Gray, byte> inputImage)
         {
             int numberOfPixels = inputImage.Height * inputImage.Width;
@@ -348,40 +371,57 @@ namespace ImageProcessingAlgorithms.Tools
             return histogram;
         }
 
+        private static double GetHistogramProbability(int inf, int sup, double[] histogram)
+        {
+            double probability = 0;
+            for (int k = inf; k <= sup; ++k)
+            {
+                probability += histogram[k];
+            }
+
+            return probability;
+        }
+
+        private static double GetHistogramSum(int inf, int sup, double[] histogram)
+        {
+            double sum = 0;
+            for (int k = inf; k <= sup; ++k)
+            {
+                sum += k * histogram[k];
+            }
+
+            return sum;
+        }
+        #endregion
+
+        #region Otsu two-threshold
         private static System.Tuple<int, int> GetThresholdValues(Image<Gray, byte> inputImage)
         {
             double[] histogram = GetHistogram(inputImage);
             double mu = Mean(inputImage);
 
             double maxInterclassVariance = 0;
+            int maxInterclassVarianceFrequence = 0;
+
             int threshold1 = -1, threshold2 = -1;
-
-            for (int k1 = 0; k1 < 254; ++k1)
+            for (int k1 = 1; k1 < 254; ++k1)
             {
-                double P1 = 0, mu1 = 0;
-                for (int k = 0; k <= k1; ++k)
-                {
-                    P1 += histogram[k];
-                    mu1 += k * histogram[k];
-                }
-                mu1 /= P1;
+                double P1 = GetHistogramProbability(0, k1, histogram);
+                double mu1 = GetHistogramSum(0, k1, histogram);
+                if (P1 != 0)
+                    mu1 /= P1;
 
-                for (int k2 = k1 + 1; k1 < 254 && k2 < 255; ++k2)
+                for (int k2 = k1 + 1; k2 < 255; ++k2)
                 {
-                    double P2 = 0, mu2 = 0;
-                    for (int k = k1 + 1; k <= k2; ++k)
-                    {
-                        P2 += histogram[k];
-                        mu2 += k * histogram[k];
-                    }
-                    mu2 /= P2;
+                    double P2 = GetHistogramProbability(k1 + 1, k2, histogram);
+                    double mu2 = GetHistogramSum(k1 + 1, k2, histogram);
+                    if (P2 != 0)
+                        mu2 /= P2;
 
-                    double P3 = 1 - P1 - P2, mu3 = 0;
-                    for (int k = k2 + 1; k <= 255; ++k)
-                    {
-                        mu3 += k * histogram[k];
-                    }
-                    mu3 /= P3;
+                    double P3 = 1 - P1 - P2;
+                    double mu3 = GetHistogramSum(k2 + 1, 255, histogram);
+                    if (P3 != 0)
+                        mu3 /= P3;
 
                     double interclassVariance =
                         (P1 * System.Math.Pow(mu1 - mu, 2)) +
@@ -393,9 +433,20 @@ namespace ImageProcessingAlgorithms.Tools
                         maxInterclassVariance = interclassVariance;
                         threshold1 = k1;
                         threshold2 = k2;
+                        maxInterclassVarianceFrequence = 1;
+                    }
+                    else if (interclassVariance == maxInterclassVariance)
+                    {
+                        threshold1 += k1;
+                        threshold2 += k2;
+                        ++maxInterclassVarianceFrequence;
                     }
                 }
             }
+
+            threshold1 /= maxInterclassVarianceFrequence;
+            threshold2 /= maxInterclassVarianceFrequence;
+
             return new System.Tuple<int, int>(threshold1, threshold2);
         }
 
@@ -422,5 +473,20 @@ namespace ImageProcessingAlgorithms.Tools
 
             return result;
         }
+        #endregion
+
+        #region Fast median filtering
+        public static Image<Gray, byte> FastMedianFiltering(Image<Gray, byte> inputImage, int maskSize)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+            return result;
+        }
+
+        public static Image<Bgr, byte> FastMedianFiltering(Image<Bgr, byte> inputImage, int maskSize)
+        {
+            Image<Bgr, byte> result = new Image<Bgr, byte>(inputImage.Size);
+            return result;
+        }
+        #endregion
     }
 }

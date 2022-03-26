@@ -21,8 +21,6 @@ namespace ImageProcessingFramework
             MousePosition = new Point(0, 0);
             VectorOfMousePosition = new PointCollection();
 
-            InitialImageUi = initialImage;
-            ProcessedImageUi = processedImage;
             LastPosition = MousePosition;
             InitialCanvas = canvasOriginalImage;
             ProcessedCanvas = canvasProcessedImage;
@@ -54,7 +52,7 @@ namespace ImageProcessingFramework
             if (MagnifierOn == false)
                 RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialRectangle, ProcessedRectangle);
 
-            if (GLevelsrowOn == false)
+            if (GLevelsRowOn == false)
                 RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialLine, ProcessedLine);
         }
 
@@ -74,17 +72,17 @@ namespace ImageProcessingFramework
 
         private void MouseLeftPressed(object sender, MouseButtonEventArgs e)
         {
-            if (LastPosition != MousePosition)
-            {
-                VectorOfMousePosition.Add(MousePosition);
-                LastPosition = MousePosition;
-            }
-
             string nameImage = (sender as Image).Name;
             if (string.Compare(nameImage, initialImage.Name) == 0)
                 MousePosition = e.GetPosition(initialImage);
             else
                 MousePosition = e.GetPosition(processedImage);
+
+            if (LastPosition != MousePosition)
+            {
+                VectorOfMousePosition.Add(MousePosition);
+                LastPosition = MousePosition;
+            }
         }
 
         private void MouseRightPressed(object sender, MouseButtonEventArgs e)
@@ -99,7 +97,7 @@ namespace ImageProcessingFramework
 
         private void DrawLine(object sender, MouseButtonEventArgs e)
         {
-            if (GLevelsrowOn == false) return;
+            if (GLevelsRowOn == false) return;
 
             RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialLine, ProcessedLine);
             InitialLine = GetLine(canvasOriginalImage, initialImage, SliderZoom.Value);

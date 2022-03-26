@@ -1,4 +1,4 @@
-﻿<Window x:Class="ImageProcessingFramework.RowDisplayWindow"
+﻿<Window x:Class="ImageProcessingFramework.ColumnDisplayWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:ImageProcessingFramework.ViewModel"
         xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
-        Title="RowDisplayWindow" 
-        MouseMove="RowDisplayUpdate"
-        Closing="RowDisplayClosing"
+        Title="ColumnDisplayWindow" 
+        MouseMove="ColumnDisplayUpdate"
+        Closing="ColumnDisplayClosing"
         Height="512" 
         Width="1124"
         Left="125" 
@@ -16,7 +16,7 @@
         ResizeMode="NoResize"
         Icon="../Images/Icon2.png">
     <Window.DataContext>
-        <local:RowDisplayCommands/>
+        <local:ColumnDisplayCommands/>
     </Window.DataContext>
     <Grid Background="#FF3E3E40">
         <Grid.RowDefinitions>
@@ -47,7 +47,7 @@
         <TextBlock Grid.Row="0"
                    Grid.Column="0"
                    Text="Original Image"
-                   FontSize="15" 
+                   FontSize="15"
                    Foreground="#FFF1F1F1"
                    Width="120"
                    Height="20"
@@ -65,7 +65,7 @@
                    Text="Settings"
                    Width="60"
                    Height="20"
-                   FontSize="15" 
+                   FontSize="15"
                    Foreground="#FFF1F1F1"
                    HorizontalAlignment="Center"/>
         <TextBlock Grid.Row="1" 

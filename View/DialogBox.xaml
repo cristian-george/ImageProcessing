@@ -13,19 +13,23 @@
         Left="200"
         Top="200"
         ResizeMode="NoResize">
-    <Grid x:Name="mainGrid" Background="#E5F9E0">
+    <Grid x:Name="mainGrid" 
+          Background="#FF3E3E40">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
         <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <Button Content="OK" 
-                Click="OKButton_Click"
-                Grid.Row="2"
-                Width="50"
-                Height="25"/>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Button Background="AliceBlue"
+                    BorderThickness="2"
+                    BorderBrush="MediumSlateBlue"
+                    Content="OK" 
+                    Click="OKButton_Click"
+                    Grid.Row="2"
+                    Width="50"
+                    Height="25"/>
         </Grid>
     </Grid>
 </Window>

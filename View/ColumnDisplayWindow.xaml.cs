@@ -5,14 +5,14 @@ using static ImageProcessingFramework.Model.DataProvider;
 
 namespace ImageProcessingFramework
 {
-    public partial class RowDisplayWindow : Window
+    public partial class ColumnDisplayWindow : Window
     {
-        private readonly RowDisplayCommands RowDisplayCommands;
+        private readonly ColumnDisplayCommands ColumnDisplayCommands;
 
-        public RowDisplayWindow()
+        public ColumnDisplayWindow()
         {
             InitializeComponent();
-            RowDisplayCommands = new RowDisplayCommands();
+            ColumnDisplayCommands = new ColumnDisplayCommands();
 
             if (ColorInitialImage != null)
                 DisplayColor();
@@ -21,7 +21,7 @@ namespace ImageProcessingFramework
                 DisplayGray();
         }
 
-        private void RowDisplayUpdate(object sender, System.Windows.Input.MouseEventArgs e)
+        private void ColumnDisplayUpdate(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (LastPosition != MousePosition)
             {
@@ -43,16 +43,16 @@ namespace ImageProcessingFramework
         private void DisplayGray()
         {
             if (GrayInitialImage != null)
-                originalImageView.Model = RowDisplayCommands.PlotGrayImage(GrayInitialImage);
+                originalImageView.Model = ColumnDisplayCommands.PlotGrayImage(GrayInitialImage);
             if (GrayProcessedImage != null)
-                processedImageView.Model = RowDisplayCommands.PlotGrayImage(GrayProcessedImage);
+                processedImageView.Model = ColumnDisplayCommands.PlotGrayImage(GrayProcessedImage);
         }
 
         private void DisplayColor()
         {
-            originalImageView.Model = RowDisplayCommands.PlotColorImage(ColorInitialImage);
+            originalImageView.Model = ColumnDisplayCommands.PlotColorImage(ColorInitialImage);
             if (ColorProcessedImage != null)
-                processedImageView.Model = RowDisplayCommands.PlotColorImage(ColorProcessedImage);
+                processedImageView.Model = ColumnDisplayCommands.PlotColorImage(ColorProcessedImage);
             checkBoxBlue.Visibility = Visibility.Visible;
             checkBoxGreen.Visibility = Visibility.Visible;
             checkBoxRed.Visibility = Visibility.Visible;
@@ -117,9 +117,9 @@ namespace ImageProcessingFramework
             }
         }
 
-        private void RowDisplayClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void ColumnDisplayClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            GLevelsRowOn = false;
+            GLevelsColumnOn = false;
         }
     }
 }

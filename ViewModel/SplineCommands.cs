@@ -3,7 +3,6 @@ using OxyPlot.Axes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
 using LinearAxis = OxyPlot.Axes.LinearAxis;
 using LineSeries = OxyPlot.Series.LineSeries;
 
@@ -38,6 +37,7 @@ namespace ImageProcessingFramework.ViewModel
             LineSeries series = new LineSeries
             {
                 MarkerType = MarkerType.None,
+                MarkerStrokeThickness = 0,
                 MarkerSize = markerSize,
                 LineStyle = lineStyle,
                 MarkerStroke = color,
@@ -70,6 +70,12 @@ namespace ImageProcessingFramework.ViewModel
                 Minimum = yMin
             });
 
+            DataPoint minPoint = new DataPoint(xMin, yMin);
+            DataPoint maxPoint = new DataPoint(xMax, yMax);
+
+            List<DataPoint> points = new List<DataPoint> { minPoint, maxPoint };
+            plotModel.Series.Add(GenerateSeries(points, 0.1, OxyColors.LightGray, LineStyle.Dash));
+
             return plotModel;
         }
 
@@ -84,14 +90,8 @@ namespace ImageProcessingFramework.ViewModel
                 new DataPoint(255, 255)
             };
 
-            DataPoint minPoint = new DataPoint(xMin, yMin);
-            DataPoint maxPoint = new DataPoint(xMax, yMax);
-
-            List<DataPoint> points = new List<DataPoint> { minPoint, maxPoint };
-            Plot.Series.Add(GenerateSeries(points, 0.1, OxyColors.LightGray, LineStyle.Dash));
-
-            AddPointToPlot(minPoint);
-            AddPointToPlot(maxPoint);
+            AddPointToPlot(new DataPoint(xMin, yMin));
+            AddPointToPlot(new DataPoint(xMax, yMax));
 
             return Plot;
         }
@@ -99,27 +99,23 @@ namespace ImageProcessingFramework.ViewModel
         public PlotModel SplinePlot(double xMin, double yMin, double xMax, double yMax)
         {
             Plot = CreateOxyPlot(xMin, yMin, xMax, yMax);
-
-            DataPoint minPoint = new DataPoint(xMin, yMin);
-            DataPoint maxPoint = new DataPoint(xMax, yMax);
-
-            List<DataPoint> points = new List<DataPoint> { minPoint, maxPoint };
-            Plot.Series.Add(GenerateSeries(points, 0.1, OxyColors.LightGray, LineStyle.Dash));
-
             return Plot;
         }
 
         private void MouseClickPressed(object sender, OxyMouseDownEventArgs e)
         {
-            if (Points.Count > MaximumNumberOfPoints) return;
-
-            DataPoint point = Axis.InverseTransform(e.Position, Plot.Axes[0], Plot.Axes[1]);
-            if (CheckDataPoint(point, LastPoint.X, 0, 255, 255))
+            if (e.ChangedButton == OxyMouseButton.Right)
             {
-                Points.Add(point);
+                if (Points.Count > MaximumNumberOfPoints) return;
 
-                LastPoint = point;
-                AddPointToPlot(LastPoint);
+                DataPoint point = Axis.InverseTransform(e.Position, Plot.Axes[0], Plot.Axes[1]);
+                if (CheckDataPoint(point, LastPoint.X, 0, 255, 255))
+                {
+                    Points.Add(point);
+                    AddDashedLinesForPoint(point);
+                    AddPointToPlot(point);
+                    LastPoint = point;
+                }
             }
         }
 
@@ -128,12 +124,23 @@ namespace ImageProcessingFramework.ViewModel
             return point.X > xMin && point.Y > yMin && point.X < xMax && point.Y < yMax && Points.Count < MaximumNumberOfPoints;
         }
 
+        private void AddDashedLinesForPoint(DataPoint point)
+        {
+            List<DataPoint> points = new List<DataPoint>
+            {
+                new DataPoint(point.X, 0),
+                new DataPoint(point.X, point.Y),
+                new DataPoint(0, point.Y)
+            };
+
+            Plot.Series.Add(GenerateSeries(points, 1, OxyColors.LightGray, LineStyle.Dash));
+        }
+
         private void AddPointToPlot(DataPoint point)
         {
             LineSeries series = new LineSeries
             {
                 MarkerType = MarkerType.Circle,
-                MarkerSize = 3,
                 MarkerStroke = OxyColors.Red,
                 MarkerFill = OxyColors.Red,
                 Color = OxyColors.Red

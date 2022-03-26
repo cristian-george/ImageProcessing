@@ -61,30 +61,28 @@ namespace ImageProcessingFramework.View
         {
             if (HermiteSplineCommands != null)
             {
-                List<int> frequenceOfKeys = new List<int>();
-                List<double> sumOfValues = new List<double>();
-
-                for (int key = 0; key < 256; ++key)
-                {
-                    frequenceOfKeys.Add(0);
-                    sumOfValues.Add(0);
-                }
+                int[] frequenceOfKeys = new int[256];
+                double[] sumOfValues = new double[256];
 
                 List<DataPoint> curvePoints = HermiteSplineCommands.GetCurvePoints();
                 foreach (DataPoint point in curvePoints)
                 {
-                    ++frequenceOfKeys[(int)(point.X + 0.5)];
-                    sumOfValues[(int)(point.X + 0.5)] += point.Y;
+                    int pos = (int)(point.X + 0.5);
+                    if (pos < 0) pos = 0;
+                    else if (pos > 255) pos = 255;
+
+                    ++frequenceOfKeys[pos];
+                    sumOfValues[pos] += point.Y;
                 }
 
-                HermiteSplineLUT = new Collection<int>();
+                HermiteSplineLookUpTable = new Collection<byte>();
                 for (int key = 0; key < 256; key++)
                 {
-                    int value = (int)sumOfValues[key] / frequenceOfKeys[key];
-                    if (value > 255)
-                        value = 255;
+                    int value = (int)((sumOfValues[key] / frequenceOfKeys[key]) + 0.5);
+                    if (value < 0) value = 0;
+                    else if (value > 255) value = 255;
 
-                    HermiteSplineLUT.Add(value);
+                    HermiteSplineLookUpTable.Add((byte)value);
                 }
             }
         }

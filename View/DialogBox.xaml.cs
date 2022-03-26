@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace ImageProcessingFramework.View
 {
@@ -15,8 +16,8 @@ namespace ImageProcessingFramework.View
         public List<double> GetResponseTexts()
         {
             IEnumerable<TextBox> textBoxes = mainGrid.Children.OfType<TextBox>();
-            var response = new List<double>();
-            foreach (var textBox in textBoxes)
+            List<double> response = new List<double>();
+            foreach (TextBox textBox in textBoxes)
             {
                 if (textBox.Text.ToString().Trim().Length == 0 || IsNumeric(textBox.Text.ToString()) == false)
                     response.Add(0);
@@ -29,14 +30,17 @@ namespace ImageProcessingFramework.View
 
         public void CreateDialogBox(List<string> values)
         {
-            dialogBoxWindow.Height = values.Count * 2 * 25 + 75;
+            dialogBoxWindow.Height = (values.Count * 2 * 25) + 75;
             int index = 1;
-            foreach (var val in values)
+            foreach (string val in values)
             {
-                var textBlock = new TextBlock();
-                textBlock.Text = val;
+                TextBlock textBlock = new TextBlock
+                {
+                    Text = val,
+                    Foreground = new SolidColorBrush(Color.FromArgb(0xFF, 0xF1, 0xF1, 0xF1))
+                };
                 mainGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-                var textBox = new TextBox();
+                TextBox textBox = new TextBox();
                 mainGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
                 Grid.SetRow(textBlock, index++);
                 mainGrid.Children.Add(textBlock);

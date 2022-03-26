@@ -53,7 +53,13 @@ namespace ImageProcessingFramework.Model
             set;
         }
 
-        public static bool GLevelsrowOn
+        public static bool GLevelsRowOn
+        {
+            get;
+            set;
+        }
+
+        public static bool GLevelsColumnOn
         {
             get;
             set;
@@ -65,25 +71,13 @@ namespace ImageProcessingFramework.Model
             set;
         }
 
-        public static Collection<int> HermiteSplineLUT
+        public static Collection<byte> HermiteSplineLookUpTable
         {
             get;
             set;
         }
 
         public static PointCollection VectorOfMousePosition
-        {
-            get;
-            set;
-        }
-
-        public static Image InitialImageUi
-        {
-            get;
-            set;
-        }
-
-        public static Image ProcessedImageUi
         {
             get;
             set;
