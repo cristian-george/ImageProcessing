@@ -252,7 +252,7 @@ namespace ImageProcessingFramework.ViewModel
             SetSlopes(0.5, slopesY, 'Y');
 
             SetSplineCurvePoints(slopesX, slopesY);
-            Plot.Series.Add(GenerateSeries(curvePoints, 1, OxyColors.Blue, LineStyle.Solid));
+            Plot.Series.Add(GenerateSeries(curvePoints, 1, OxyColors.MediumSlateBlue, LineStyle.Solid));
 
             return Plot;
         }

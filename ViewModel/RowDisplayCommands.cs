@@ -92,10 +92,10 @@ namespace ImageProcessingFramework.ViewModel
 
         private LineSeries GenerateSerieForGray(Image<Gray, byte> grayImage, int channel, string color)
         {
-            List<int> chanelValues = new List<int>();
+            List<int> channelValues = new List<int>();
 
             for (int x = 0; x < grayImage.Width; x++)
-                chanelValues.Add(grayImage.Data[(int)DataProvider.MousePosition.Y, x, channel]);
+                channelValues.Add(grayImage.Data[(int)DataProvider.MousePosition.Y, x, channel]);
 
             if (color.Equals("Gray"))
             {
@@ -108,8 +108,8 @@ namespace ImageProcessingFramework.ViewModel
                     Color = OxyColors.Red
                 };
 
-                for (int index = 0; index < chanelValues.Count; ++index)
-                    series.Points.Add(new DataPoint(index, chanelValues[index]));
+                for (int index = 0; index < channelValues.Count; ++index)
+                    series.Points.Add(new DataPoint(index, channelValues[index]));
 
                 return series;
             }
@@ -126,14 +126,14 @@ namespace ImageProcessingFramework.ViewModel
             {
                 Position = AxisPosition.Bottom,
                 Maximum = colorImage.Width + 30,
-                Minimum = 0,
+                Minimum = -1,
             });
 
             PlotImage.Axes.Add(new LinearAxis
             {
                 Position = AxisPosition.Left,
                 Maximum = 300,
-                Minimum = 0,
+                Minimum = -1,
             });
 
             LineSeries seriesBlue = GenerateSeriesForColor(colorImage, 0, "Blue");
@@ -156,14 +156,14 @@ namespace ImageProcessingFramework.ViewModel
             {
                 Position = AxisPosition.Bottom,
                 Maximum = grayImage.Width + 30,
-                Minimum = 0,
+                Minimum = -1,
             });
 
             PlotImage.Axes.Add(new LinearAxis
             {
                 Position = AxisPosition.Left,
                 Maximum = 300,
-                Minimum = 0,
+                Minimum = -1,
             });
 
             LineSeries seriesGray = GenerateSerieForGray(grayImage, 0, "Gray");

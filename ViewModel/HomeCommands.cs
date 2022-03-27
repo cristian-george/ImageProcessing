@@ -16,11 +16,19 @@ namespace ImageProcessingFramework.ViewModel
 {
     class HomeCommands : NotifyPropertyChanged
     {
-        public ImageSource InitialImage { get; set; }
-        public ImageSource ProcessedImage { get; set; }
+        public ImageSource InitialImage
+        {
+            get;
+            set;
+        }
+        public ImageSource ProcessedImage
+        {
+            get;
+            set;
+        }
 
-        private bool m_isColorImage;
-        private bool m_isPressedConvertButton;
+        private bool m_isInitialImageColor;
+        private bool m_isProcessedImageGray;
 
         #region Load grayscale image
         private ICommand m_loadGrayImage;
@@ -50,7 +58,7 @@ namespace ImageProcessingFramework.ViewModel
             GrayInitialImage = new Image<Gray, byte>(op.FileName);
             InitialImage = ImageConverter.Convert(GrayInitialImage);
             OnPropertyChanged("InitialImage");
-            m_isColorImage = false;
+            m_isInitialImageColor = false;
         }
         #endregion
 
@@ -82,7 +90,7 @@ namespace ImageProcessingFramework.ViewModel
             ColorInitialImage = new Image<Bgr, byte>(op.FileName);
             InitialImage = ImageConverter.Convert(ColorInitialImage);
             OnPropertyChanged("InitialImage");
-            m_isColorImage = true;
+            m_isInitialImageColor = true;
         }
         #endregion
 
@@ -185,20 +193,26 @@ namespace ImageProcessingFramework.ViewModel
         public void SaveAsOriginal(object parameter)
         {
             RemoveAllDrawnElements(parameter);
-            switch (m_isColorImage)
+
+            if (ColorProcessedImage == null && GrayProcessedImage == null)
+            {
+                MessageBox.Show("Doesn't exist a processed image.");
+                return;
+            }
+
+            switch (m_isInitialImageColor)
             {
                 case true:
                     {
-                        if (ColorProcessedImage == null && GrayProcessedImage == null)
+                        if (m_isProcessedImageGray == true)
                         {
-                            MessageBox.Show("Doesn't exist processed image.");
-                            return;
-                        }
+                            m_isInitialImageColor = false;
+                            m_isProcessedImageGray = false;
 
-                        if (m_isPressedConvertButton == true)
-                        {
                             GrayInitialImage = GrayProcessedImage;
                             InitialImage = ImageConverter.Convert(GrayInitialImage);
+
+                            ColorInitialImage = null;
                             GrayProcessedImage = null;
                         }
                         else
@@ -218,7 +232,7 @@ namespace ImageProcessingFramework.ViewModel
                     {
                         if (GrayProcessedImage == null)
                         {
-                            MessageBox.Show("Doesn't exist processed image.");
+                            MessageBox.Show("Doesn't exist a grayscale processed image.");
                             return;
                         }
 
@@ -295,8 +309,8 @@ namespace ImageProcessingFramework.ViewModel
             ResetInitialCanvas();
             ResetProcessedCanvas();
 
-            m_isColorImage = false;
-            m_isPressedConvertButton = false;
+            m_isInitialImageColor = false;
+            m_isProcessedImageGray = false;
             MagnifierOn = false;
             GLevelsRowOn = false;
             HermiteSplineOn = false;
@@ -431,7 +445,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void CopyImage(object parameter)
         {
-            if (m_isColorImage == true)
+            if (m_isInitialImageColor == true)
             {
                 ColorProcessedImage = Tools.Copy(ColorInitialImage);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
@@ -497,16 +511,12 @@ namespace ImageProcessingFramework.ViewModel
 
         public void ConvertToGray(object parameter)
         {
-            if (m_isColorImage == true)
+            if (ColorInitialImage != null)
             {
-                GrayInitialImage = Tools.Convert(ColorInitialImage);
-                InitialImage = ImageConverter.Convert(GrayInitialImage);
-                OnPropertyChanged("InitialImage");
-
-                ColorInitialImage = null;
-                ResetProcessedCanvas();
-                m_isPressedConvertButton = true;
-                m_isColorImage = false;
+                m_isProcessedImageGray = true;
+                GrayProcessedImage = Tools.Convert(ColorInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
                 return;
             }
 
@@ -558,18 +568,12 @@ namespace ImageProcessingFramework.ViewModel
                 GrayProcessedImage = Tools.CropImage(GrayInitialImage, leftTopX, leftTopY, rightBottomX, rightBottomY);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 OnPropertyChanged("ProcessedImage");
-
-                MessageBox.Show("Mean: " + Tools.Mean(GrayProcessedImage) + "\n" +
-                                "Standard deviation: " + Tools.StandardDeviation(GrayProcessedImage));
             }
             else if (ColorInitialImage != null)
             {
                 ColorProcessedImage = Tools.CropImage(ColorInitialImage, leftTopX, leftTopY, rightBottomX, rightBottomY);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                 OnPropertyChanged("ProcessedImage");
-
-                MessageBox.Show("Mean: " + Tools.Mean(ColorProcessedImage) + "\n" +
-                                "Standard deviation: " + Tools.StandardDeviation(ColorProcessedImage));
             }
         }
         #endregion
@@ -844,7 +848,7 @@ namespace ImageProcessingFramework.ViewModel
             else
             if (ColorInitialImage != null)
             {
-                m_isPressedConvertButton = true;
+                m_isProcessedImageGray = true;
                 GrayProcessedImage = Tools.Convert(ColorInitialImage);
                 GrayProcessedImage = Tools.OtsuTwoThreshold(GrayProcessedImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
@@ -896,7 +900,7 @@ namespace ImageProcessingFramework.ViewModel
                 {
                     if (ColorInitialImage != null)
                     {
-                        m_isPressedConvertButton = true;
+                        m_isProcessedImageGray = true;
                         GrayInitialImage = Tools.Convert(ColorInitialImage);
                     }
 

@@ -8,7 +8,7 @@
         MouseMove="WindowMouseMove"
         Title="Image Processing" 
         Height="685" 
-        Width="1024"
+        Width="1124"
         Left="125" 
         Top="0"
         Icon="Images\Icon2.png">
@@ -139,7 +139,7 @@
                         Width="{Binding ElementName=lbl, Path=ActualWidth}"
                         Height="{Binding ElementName=lbl, Path=ActualHeight}"
                         MouseLeftButtonUp="DrawRectangle"
-                        MouseLeftButtonDown="DrawLine">
+                        MouseLeftButtonDown="DrawRowLine">
                     <Image x:Name="initialImage"
                            Mouse.MouseMove="ImageMouseMove"
                            MouseLeftButtonDown="MouseLeftPressed"

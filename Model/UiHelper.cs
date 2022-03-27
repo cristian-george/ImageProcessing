@@ -15,8 +15,11 @@ namespace ImageProcessingFramework.Model
         public static Rectangle InitialRectangle { get; set; }
         public static Rectangle ProcessedRectangle { get; set; }
 
-        public static Line InitialLine { get; set; }
-        public static Line ProcessedLine { get; set; }
+        public static Line InitialRowLine { get; set; }
+        public static Line ProcessedRowLine { get; set; }
+
+        public static Line InitialColumnLine { get; set; }
+        public static Line ProcessedColumnLine { get; set; }
 
         public static Ellipse InitialEllipse { get; set; }
         public static Ellipse ProcessedEllipse { get; set; }
@@ -78,7 +81,7 @@ namespace ImageProcessingFramework.Model
             return rectangle;
         }
 
-        public static Line GetLine(Canvas canvas, Image image, double scaleValue)
+        public static Line GetRowLine(Canvas canvas, Image image, double scaleValue)
         {
             var line = new Line
             {
@@ -86,6 +89,22 @@ namespace ImageProcessingFramework.Model
                 Y1 = MousePosition.Y * scaleValue,
                 X2 = image.ActualWidth * scaleValue,
                 Y2 = MousePosition.Y * scaleValue,
+                StrokeThickness = 2,
+                Stroke = Brushes.Red
+            };
+            canvas.Children.Add(line);
+
+            return line;
+        }
+
+        public static Line GetColumnLine(Canvas canvas, Image image, double scaleValue)
+        {
+            var line = new Line
+            {
+                X1 = MousePosition.X * scaleValue,
+                Y1 = 0,
+                X2 = MousePosition.X * scaleValue,
+                Y2 = image.ActualHeight * scaleValue,
                 StrokeThickness = 2,
                 Stroke = Brushes.Red
             };
