@@ -109,6 +109,8 @@
             <MenuItem Header="Filters" 
                       Background="AliceBlue">
                 <MenuItem Header="Low-pass">
+                    <MenuItem Header="Median"
+                              Command="{Binding Path=Median}"/>
                     <MenuItem Header="Fast Median"
                               Command="{Binding Path=FastMedian}"/>
                 </MenuItem>

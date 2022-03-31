@@ -44,7 +44,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void LoadGrayImage(object parameter)
         {
-            ResetUiToInitial(parameter);
+            ClearUi(parameter);
 
             var op = new OpenFileDialog
             {
@@ -58,7 +58,6 @@ namespace ImageProcessingFramework.ViewModel
             GrayInitialImage = new Image<Gray, byte>(op.FileName);
             InitialImage = ImageConverter.Convert(GrayInitialImage);
             OnPropertyChanged("InitialImage");
-            m_isInitialImageColor = false;
         }
         #endregion
 
@@ -76,7 +75,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void LoadColorImage(object parameter)
         {
-            ResetUiToInitial(parameter);
+            ClearUi(parameter);
 
             var op = new OpenFileDialog
             {
@@ -287,6 +286,8 @@ namespace ImageProcessingFramework.ViewModel
             ColorInitialImage = null;
             InitialImage = null;
             OnPropertyChanged("InitialImage");
+
+            m_isInitialImageColor = false;
         }
 
         private void ResetProcessedCanvas()
@@ -295,35 +296,30 @@ namespace ImageProcessingFramework.ViewModel
             ColorProcessedImage = null;
             ProcessedImage = null;
             OnPropertyChanged("ProcessedImage");
+
+            m_isProcessedImageGray = false;
         }
 
         private static void CloseAllWindows()
         {
             for (int intCounter = App.Current.Windows.Count - 1; intCounter >= 1; intCounter--)
                 App.Current.Windows[intCounter].Close();
+
+            MagnifierOn = false;
+            GLevelsRowOn = false;
+            GLevelsColumnOn = false;
+            HermiteSplineOn = false;
         }
 
-        private void ResetUiToInitial(object parameter)
+        public void ClearUi(object parameter)
         {
             RemoveAllDrawnElements(parameter);
             ResetInitialCanvas();
             ResetProcessedCanvas();
 
-            m_isInitialImageColor = false;
-            m_isProcessedImageGray = false;
-            MagnifierOn = false;
-            GLevelsRowOn = false;
-            HermiteSplineOn = false;
-
             ResetZoom(parameter);
 
             CloseAllWindows();
-        }
-
-        public void ClearUi(object parameter)
-        {
-            ResetUiToInitial(parameter);
-            HermiteSplineLookUpTable = null;
         }
         #endregion
 
@@ -376,13 +372,13 @@ namespace ImageProcessingFramework.ViewModel
 
         public void GrayLevelsRow(object parameter)
         {
+            if (GLevelsRowOn == true) return;
+
             if (GrayInitialImage == null && ColorInitialImage == null)
             {
                 MessageBox.Show("Please add an image!");
                 return;
             }
-
-            if (GLevelsRowOn == true) return;
 
             if (VectorOfMousePosition.Count == 0)
             {
@@ -410,13 +406,13 @@ namespace ImageProcessingFramework.ViewModel
 
         public void GrayLevelsColumn(object parameter)
         {
+            if (GLevelsColumnOn == true) return;
+
             if (GrayInitialImage == null && ColorInitialImage == null)
             {
                 MessageBox.Show("Please add an image!");
                 return;
             }
-
-            if (GLevelsColumnOn == true) return;
 
             if (VectorOfMousePosition.Count == 0)
             {
@@ -445,24 +441,26 @@ namespace ImageProcessingFramework.ViewModel
 
         public void CopyImage(object parameter)
         {
-            if (m_isInitialImageColor == true)
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas();
+
+            if (ColorInitialImage != null)
             {
                 ColorProcessedImage = Tools.Copy(ColorInitialImage);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                 OnPropertyChanged("ProcessedImage");
-                return;
             }
-            else
+            else if (GrayInitialImage != null)
             {
-                if (GrayInitialImage != null)
-                {
-                    GrayProcessedImage = Tools.Copy(GrayInitialImage);
-                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    OnPropertyChanged("ProcessedImage");
-                    return;
-                }
+                GrayProcessedImage = Tools.Copy(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
             }
-            MessageBox.Show("Please add an image.");
         }
         #endregion
 
@@ -480,6 +478,14 @@ namespace ImageProcessingFramework.ViewModel
 
         public void InvertImage(object parameter)
         {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas();
+
             if (GrayInitialImage != null)
             {
                 GrayProcessedImage = Tools.Invert(GrayInitialImage);
@@ -492,8 +498,6 @@ namespace ImageProcessingFramework.ViewModel
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }
-            else
-                MessageBox.Show("Please add an image!");
         }
         #endregion
 
@@ -511,6 +515,8 @@ namespace ImageProcessingFramework.ViewModel
 
         public void ConvertToGray(object parameter)
         {
+            ResetProcessedCanvas();
+
             if (ColorInitialImage != null)
             {
                 m_isProcessedImageGray = true;
@@ -521,8 +527,8 @@ namespace ImageProcessingFramework.ViewModel
             }
 
             MessageBox.Show(ColorInitialImage != null
-               ? "It is possible to convert only colored images."
-               : "Please add a colored image first.");
+               ? "It is possible to convert only color images."
+               : "Please add a color image first.");
         }
         #endregion
 
@@ -560,6 +566,8 @@ namespace ImageProcessingFramework.ViewModel
             int rightBottomY = (int)System.Math.Max(firstPosition.Y, LastPosition.Y);
 
             RemoveAllDrawnElements(parameter);
+            ResetProcessedCanvas();
+
             VectorOfRectangles.Add(DrawHelper.DrawRectangle(InitialCanvas, leftTopX, leftTopY, rightBottomX, rightBottomY, 3, Brushes.Red));
             SliderZoom.Value += 0.01; SliderZoom.Value -= 0.01;
 
@@ -594,6 +602,14 @@ namespace ImageProcessingFramework.ViewModel
 
         public void MirrorImageVertically(object parameter)
         {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas();
+
             if (GrayInitialImage != null)
             {
                 GrayProcessedImage = Tools.MirrorVertically(GrayInitialImage);
@@ -606,7 +622,6 @@ namespace ImageProcessingFramework.ViewModel
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }
-            else MessageBox.Show("Please add an image!");
         }
         #endregion
 
@@ -624,6 +639,14 @@ namespace ImageProcessingFramework.ViewModel
 
         public void MirrorImageHorizontally(object parameter)
         {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas();
+
             if (GrayInitialImage != null)
             {
                 GrayProcessedImage = Tools.MirrorHorizontally(GrayInitialImage);
@@ -636,7 +659,6 @@ namespace ImageProcessingFramework.ViewModel
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }
-            else MessageBox.Show("Please add an image!");
         }
         #endregion
 
@@ -658,23 +680,26 @@ namespace ImageProcessingFramework.ViewModel
 
         public void RotateImageClockwise(object parameter)
         {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas();
+
             if (GrayInitialImage != null)
             {
                 GrayInitialImage = Tools.RotateClockwise(GrayInitialImage);
                 InitialImage = ImageConverter.Convert(GrayInitialImage);
                 OnPropertyChanged("InitialImage");
-
-                ResetProcessedCanvas();
             }
             else if (ColorInitialImage != null)
             {
                 ColorInitialImage = Tools.RotateClockwise(ColorInitialImage);
                 InitialImage = ImageConverter.Convert(ColorInitialImage);
                 OnPropertyChanged("InitialImage");
-
-                ResetProcessedCanvas();
             }
-            else MessageBox.Show("Please add an image!");
         }
         #endregion
 
@@ -692,23 +717,26 @@ namespace ImageProcessingFramework.ViewModel
 
         public void RotateImageAntiClockwise(object parameter)
         {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas();
+
             if (GrayInitialImage != null)
             {
                 GrayInitialImage = Tools.RotateAntiClockwise(GrayInitialImage);
                 InitialImage = ImageConverter.Convert(GrayInitialImage);
                 OnPropertyChanged("InitialImage");
-
-                ResetProcessedCanvas();
             }
             else if (ColorInitialImage != null)
             {
                 ColorInitialImage = Tools.RotateAntiClockwise(ColorInitialImage);
                 InitialImage = ImageConverter.Convert(ColorInitialImage);
                 OnPropertyChanged("InitialImage");
-
-                ResetProcessedCanvas();
             }
-            else MessageBox.Show("Please add an image!");
         }
         #endregion
 
@@ -733,7 +761,14 @@ namespace ImageProcessingFramework.ViewModel
         private void HermiteSplineShow(object parameter)
         {
             if (HermiteSplineOn == true) return;
-            var splineShow = new SplineWindow();
+
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            SplineWindow splineShow = new SplineWindow();
             splineShow.Show();
             HermiteSplineOn = true;
         }
@@ -758,6 +793,8 @@ namespace ImageProcessingFramework.ViewModel
                 MessageBox.Show("Please add an image!");
                 return;
             }
+
+            ResetProcessedCanvas();
 
             if (HermiteSplineLookUpTable != null)
             {
@@ -863,6 +900,63 @@ namespace ImageProcessingFramework.ViewModel
 
         #region Low-pass filters
 
+        #region Median
+        private ICommand m_median;
+        public ICommand Median
+        {
+            get
+            {
+                if (m_median == null)
+                    m_median = new RelayCommand(MedianFiltering);
+                return m_median;
+            }
+        }
+
+        public void MedianFiltering(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas();
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Mask dimension"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int maskSize = (int)response[0];
+                if (maskSize != 0 && maskSize % 2 == 1)
+                {
+                    if (ColorInitialImage != null)
+                    {
+                        m_isProcessedImageGray = true;
+                        GrayProcessedImage = Tools.Convert(ColorInitialImage);
+                        GrayProcessedImage = Tools.MedianFiltering(GrayProcessedImage, maskSize);
+                    }
+                    else if (GrayInitialImage != null)
+                    {
+                        GrayProcessedImage = Tools.MedianFiltering(GrayInitialImage, maskSize);
+                    }
+
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+
+                    OnPropertyChanged("ProcessedImage");
+                }
+                else MessageBox.Show("Please add a valid dimension first.");
+            }
+        }
+        #endregion
+
         #region Fast Median
         private ICommand m_fastMedian;
         public ICommand FastMedian
@@ -883,6 +977,8 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
+            ResetProcessedCanvas();
+
             DialogBox dialogBox = new DialogBox();
             System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
                 {
@@ -896,17 +992,20 @@ namespace ImageProcessingFramework.ViewModel
             if (response != null)
             {
                 int maskSize = (int)response[0];
-                if (maskSize != 0)
+                if (maskSize > 2 && maskSize % 2 == 1)
                 {
                     if (ColorInitialImage != null)
                     {
                         m_isProcessedImageGray = true;
-                        GrayInitialImage = Tools.Convert(ColorInitialImage);
+                        GrayProcessedImage = Tools.Convert(ColorInitialImage);
+                        GrayProcessedImage = Tools.FastMedianFiltering(GrayProcessedImage, maskSize);
+                    }
+                    else if (GrayInitialImage != null)
+                    {
+                        GrayProcessedImage = Tools.FastMedianFiltering(GrayInitialImage, maskSize);
                     }
 
-                    GrayProcessedImage = Tools.FastMedianFiltering(GrayInitialImage, maskSize);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-
                     OnPropertyChanged("ProcessedImage");
                 }
                 else MessageBox.Show("Please add a valid dimension first.");

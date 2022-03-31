@@ -1,5 +1,6 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace ImageProcessingAlgorithms.Tools
@@ -475,18 +476,43 @@ namespace ImageProcessingAlgorithms.Tools
         }
         #endregion
 
-        #region Fast median filtering
-        public static Image<Gray, byte> FastMedianFiltering(Image<Gray, byte> inputImage, int maskSize)
+        #region Median filtering
+
+        private static byte GetMedianValue(Image<Gray, byte> inputImage, int maskSize, int y, int x)
+        {
+            int maskRadius = maskSize / 2;
+            List<byte> maskValues = new List<byte>();
+
+            for (int row = y - maskRadius; row <= y + maskRadius; ++row)
+            {
+                for (int column = x - maskRadius; column <= x + maskRadius; ++column)
+                {
+                    maskValues.Add(inputImage.Data[row, column, 0]);
+                }
+            }
+
+            maskValues.Sort();
+            return maskValues[maskSize * maskSize / 2];
+        }
+
+        public static Image<Gray, byte> MedianFiltering(Image<Gray, byte> inputImage, int maskSize)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+            inputImage.CopyTo(result);
+
+            int maskRadius = maskSize / 2;
+
+            for (int y = maskRadius; y < inputImage.Height - maskRadius; ++y)
+            {
+                for (int x = maskRadius; x < inputImage.Width - maskRadius; ++x)
+                {
+                    result.Data[y, x, 0] = GetMedianValue(inputImage, maskSize, y, x);
+                }
+            }
+
             return result;
         }
 
-        public static Image<Bgr, byte> FastMedianFiltering(Image<Bgr, byte> inputImage, int maskSize)
-        {
-            Image<Bgr, byte> result = new Image<Bgr, byte>(inputImage.Size);
-            return result;
-        }
         #endregion
     }
 }
