@@ -514,5 +514,145 @@ namespace ImageProcessingAlgorithms.Tools
         }
 
         #endregion
+
+        #region Fast median filtering
+
+        private static byte GetMedianValue(int[] maskHistogram, int middle)
+        {
+            byte median;
+            int sum = 0;
+            for (median = 0; median <= 255; ++median)
+            {
+                sum += maskHistogram[median];
+                if (sum >= middle)
+                    break;
+            }
+
+            return median;
+        }
+
+        public static Image<Gray, byte> FastMedianFiltering(Image<Gray, byte> inputImage, int maskSize)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+            inputImage.CopyTo(result);
+
+            int maskRadius = maskSize / 2;
+            int middle = (maskSize * maskSize + 1) / 2;
+            int x;
+
+            // Initialize mask histogram
+            int[] maskHistogram = new int[256];
+            for (int y = -maskRadius; y <= maskRadius; ++y)
+            {
+                for (x = -maskRadius; x <= maskRadius; ++x)
+                {
+                    byte pixel = inputImage.Data[y + maskRadius, x + maskRadius, 0];
+                    ++maskHistogram[pixel];
+                }
+            }
+
+            // Initialize column histograms
+            int[,] columnHistograms = new int[inputImage.Width, 256];
+            for (int col = 0; col < inputImage.Width; ++col)
+            {
+                for (int row = -maskRadius; row <= maskRadius; ++row)
+                {
+                    byte pixel = inputImage.Data[row + maskRadius, col, 0];
+                    ++columnHistograms[col, pixel];
+                }
+            }
+
+            // Initialize first row of result image
+            for (x = maskRadius; x < inputImage.Width - maskRadius; ++x)
+            {
+                result.Data[maskRadius, x, 0] = GetMedianValue(maskHistogram, middle);
+
+                if (x < inputImage.Width - maskRadius - 1)
+                {
+                    for (int pixel = 0; pixel <= 255; ++pixel)
+                    {
+                        maskHistogram[pixel] += columnHistograms[x + maskRadius + 1, pixel];
+                        maskHistogram[pixel] -= columnHistograms[x - maskRadius, pixel];
+                    }
+                }
+            }
+
+            int direction = -1;
+            x = inputImage.Width - maskRadius - 1;
+
+            for (int y = maskRadius + 1; y < inputImage.Height - maskRadius; y++)
+            {
+                for (int k = -maskRadius; k <= maskRadius; ++k)
+                {
+                    byte pixelToRemove = inputImage.Data[y - maskRadius - 1, x + k, 0];
+                    byte pixelToAdd = inputImage.Data[y + maskRadius, x + k, 0];
+
+                    --columnHistograms[x + k, pixelToRemove];
+                    --maskHistogram[pixelToRemove];
+
+                    ++columnHistograms[x + k, pixelToAdd];
+                    ++maskHistogram[pixelToAdd];
+                }
+
+                // Right to Left
+                if (direction == -1)
+                {
+                    while (x >= maskRadius)
+                    {
+                        result.Data[y, x, 0] = GetMedianValue(maskHistogram, middle);
+
+                        if (x > maskRadius)
+                        {
+                            byte pixelToRemove = inputImage.Data[y - maskRadius - 1, x - maskRadius - 1, 0];
+                            byte pixelToAdd = inputImage.Data[y + maskRadius, x - maskRadius - 1, 0];
+
+                            --columnHistograms[x - maskRadius - 1, pixelToRemove];
+                            ++columnHistograms[x - maskRadius - 1, pixelToAdd];
+
+                            for (int pixel = 0; pixel <= 255; ++pixel)
+                            {
+                                maskHistogram[pixel] += columnHistograms[x - maskRadius - 1, pixel];
+                                maskHistogram[pixel] -= columnHistograms[x + maskRadius, pixel];
+                            }
+                        }
+                        x += direction;
+                    }
+
+                    ++x;
+                }
+                // Left to Right
+                else if (direction == 1)
+                {
+                    while (x < inputImage.Width - maskRadius)
+                    {
+                        result.Data[y, x, 0] = GetMedianValue(maskHistogram, middle);
+
+                        if (x < inputImage.Width - maskRadius - 1)
+                        {
+                            byte pixelToRemove = inputImage.Data[y - maskRadius - 1, x + maskRadius + 1, 0];
+                            byte pixelToAdd = inputImage.Data[y + maskRadius, x + maskRadius + 1, 0];
+
+                            --columnHistograms[x + maskRadius + 1, pixelToRemove];
+                            ++columnHistograms[x + maskRadius + 1, pixelToAdd];
+
+                            for (int pixel = 0; pixel <= 255; ++pixel)
+                            {
+                                maskHistogram[pixel] += columnHistograms[x + maskRadius + 1, pixel];
+                                maskHistogram[pixel] -= columnHistograms[x - maskRadius, pixel];
+                            }
+                        }
+
+                        x += direction;
+                    }
+
+                    --x;
+                }
+
+                direction *= -1;
+            }
+
+            return result;
+        }
+        #endregion
     }
 }
