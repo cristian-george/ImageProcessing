@@ -53,13 +53,16 @@
                           Command="{Binding Path=Exit}"/>
             </MenuItem>
 
-            <MenuItem Header="Tools" 
+            <MenuItem Header="Edit"
                       Background="AliceBlue">
                 <MenuItem Header="Remove drawn elements"
                           Command="{Binding Path=RemoveAllElements}"/>
                 <MenuItem Header="Clear all elements"
                           Command="{Binding Path=Clear}"/>
-                <Separator/>
+            </MenuItem>
+
+            <MenuItem Header="Tools" 
+                      Background="AliceBlue">
                 <MenuItem Header="Magnifier"
                           Command="{Binding Path=Magnifier}"/>
                 <MenuItem Header="GLevelsRow" 
@@ -88,7 +91,9 @@
                               Command="{Binding Path=RotateAntiClockwise}" />
                 </MenuItem>
                 <Separator/>
-
+                <MenuItem Header="Replicate padding"
+                          Command="{Binding Path=ReplicatePadding}"/>
+                <Separator/>
                 <MenuItem Header="Adjust brightness and contrast">
                     <MenuItem Header="Based on Cubic Hermite spline">
                         <MenuItem Header="Interactive plot"
@@ -97,7 +102,6 @@
                               Command="{Binding Path=HermiteSplineInterpolation}" />
                     </MenuItem>
                 </MenuItem>
-
                 <MenuItem Header="Thresholding">
                     <MenuItem Header="With a given value"
                               Command="{Binding Path=Thresholding}" />
@@ -109,10 +113,18 @@
             <MenuItem Header="Filters" 
                       Background="AliceBlue">
                 <MenuItem Header="Low-pass">
-                    <MenuItem Header="Median"
-                              Command="{Binding Path=Median}"/>
-                    <MenuItem Header="Fast Median"
-                              Command="{Binding Path=FastMedian}"/>
+                    <MenuItem Header="On grayscale image">
+                        <MenuItem Header="Median"
+                                  Command="{Binding Path=Median}"/>
+                        <MenuItem Header="Fast Median"
+                                  Command="{Binding Path=FastMedian}"/>
+                    </MenuItem>
+                </MenuItem>
+                <MenuItem Header="High-pass">
+                    <MenuItem Header="On colored image">
+                        <MenuItem Header="Sobel"
+                                  Command="{Binding Path=SobelColor}"/>
+                    </MenuItem>
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Save as original image" 

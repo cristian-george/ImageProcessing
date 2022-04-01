@@ -476,6 +476,168 @@ namespace ImageProcessingAlgorithms.Tools
         }
         #endregion
 
+        #region Replicate padding
+
+        public static Image<Gray, byte> BorderReplicate(Image<Gray, byte> inputImage, int thickness)
+        {
+            Image<Gray, byte> borderedImage = new Image<Gray, byte>(inputImage.Width + thickness, inputImage.Height + thickness);
+
+            for (int y = 0; y < inputImage.Height; ++y)
+            {
+                for (int x = 0; x < inputImage.Width; ++x)
+                {
+                    borderedImage.Data[y + thickness / 2, x + thickness / 2, 0] = inputImage.Data[y, x, 0];
+                }
+            }
+
+            for (int y = 0; y < thickness / 2 + 1; ++y)
+            {
+                for (int x = 0; x < inputImage.Width; ++x)
+                {
+                    borderedImage.Data[y, x + thickness / 2, 0] = inputImage.Data[0, x, 0];
+                    borderedImage.Data[borderedImage.Height - y - 1, x + thickness / 2, 0] = inputImage.Data[inputImage.Height - 1, x, 0];
+                }
+            }
+
+            for (int x = 0; x < thickness / 2 + 1; ++x)
+            {
+                for (int y = 0; y < inputImage.Height; ++y)
+                {
+                    borderedImage.Data[y + thickness / 2, x, 0] = inputImage.Data[y, 0, 0];
+                    borderedImage.Data[y + thickness / 2, borderedImage.Width - x - 1, 0] = inputImage.Data[y, inputImage.Width - 1, 0];
+                }
+            }
+
+            byte topLeft = inputImage.Data[0, 0, 0];
+
+            for (int y = 0; y < thickness / 2; ++y)
+            {
+                for (int x = 0; x < thickness / 2; ++x)
+                {
+                    borderedImage.Data[y, x, 0] = topLeft;
+                }
+            }
+
+            byte topRight = inputImage.Data[0, inputImage.Width - 1, 0];
+
+            for (int y = 0; y < thickness / 2; ++y)
+            {
+                for (int x = inputImage.Width + thickness / 2; x < borderedImage.Width; ++x)
+                {
+                    borderedImage.Data[y, x, 0] = topRight;
+                }
+            }
+
+            byte bottomLeft = inputImage.Data[inputImage.Height - 1, 0, 0];
+
+            for (int y = inputImage.Height + thickness / 2; y < borderedImage.Height; ++y)
+            {
+                for (int x = 0; x < thickness / 2; ++x)
+                {
+                    borderedImage.Data[y, x, 0] = bottomLeft;
+                }
+            }
+
+            byte bottomRight = inputImage.Data[inputImage.Height - 1, inputImage.Width - 1, 0];
+
+            for (int y = inputImage.Height + thickness / 2; y < borderedImage.Height; ++y)
+            {
+                for (int x = inputImage.Width + thickness / 2; x < borderedImage.Width; ++x)
+                {
+                    borderedImage.Data[y, x, 0] = bottomRight;
+                }
+            }
+
+            return borderedImage;
+        }
+
+        public static Image<Bgr, byte> BorderReplicate(Image<Bgr, byte> inputImage, int thickness)
+        {
+            Image<Bgr, byte> borderedImage = new Image<Bgr, byte>(inputImage.Width + thickness, inputImage.Height + thickness);
+
+            for (int y = 0; y < inputImage.Height; ++y)
+            {
+                for (int x = 0; x < inputImage.Width; ++x)
+                {
+                    borderedImage.Data[y + thickness / 2, x + thickness / 2, 0] = inputImage.Data[y, x, 0];
+                    borderedImage.Data[y + thickness / 2, x + thickness / 2, 1] = inputImage.Data[y, x, 1];
+                    borderedImage.Data[y + thickness / 2, x + thickness / 2, 2] = inputImage.Data[y, x, 2];
+                }
+            }
+
+            for (int y = 0; y < thickness / 2 + 1; ++y)
+            {
+                for (int x = 0; x < inputImage.Width; ++x)
+                {
+                    borderedImage.Data[y, x + thickness / 2, 0] = inputImage.Data[0, x, 0];
+                    borderedImage.Data[y, x + thickness / 2, 1] = inputImage.Data[0, x, 1];
+                    borderedImage.Data[y, x + thickness / 2, 2] = inputImage.Data[0, x, 2];
+
+                    borderedImage.Data[borderedImage.Height - y - 1, x + thickness / 2, 0] = inputImage.Data[inputImage.Height - 1, x, 0];
+                    borderedImage.Data[borderedImage.Height - y - 1, x + thickness / 2, 1] = inputImage.Data[inputImage.Height - 1, x, 1];
+                    borderedImage.Data[borderedImage.Height - y - 1, x + thickness / 2, 2] = inputImage.Data[inputImage.Height - 1, x, 2];
+                }
+            }
+
+            for (int x = 0; x < thickness / 2 + 1; ++x)
+            {
+                for (int y = 0; y < inputImage.Height; ++y)
+                {
+                    borderedImage.Data[y + thickness / 2, x, 0] = inputImage.Data[y, 0, 0];
+                    borderedImage.Data[y + thickness / 2, x, 1] = inputImage.Data[y, 0, 1];
+                    borderedImage.Data[y + thickness / 2, x, 2] = inputImage.Data[y, 0, 2];
+
+                    borderedImage.Data[y + thickness / 2, borderedImage.Width - x - 1, 0] = inputImage.Data[y, inputImage.Width - 1, 0];
+                    borderedImage.Data[y + thickness / 2, borderedImage.Width - x - 1, 1] = inputImage.Data[y, inputImage.Width - 1, 1];
+                    borderedImage.Data[y + thickness / 2, borderedImage.Width - x - 1, 2] = inputImage.Data[y, inputImage.Width - 1, 2];
+                }
+            }
+
+            for (int y = 0; y < thickness / 2; ++y)
+            {
+                for (int x = 0; x < thickness / 2; ++x)
+                {
+                    borderedImage.Data[y, x, 0] = inputImage.Data[0, 0, 0];
+                    borderedImage.Data[y, x, 1] = inputImage.Data[0, 0, 1];
+                    borderedImage.Data[y, x, 2] = inputImage.Data[0, 0, 2];
+                }
+            }
+
+            for (int y = 0; y < thickness / 2; ++y)
+            {
+                for (int x = inputImage.Width + thickness / 2; x < borderedImage.Width; ++x)
+                {
+                    borderedImage.Data[y, x, 0] = inputImage.Data[0, inputImage.Width - 1, 0];
+                    borderedImage.Data[y, x, 1] = inputImage.Data[0, inputImage.Width - 1, 1];
+                    borderedImage.Data[y, x, 2] = inputImage.Data[0, inputImage.Width - 1, 2];
+                }
+            }
+
+            for (int y = inputImage.Height + thickness / 2; y < borderedImage.Height; ++y)
+            {
+                for (int x = 0; x < thickness / 2; ++x)
+                {
+                    borderedImage.Data[y, x, 0] = inputImage.Data[inputImage.Height - 1, 0, 0];
+                    borderedImage.Data[y, x, 1] = inputImage.Data[inputImage.Height - 1, 0, 1];
+                    borderedImage.Data[y, x, 2] = inputImage.Data[inputImage.Height - 1, 0, 2];
+                }
+            }
+
+            for (int y = inputImage.Height + thickness / 2; y < borderedImage.Height; ++y)
+            {
+                for (int x = inputImage.Width + thickness / 2; x < borderedImage.Width; ++x)
+                {
+                    borderedImage.Data[y, x, 0] = inputImage.Data[inputImage.Height - 1, inputImage.Width - 1, 0];
+                    borderedImage.Data[y, x, 1] = inputImage.Data[inputImage.Height - 1, inputImage.Width - 1, 1];
+                    borderedImage.Data[y, x, 2] = inputImage.Data[inputImage.Height - 1, inputImage.Width - 1, 2];
+                }
+            }
+
+            return borderedImage;
+        }
+
+        #endregion
+
         #region Median filtering
 
         private static byte GetMedianValue(Image<Gray, byte> inputImage, int maskSize, int y, int x)
@@ -497,20 +659,20 @@ namespace ImageProcessingAlgorithms.Tools
 
         public static Image<Gray, byte> MedianFiltering(Image<Gray, byte> inputImage, int maskSize)
         {
-            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
-            inputImage.CopyTo(result);
+            Image<Gray, byte> borderedImage = BorderReplicate(inputImage, maskSize);
+            Image<Gray, byte> result = new Image<Gray, byte>(borderedImage.Size);
 
             int maskRadius = maskSize / 2;
 
-            for (int y = maskRadius; y < inputImage.Height - maskRadius; ++y)
+            for (int y = maskRadius; y < borderedImage.Height - maskRadius; ++y)
             {
-                for (int x = maskRadius; x < inputImage.Width - maskRadius; ++x)
+                for (int x = maskRadius; x < borderedImage.Width - maskRadius; ++x)
                 {
-                    result.Data[y, x, 0] = GetMedianValue(inputImage, maskSize, y, x);
+                    result.Data[y, x, 0] = GetMedianValue(borderedImage, maskSize, y, x);
                 }
             }
 
-            return result;
+            return CropImage(result, maskSize / 2, maskSize / 2, inputImage.Width + maskSize / 2, inputImage.Height + maskSize / 2); ;
         }
 
         #endregion
@@ -533,8 +695,8 @@ namespace ImageProcessingAlgorithms.Tools
 
         public static Image<Gray, byte> FastMedianFiltering(Image<Gray, byte> inputImage, int maskSize)
         {
-            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
-            inputImage.CopyTo(result);
+            Image<Gray, byte> borderedImage = BorderReplicate(inputImage, maskSize);
+            Image<Gray, byte> result = new Image<Gray, byte>(borderedImage.Size);
 
             int maskRadius = maskSize / 2;
             int middle = (maskSize * maskSize + 1) / 2;
@@ -546,28 +708,28 @@ namespace ImageProcessingAlgorithms.Tools
             {
                 for (x = -maskRadius; x <= maskRadius; ++x)
                 {
-                    byte pixel = inputImage.Data[y + maskRadius, x + maskRadius, 0];
+                    byte pixel = borderedImage.Data[y + maskRadius, x + maskRadius, 0];
                     ++maskHistogram[pixel];
                 }
             }
 
             // Initialize column histograms
-            int[,] columnHistograms = new int[inputImage.Width, 256];
-            for (int col = 0; col < inputImage.Width; ++col)
+            int[,] columnHistograms = new int[borderedImage.Width, 256];
+            for (int col = 0; col < borderedImage.Width; ++col)
             {
                 for (int row = -maskRadius; row <= maskRadius; ++row)
                 {
-                    byte pixel = inputImage.Data[row + maskRadius, col, 0];
+                    byte pixel = borderedImage.Data[row + maskRadius, col, 0];
                     ++columnHistograms[col, pixel];
                 }
             }
 
             // Initialize first row of result image
-            for (x = maskRadius; x < inputImage.Width - maskRadius; ++x)
+            for (x = maskRadius; x < borderedImage.Width - maskRadius; ++x)
             {
                 result.Data[maskRadius, x, 0] = GetMedianValue(maskHistogram, middle);
 
-                if (x < inputImage.Width - maskRadius - 1)
+                if (x < borderedImage.Width - maskRadius - 1)
                 {
                     for (int pixel = 0; pixel <= 255; ++pixel)
                     {
@@ -578,14 +740,14 @@ namespace ImageProcessingAlgorithms.Tools
             }
 
             int direction = -1;
-            x = inputImage.Width - maskRadius - 1;
+            x = borderedImage.Width - maskRadius - 1;
 
-            for (int y = maskRadius + 1; y < inputImage.Height - maskRadius; y++)
+            for (int y = maskRadius + 1; y < borderedImage.Height - maskRadius; y++)
             {
                 for (int k = -maskRadius; k <= maskRadius; ++k)
                 {
-                    byte pixelToRemove = inputImage.Data[y - maskRadius - 1, x + k, 0];
-                    byte pixelToAdd = inputImage.Data[y + maskRadius, x + k, 0];
+                    byte pixelToRemove = borderedImage.Data[y - maskRadius - 1, x + k, 0];
+                    byte pixelToAdd = borderedImage.Data[y + maskRadius, x + k, 0];
 
                     --columnHistograms[x + k, pixelToRemove];
                     --maskHistogram[pixelToRemove];
@@ -603,8 +765,8 @@ namespace ImageProcessingAlgorithms.Tools
 
                         if (x > maskRadius)
                         {
-                            byte pixelToRemove = inputImage.Data[y - maskRadius - 1, x - maskRadius - 1, 0];
-                            byte pixelToAdd = inputImage.Data[y + maskRadius, x - maskRadius - 1, 0];
+                            byte pixelToRemove = borderedImage.Data[y - maskRadius - 1, x - maskRadius - 1, 0];
+                            byte pixelToAdd = borderedImage.Data[y + maskRadius, x - maskRadius - 1, 0];
 
                             --columnHistograms[x - maskRadius - 1, pixelToRemove];
                             ++columnHistograms[x - maskRadius - 1, pixelToAdd];
@@ -623,14 +785,14 @@ namespace ImageProcessingAlgorithms.Tools
                 // Left to Right
                 else if (direction == 1)
                 {
-                    while (x < inputImage.Width - maskRadius)
+                    while (x < borderedImage.Width - maskRadius)
                     {
                         result.Data[y, x, 0] = GetMedianValue(maskHistogram, middle);
 
-                        if (x < inputImage.Width - maskRadius - 1)
+                        if (x < borderedImage.Width - maskRadius - 1)
                         {
-                            byte pixelToRemove = inputImage.Data[y - maskRadius - 1, x + maskRadius + 1, 0];
-                            byte pixelToAdd = inputImage.Data[y + maskRadius, x + maskRadius + 1, 0];
+                            byte pixelToRemove = borderedImage.Data[y - maskRadius - 1, x + maskRadius + 1, 0];
+                            byte pixelToAdd = borderedImage.Data[y + maskRadius, x + maskRadius + 1, 0];
 
                             --columnHistograms[x + maskRadius + 1, pixelToRemove];
                             ++columnHistograms[x + maskRadius + 1, pixelToAdd];
@@ -651,7 +813,7 @@ namespace ImageProcessingAlgorithms.Tools
                 direction *= -1;
             }
 
-            return result;
+            return CropImage(result, maskSize / 2, maskSize / 2, inputImage.Width + maskSize / 2, inputImage.Height + maskSize / 2);
         }
         #endregion
     }

@@ -742,6 +742,61 @@ namespace ImageProcessingFramework.ViewModel
 
         #endregion
 
+        #region Replicate padding
+        private ICommand m_replicatePadding;
+        public ICommand ReplicatePadding
+        {
+            get
+            {
+                if (m_replicatePadding == null)
+                    m_replicatePadding = new RelayCommand(ReplicatePaddingMethod);
+                return m_replicatePadding;
+            }
+        }
+
+        public void ReplicatePaddingMethod(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas();
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            {
+                "Thickness value"
+            };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int thickness = (int)response[0];
+                if (thickness >= 0)
+                {
+                    if (ColorInitialImage != null)
+                    {
+                        ColorProcessedImage = Tools.BorderReplicate(ColorInitialImage, thickness);
+                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                    else if (GrayInitialImage != null)
+                    {
+                        GrayProcessedImage = Tools.BorderReplicate(GrayInitialImage, thickness);
+                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                }
+                else MessageBox.Show("Please add a valid thickness value first.");
+            }
+        }
+        #endregion
+
         #region Adjust brightness and contrast
 
         #region Cubic Hermite spline
