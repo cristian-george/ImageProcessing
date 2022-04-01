@@ -816,5 +816,61 @@ namespace ImageProcessingAlgorithms.Tools
             return CropImage(result, maskSize / 2, maskSize / 2, inputImage.Width + maskSize / 2, inputImage.Height + maskSize / 2);
         }
         #endregion
+
+        #region Bilateral gaussian filtering
+
+        private static double MedianMask(int i, int j, double variance_d)
+        {
+            return System.Math.Exp(-(i * i + j * j) / (2 * variance_d * variance_d));
+        }
+
+        private static double RangeMask(Image<Gray, byte> image, int y, int x, int i, int j, double variance_r)
+        {
+            int value = image.Data[y + i, x + j, 0] - image.Data[y, x, 0];
+            return System.Math.Exp(-(value * value) / (2 * variance_r * variance_r));
+        }
+
+        public static Image<Gray, byte> GaussianBilateralFiltering(Image<Gray, byte> inputImage, int maskSize, double variance_d, double variance_r)
+        {
+            Image<Gray, byte> borderedImage = BorderReplicate(inputImage, maskSize);
+            Image<Gray, byte> result = new Image<Gray, byte>(borderedImage.Size);
+
+            int maskRadius = maskSize / 2;
+            double[,] filterMask = new double[maskSize, maskSize];
+
+            for (int i = -maskRadius; i <= maskRadius; ++i)
+            {
+                for (int j = -maskRadius; j <= maskRadius; ++j)
+                {
+                    filterMask[i + maskRadius, j + maskRadius] = MedianMask(i, j, variance_d);
+                }
+            }
+
+            for (int y = maskRadius; y < borderedImage.Height - maskRadius; ++y)
+            {
+                for (int x = maskRadius; x < borderedImage.Width - maskRadius; ++x)
+                {
+                    double numerator = 0, denominator = 0;
+                    for (int i = -maskRadius; i <= maskRadius; ++i)
+                    {
+                        for (int j = -maskRadius; j <= maskRadius; ++j)
+                        {
+                            numerator += borderedImage.Data[y + i, x + j, 0] * filterMask[i + maskRadius, j + maskRadius] * RangeMask(borderedImage, y, x, i, j, variance_r);
+                            denominator += filterMask[i + maskRadius, j + maskRadius] * RangeMask(borderedImage, y, x, i, j, variance_r);
+                        }
+                    }
+
+                    int pixel = (int)(numerator / denominator);
+                    if (pixel < 0) pixel = 0;
+                    else if (pixel > 255) pixel = 255;
+
+                    result.Data[y, x, 0] = (byte)pixel;
+                }
+            }
+
+            return CropImage(result, maskSize / 2, maskSize / 2, inputImage.Width + maskSize / 2, inputImage.Height + maskSize / 2); ;
+        }
+
+        #endregion
     }
 }

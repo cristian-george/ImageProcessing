@@ -30,7 +30,7 @@ namespace ImageProcessingFramework
             VectorOfEllipses = new Collection<Ellipse>();
             VectorOfPolygons = new Collection<Polygon>();
 
-            DataProvider.SliderZoom = SliderZoom;
+            SliderZoom = sliderZoom;
         }
 
         private void ImageMouseMove(object sender, MouseEventArgs e)
@@ -104,9 +104,9 @@ namespace ImageProcessingFramework
             if (GLevelsRowOn == false) return;
 
             RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialRowLine, ProcessedRowLine);
-            InitialRowLine = GetRowLine(canvasOriginalImage, initialImage, SliderZoom.Value);
+            InitialRowLine = GetRowLine(canvasOriginalImage, initialImage, sliderZoom.Value);
             if (ColorProcessedImage == null && GrayProcessedImage == null) return;
-            ProcessedRowLine = GetRowLine(canvasProcessedImage, processedImage, SliderZoom.Value);
+            ProcessedRowLine = GetRowLine(canvasProcessedImage, processedImage, sliderZoom.Value);
         }
 
         private void DrawColumnLine(object sender, MouseButtonEventArgs e)
@@ -114,9 +114,9 @@ namespace ImageProcessingFramework
             if (GLevelsColumnOn == false) return;
 
             RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialColumnLine, ProcessedColumnLine);
-            InitialColumnLine = GetColumnLine(canvasOriginalImage, initialImage, SliderZoom.Value);
+            InitialColumnLine = GetColumnLine(canvasOriginalImage, initialImage, sliderZoom.Value);
             if (ColorProcessedImage == null && GrayProcessedImage == null) return;
-            ProcessedColumnLine = GetColumnLine(canvasProcessedImage, processedImage, SliderZoom.Value);
+            ProcessedColumnLine = GetColumnLine(canvasProcessedImage, processedImage, sliderZoom.Value);
         }
 
         private void DrawRectangle(object sender, MouseButtonEventArgs e)
@@ -125,16 +125,16 @@ namespace ImageProcessingFramework
 
             RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialRectangle, ProcessedRectangle);
             InitialRectangle = GetRectangle(canvasOriginalImage, (int)MousePosition.X - 4, (int)MousePosition.Y - 4,
-                SliderZoom.Value);
+                sliderZoom.Value);
             if (ColorProcessedImage == null && GrayProcessedImage == null) return;
             ProcessedRectangle = GetRectangle(canvasProcessedImage, (int)MousePosition.X - 4, (int)MousePosition.Y - 4,
-                SliderZoom.Value);
+                sliderZoom.Value);
         }
 
         private void WindowMouseMove(object sender, MouseEventArgs e)
         {
-            ResizeCanvas(canvasOriginalImage, SliderZoom.Value);
-            ResizeCanvas(canvasProcessedImage, SliderZoom.Value);
+            ResizeCanvas(canvasOriginalImage, sliderZoom.Value);
+            ResizeCanvas(canvasProcessedImage, sliderZoom.Value);
 
             DrawRectangle(sender, e as MouseButtonEventArgs);
             DrawRowLine(sender, e as MouseButtonEventArgs);
@@ -156,8 +156,8 @@ namespace ImageProcessingFramework
 
                 ScaleTransform scaleTransform = new ScaleTransform
                 {
-                    ScaleX = SliderZoom.Value,
-                    ScaleY = SliderZoom.Value
+                    ScaleX = sliderZoom.Value,
+                    ScaleY = sliderZoom.Value
                 };
 
                 foreach (Shape shape in shapes)
@@ -170,8 +170,8 @@ namespace ImageProcessingFramework
                         shapesProperties.Add(shape, new KeyValuePair<double, double>(leftProperty, topProperty));
                     }
 
-                    Canvas.SetLeft(shape, shapesProperties[shape].Key * SliderZoom.Value);
-                    Canvas.SetTop(shape, shapesProperties[shape].Value * SliderZoom.Value);
+                    Canvas.SetLeft(shape, shapesProperties[shape].Key * sliderZoom.Value);
+                    Canvas.SetTop(shape, shapesProperties[shape].Value * sliderZoom.Value);
 
                     if (!(shape.LayoutTransform is ScaleTransform))
                     {
@@ -179,8 +179,8 @@ namespace ImageProcessingFramework
                     }
                     else
                     {
-                        (shape.LayoutTransform as ScaleTransform).ScaleX = SliderZoom.Value;
-                        (shape.LayoutTransform as ScaleTransform).ScaleY = SliderZoom.Value;
+                        (shape.LayoutTransform as ScaleTransform).ScaleX = sliderZoom.Value;
+                        (shape.LayoutTransform as ScaleTransform).ScaleY = sliderZoom.Value;
                     }
                 }
             }

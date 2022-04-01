@@ -41,10 +41,10 @@
                       Background="AliceBlue">
                 <MenuItem Header="Load grayscale image" 
                           Command="{Binding Path=AddGrayImage}"
-                          CommandParameter="{Binding ElementName=SliderZoom}"/>
+                          CommandParameter="{Binding ElementName=sliderZoom}"/>
                 <MenuItem Header="Load color image" 
                           Command="{Binding Path=AddColorImage}"
-                          CommandParameter="{Binding ElementName=SliderZoom}"/>
+                          CommandParameter="{Binding ElementName=sliderZoom}"/>
                 <Separator/>
                 <MenuItem Header="Save processed image" 
                           Command="{Binding Path=Save}"/>
@@ -55,6 +55,11 @@
 
             <MenuItem Header="Edit"
                       Background="AliceBlue">
+                <MenuItem Header="Reset initial canvas"
+                          Command="{Binding Path=ResetInitial}"/>
+                <MenuItem Header="Reset processed canvas"
+                          Command="{Binding Path=ResetProcessed}"/>
+                <Separator/>
                 <MenuItem Header="Remove drawn elements"
                           Command="{Binding Path=RemoveAllElements}"/>
                 <MenuItem Header="Clear all elements"
@@ -118,6 +123,8 @@
                                   Command="{Binding Path=Median}"/>
                         <MenuItem Header="Fast Median"
                                   Command="{Binding Path=FastMedian}"/>
+                        <MenuItem Header="Gaussian bilateral"
+                                  Command="{Binding Path=GaussianBilateral}"/>
                     </MenuItem>
                 </MenuItem>
                 <MenuItem Header="High-pass">
@@ -160,8 +167,8 @@
                            MouseRightButtonDown="MouseRightPressed"
                            Source="{Binding InitialImage}">
                         <Image.LayoutTransform>
-                            <ScaleTransform ScaleX="{Binding ElementName=SliderZoom, Path=Value}" 
-                                            ScaleY="{Binding ElementName=SliderZoom, Path=Value}"/>
+                            <ScaleTransform ScaleX="{Binding ElementName=sliderZoom, Path=Value}" 
+                                            ScaleY="{Binding ElementName=sliderZoom, Path=Value}"/>
                         </Image.LayoutTransform>
                     </Image>
                 </Canvas>
@@ -192,8 +199,8 @@
                            MouseLeftButtonDown="MouseLeftPressed"
                            Source="{Binding ProcessedImage}">
                         <Image.LayoutTransform>
-                            <ScaleTransform ScaleX="{Binding ElementName=SliderZoom, Path=Value}" 
-                                            ScaleY="{Binding ElementName=SliderZoom, Path=Value}"/>
+                            <ScaleTransform ScaleX="{Binding ElementName=sliderZoom, Path=Value}" 
+                                            ScaleY="{Binding ElementName=sliderZoom, Path=Value}"/>
                         </Image.LayoutTransform>
                     </Image>
                 </Canvas>
@@ -203,7 +210,7 @@
         <Button x:Name="Reset" 
                 Content="Reset"
                 Command="{Binding Path=Reset}" 
-                CommandParameter="{Binding ElementName=SliderZoom}" 
+                CommandParameter="{Binding ElementName=sliderZoom}" 
                 Background="AliceBlue"
                 BorderThickness="2"
                 BorderBrush="MediumSlateBlue"
@@ -216,7 +223,7 @@
                     Grid.ColumnSpan="2" 
                     Grid.Row="3" 
                     Height="auto">
-            <Slider x:Name="SliderZoom"
+            <Slider x:Name="sliderZoom"
                     Orientation="Horizontal"
                     Value="1.00" 
                     Minimum="0.10"
@@ -231,7 +238,7 @@
                     ValueChanged="SliderZoom_ValueChanged"/>
         </StackPanel>
 
-        <TextBlock Text="{Binding Value, ElementName=SliderZoom}" 
+        <TextBlock Text="{Binding Value, ElementName=sliderZoom}" 
                    Foreground="#FFF1F1F1"
                    TextAlignment="Center"
                    FontSize="15" 

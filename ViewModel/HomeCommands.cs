@@ -247,6 +247,52 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #region Reset initial canvas
+        private ICommand m_resetInitial;
+        public ICommand ResetInitial
+        {
+            get
+            {
+                if (m_resetInitial == null)
+                    m_resetInitial = new RelayCommand(ResetInitialCanvas);
+                return m_resetInitial;
+            }
+        }
+
+        public void ResetInitialCanvas(object parameter)
+        {
+            GrayInitialImage = null;
+            ColorInitialImage = null;
+            InitialImage = null;
+            OnPropertyChanged("InitialImage");
+
+            m_isInitialImageColor = false;
+        }
+        #endregion
+
+        #region Reset processed canvas
+        private ICommand m_resetProcessed;
+        public ICommand ResetProcessed
+        {
+            get
+            {
+                if (m_resetProcessed == null)
+                    m_resetProcessed = new RelayCommand(ResetProcessedCanvas);
+                return m_resetProcessed;
+            }
+        }
+
+        public void ResetProcessedCanvas(object parameter)
+        {
+            GrayProcessedImage = null;
+            ColorProcessedImage = null;
+            ProcessedImage = null;
+            OnPropertyChanged("ProcessedImage");
+
+            m_isProcessedImageGray = false;
+        }
+        #endregion
+
         #region Remove drawn elements
         private ICommand m_removeAllElements;
         public ICommand RemoveAllElements
@@ -280,26 +326,6 @@ namespace ImageProcessingFramework.ViewModel
             }
         }
 
-        private void ResetInitialCanvas()
-        {
-            GrayInitialImage = null;
-            ColorInitialImage = null;
-            InitialImage = null;
-            OnPropertyChanged("InitialImage");
-
-            m_isInitialImageColor = false;
-        }
-
-        private void ResetProcessedCanvas()
-        {
-            GrayProcessedImage = null;
-            ColorProcessedImage = null;
-            ProcessedImage = null;
-            OnPropertyChanged("ProcessedImage");
-
-            m_isProcessedImageGray = false;
-        }
-
         private static void CloseAllWindows()
         {
             for (int intCounter = App.Current.Windows.Count - 1; intCounter >= 1; intCounter--)
@@ -314,8 +340,8 @@ namespace ImageProcessingFramework.ViewModel
         public void ClearUi(object parameter)
         {
             RemoveAllDrawnElements(parameter);
-            ResetInitialCanvas();
-            ResetProcessedCanvas();
+            ResetInitialCanvas(parameter);
+            ResetProcessedCanvas(parameter);
 
             ResetZoom(parameter);
 
@@ -447,7 +473,7 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
-            ResetProcessedCanvas();
+            ResetProcessedCanvas(parameter);
 
             if (ColorInitialImage != null)
             {
@@ -484,7 +510,7 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
-            ResetProcessedCanvas();
+            ResetProcessedCanvas(parameter);
 
             if (GrayInitialImage != null)
             {
@@ -515,7 +541,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void ConvertToGray(object parameter)
         {
-            ResetProcessedCanvas();
+            ResetProcessedCanvas(parameter);
 
             if (ColorInitialImage != null)
             {
@@ -566,7 +592,7 @@ namespace ImageProcessingFramework.ViewModel
             int rightBottomY = (int)System.Math.Max(firstPosition.Y, LastPosition.Y);
 
             RemoveAllDrawnElements(parameter);
-            ResetProcessedCanvas();
+            ResetProcessedCanvas(parameter);
 
             VectorOfRectangles.Add(DrawHelper.DrawRectangle(InitialCanvas, leftTopX, leftTopY, rightBottomX, rightBottomY, 3, Brushes.Red));
             SliderZoom.Value += 0.01; SliderZoom.Value -= 0.01;
@@ -608,7 +634,7 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
-            ResetProcessedCanvas();
+            ResetProcessedCanvas(parameter);
 
             if (GrayInitialImage != null)
             {
@@ -645,7 +671,7 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
-            ResetProcessedCanvas();
+            ResetProcessedCanvas(parameter);
 
             if (GrayInitialImage != null)
             {
@@ -686,7 +712,7 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
-            ResetProcessedCanvas();
+            ResetProcessedCanvas(parameter);
 
             if (GrayInitialImage != null)
             {
@@ -723,7 +749,7 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
-            ResetProcessedCanvas();
+            ResetProcessedCanvas(parameter);
 
             if (GrayInitialImage != null)
             {
@@ -762,7 +788,7 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
-            ResetProcessedCanvas();
+            ResetProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
             System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
@@ -849,7 +875,7 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
-            ResetProcessedCanvas();
+            ResetProcessedCanvas(parameter);
 
             if (HermiteSplineLookUpTable != null)
             {
@@ -975,7 +1001,7 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
-            ResetProcessedCanvas();
+            ResetProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
             System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
@@ -1032,7 +1058,7 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
-            ResetProcessedCanvas();
+            ResetProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
             System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
@@ -1058,6 +1084,67 @@ namespace ImageProcessingFramework.ViewModel
                     else if (GrayInitialImage != null)
                     {
                         GrayProcessedImage = Tools.FastMedianFiltering(GrayInitialImage, maskSize);
+                    }
+
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                    OnPropertyChanged("ProcessedImage");
+                }
+                else MessageBox.Show("Please add a valid dimension first.");
+            }
+        }
+        #endregion
+
+        #region Gaussian bilateral
+        private ICommand m_gaussianBilateral;
+        public ICommand GaussianBilateral
+        {
+            get
+            {
+                if (m_gaussianBilateral == null)
+                    m_gaussianBilateral = new RelayCommand(GaussianBilateralFiltering);
+                return m_gaussianBilateral;
+            }
+        }
+
+        public void GaussianBilateralFiltering(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Mask dimension",
+                    "Variance d",
+                    "Variance r"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int maskSize = (int)response[0];
+                double variance_d = response[1];
+                double variance_r = response[2];
+
+                if (maskSize > 2 && maskSize % 2 == 1)
+                {
+                    if (ColorInitialImage != null)
+                    {
+                        m_isProcessedImageGray = true;
+                        GrayProcessedImage = Tools.Convert(ColorInitialImage);
+                        GrayProcessedImage = Tools.GaussianBilateralFiltering(GrayProcessedImage, maskSize, variance_d, variance_r);
+                    }
+                    else if (GrayInitialImage != null)
+                    {
+                        GrayProcessedImage = Tools.GaussianBilateralFiltering(GrayInitialImage, maskSize, variance_d, variance_r);
                     }
 
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
