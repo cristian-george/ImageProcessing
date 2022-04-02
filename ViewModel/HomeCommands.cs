@@ -825,6 +825,130 @@ namespace ImageProcessingFramework.ViewModel
 
         #region Adjust brightness and contrast
 
+        #region Linear operators
+
+        #region Increase brightness
+
+        #region Operator +
+        private ICommand m_increaseBrightnessPlus;
+        public ICommand IncreaseBrightnessPlus
+        {
+            get
+            {
+                if (m_increaseBrightnessPlus == null)
+                    m_increaseBrightnessPlus = new RelayCommand(BrightnessPlus);
+                return m_increaseBrightnessPlus;
+            }
+        }
+
+        public void BrightnessPlus(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "b value"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int b = (int)response[0];
+                if (b >= 0 && b <= 255)
+                {
+                    int[] lookUpTable = Tools.IncreaseBrightnessPlus(b);
+                    if (GrayInitialImage != null)
+                    {
+                        GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                    else if (ColorInitialImage != null)
+                    {
+                        ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                }
+                else MessageBox.Show("Please add a valid b value first.");
+            }
+        }
+        #endregion
+
+        #endregion
+
+        #region Decrease brightness
+
+        #region Operator -
+        private ICommand m_decreaseBrightnessMinus;
+        public ICommand DecreaseBrightnessMinus
+        {
+            get
+            {
+                if (m_decreaseBrightnessMinus == null)
+                    m_decreaseBrightnessMinus = new RelayCommand(BrightnessMinus);
+                return m_decreaseBrightnessMinus;
+            }
+        }
+
+        public void BrightnessMinus(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "b value"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int b = (int)response[0];
+                if (b >= 0 && b <= 255)
+                {
+                    int[] lookUpTable = Tools.DecreaseBrightnessMinus(b);
+                    if (GrayInitialImage != null)
+                    {
+                        GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                    else if (ColorInitialImage != null)
+                    {
+                        ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                }
+                else MessageBox.Show("Please add a valid b value first.");
+            }
+        }
+        #endregion
+
+        #endregion
+
+        #endregion
+
         #region Cubic Hermite spline
 
         #region Window
@@ -881,13 +1005,13 @@ namespace ImageProcessingFramework.ViewModel
             {
                 if (GrayInitialImage != null)
                 {
-                    GrayProcessedImage = Tools.HermiteSplineInterpolation(GrayInitialImage, HermiteSplineLookUpTable);
+                    GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, HermiteSplineLookUpTable);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                     OnPropertyChanged("ProcessedImage");
                 }
                 else if (ColorInitialImage != null)
                 {
-                    ColorProcessedImage = Tools.HermiteSplineInterpolation(ColorInitialImage, HermiteSplineLookUpTable);
+                    ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, HermiteSplineLookUpTable);
                     ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                     OnPropertyChanged("ProcessedImage");
                 }
@@ -1119,7 +1243,6 @@ namespace ImageProcessingFramework.ViewModel
             DialogBox dialogBox = new DialogBox();
             System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
                 {
-                    "Mask dimension",
                     "Variance d",
                     "Variance r"
                 };
@@ -1130,21 +1253,20 @@ namespace ImageProcessingFramework.ViewModel
             System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
-                int maskSize = (int)response[0];
-                double variance_d = response[1];
-                double variance_r = response[2];
+                double variance_d = response[0];
+                double variance_r = response[1];
 
-                if (maskSize > 2 && maskSize % 2 == 1)
+                if (variance_d > 0 && variance_r > 0)
                 {
                     if (ColorInitialImage != null)
                     {
                         m_isProcessedImageGray = true;
                         GrayProcessedImage = Tools.Convert(ColorInitialImage);
-                        GrayProcessedImage = Tools.GaussianBilateralFiltering(GrayProcessedImage, maskSize, variance_d, variance_r);
+                        GrayProcessedImage = Tools.GaussianBilateralFiltering(GrayProcessedImage, variance_d, variance_r);
                     }
                     else if (GrayInitialImage != null)
                     {
-                        GrayProcessedImage = Tools.GaussianBilateralFiltering(GrayInitialImage, maskSize, variance_d, variance_r);
+                        GrayProcessedImage = Tools.GaussianBilateralFiltering(GrayInitialImage, variance_d, variance_r);
                     }
 
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);

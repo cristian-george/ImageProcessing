@@ -316,37 +316,72 @@ namespace ImageProcessingAlgorithms.Tools
         }
         #endregion
 
-        #region Cubic Hermite spline
-        public static Image<Gray, byte> HermiteSplineInterpolation(Image<Gray, byte> inputImage, Collection<byte> lookUpTable)
+        #region Adjust brightness and contrast
+
+        public static Image<Gray, byte> AdjustBrightnessAndContrast(Image<Gray, byte> inputImage, int[] lookUpTable)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
 
-            for (int y = 0; y < inputImage.Height; y++)
+            for (int y = 0; y < inputImage.Height; ++y)
             {
-                for (int x = 0; x < inputImage.Width; x++)
+                for (int x = 0; x < inputImage.Width; ++x)
                 {
-                    result.Data[y, x, 0] = lookUpTable[inputImage.Data[y, x, 0]];
+                    result.Data[y, x, 0] = (byte)lookUpTable[inputImage.Data[y, x, 0]];
                 }
             }
 
             return result;
         }
 
-        public static Image<Bgr, byte> HermiteSplineInterpolation(Image<Bgr, byte> inputImage, Collection<byte> lookUpTable)
+        public static Image<Bgr, byte> AdjustBrightnessAndContrast(Image<Bgr, byte> inputImage, int[] lookUpTable)
         {
             Image<Bgr, byte> result = new Image<Bgr, byte>(inputImage.Size);
 
-            for (int y = 0; y < inputImage.Height; y++)
+            for (int y = 0; y < inputImage.Height; ++y)
             {
-                for (int x = 0; x < inputImage.Width; x++)
+                for (int x = 0; x < inputImage.Width; ++x)
                 {
-                    result.Data[y, x, 0] = lookUpTable[inputImage.Data[y, x, 0]];
-                    result.Data[y, x, 1] = lookUpTable[inputImage.Data[y, x, 1]];
-                    result.Data[y, x, 2] = lookUpTable[inputImage.Data[y, x, 2]];
+                    result.Data[y, x, 0] = (byte)lookUpTable[inputImage.Data[y, x, 0]];
+                    result.Data[y, x, 1] = (byte)lookUpTable[inputImage.Data[y, x, 1]];
+                    result.Data[y, x, 2] = (byte)lookUpTable[inputImage.Data[y, x, 2]];
                 }
             }
 
             return result;
+        }
+        #endregion
+
+        #region Operator +
+        public static int[] IncreaseBrightnessPlus(int b)
+        {
+            int[] lookUpTable = new int[256];
+
+            for (int pixel = 0; pixel <= 255; ++pixel)
+            {
+                if (pixel <= 255 - b)
+                    lookUpTable[pixel] = pixel + b;
+                else
+                    lookUpTable[pixel] = 255;
+            }
+
+            return lookUpTable;
+        }
+        #endregion
+
+        #region Operator -
+        public static int[] DecreaseBrightnessMinus(int b)
+        {
+            int[] lookUpTable = new int[256];
+
+            for (int pixel = 0; pixel <= 255; ++pixel)
+            {
+                if (b <= pixel && pixel <= 255)
+                    lookUpTable[pixel] = pixel - b;
+                else
+                    lookUpTable[pixel] = 0;
+            }
+
+            return lookUpTable;
         }
         #endregion
 
@@ -672,7 +707,7 @@ namespace ImageProcessingAlgorithms.Tools
                 }
             }
 
-            return CropImage(result, maskSize / 2, maskSize / 2, inputImage.Width + maskSize / 2, inputImage.Height + maskSize / 2); ;
+            return CropImage(result, maskRadius, maskRadius, inputImage.Width + maskRadius, inputImage.Height + maskRadius);
         }
 
         #endregion
@@ -813,7 +848,7 @@ namespace ImageProcessingAlgorithms.Tools
                 direction *= -1;
             }
 
-            return CropImage(result, maskSize / 2, maskSize / 2, inputImage.Width + maskSize / 2, inputImage.Height + maskSize / 2);
+            return CropImage(result, maskRadius, maskRadius, inputImage.Width + maskRadius, inputImage.Height + maskRadius);
         }
         #endregion
 
@@ -821,7 +856,7 @@ namespace ImageProcessingAlgorithms.Tools
 
         private static double MedianMask(int i, int j, double variance_d)
         {
-            return System.Math.Exp(-(i * i + j * j) / (2 * variance_d * variance_d));
+            return System.Math.Exp(-((i * i) + (j * j)) / (2 * variance_d * variance_d));
         }
 
         private static double RangeMask(Image<Gray, byte> image, int y, int x, int i, int j, double variance_r)
@@ -830,19 +865,22 @@ namespace ImageProcessingAlgorithms.Tools
             return System.Math.Exp(-(value * value) / (2 * variance_r * variance_r));
         }
 
-        public static Image<Gray, byte> GaussianBilateralFiltering(Image<Gray, byte> inputImage, int maskSize, double variance_d, double variance_r)
+        public static Image<Gray, byte> GaussianBilateralFiltering(Image<Gray, byte> inputImage, double variance_d, double variance_r)
         {
+            int maskSize = (int)System.Math.Ceiling(4 * variance_d);
+            if (maskSize % 2 == 0) maskSize++;
+
             Image<Gray, byte> borderedImage = BorderReplicate(inputImage, maskSize);
             Image<Gray, byte> result = new Image<Gray, byte>(borderedImage.Size);
 
             int maskRadius = maskSize / 2;
-            double[,] filterMask = new double[maskSize, maskSize];
+            double[,] medianMask = new double[maskSize, maskSize];
 
             for (int i = -maskRadius; i <= maskRadius; ++i)
             {
                 for (int j = -maskRadius; j <= maskRadius; ++j)
                 {
-                    filterMask[i + maskRadius, j + maskRadius] = MedianMask(i, j, variance_d);
+                    medianMask[i + maskRadius, j + maskRadius] = MedianMask(i, j, variance_d);
                 }
             }
 
@@ -855,8 +893,12 @@ namespace ImageProcessingAlgorithms.Tools
                     {
                         for (int j = -maskRadius; j <= maskRadius; ++j)
                         {
-                            numerator += borderedImage.Data[y + i, x + j, 0] * filterMask[i + maskRadius, j + maskRadius] * RangeMask(borderedImage, y, x, i, j, variance_r);
-                            denominator += filterMask[i + maskRadius, j + maskRadius] * RangeMask(borderedImage, y, x, i, j, variance_r);
+                            double median = medianMask[i + maskRadius, j + maskRadius];
+                            double range = RangeMask(borderedImage, y, x, i, j, variance_r);
+                            double filter = median * range;
+
+                            numerator += borderedImage.Data[y + i, x + j, 0] * filter;
+                            denominator += filter;
                         }
                     }
 
@@ -868,7 +910,7 @@ namespace ImageProcessingAlgorithms.Tools
                 }
             }
 
-            return CropImage(result, maskSize / 2, maskSize / 2, inputImage.Width + maskSize / 2, inputImage.Height + maskSize / 2); ;
+            return CropImage(result, maskRadius, maskRadius, inputImage.Width + maskRadius, inputImage.Height + maskRadius);
         }
 
         #endregion

@@ -71,7 +71,7 @@ namespace ImageProcessingFramework.Model
             set;
         }
 
-        public static Collection<byte> HermiteSplineLookUpTable
+        public static int[] HermiteSplineLookUpTable
         {
             get;
             set;

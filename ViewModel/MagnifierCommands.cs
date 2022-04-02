@@ -72,7 +72,8 @@ namespace ImageProcessingFramework.ViewModel
                 int j = 0;
                 for (int y = -4; y <= 4; ++y)
                 {
-                    if (DataProvider.MousePosition.Y + y >= 0 && DataProvider.MousePosition.X + x >= 0)
+                    if (DataProvider.MousePosition.Y + y >= 0 && DataProvider.MousePosition.X + x >= 0 &&
+                        DataProvider.MousePosition.Y + y < image.Height && DataProvider.MousePosition.X + x < image.Width)
                     {
                         int grayColor = GetGrayValue(image, (int)DataProvider.MousePosition.Y + y,
                             (int)DataProvider.MousePosition.X + x, 0);

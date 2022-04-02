@@ -75,14 +75,14 @@ namespace ImageProcessingFramework.View
                     sumOfValues[pos] += point.Y;
                 }
 
-                HermiteSplineLookUpTable = new Collection<byte>();
+                HermiteSplineLookUpTable = new int[256];
                 for (int key = 0; key < 256; key++)
                 {
                     int value = (int)((sumOfValues[key] / frequenceOfKeys[key]) + 0.5);
                     if (value < 0) value = 0;
                     else if (value > 255) value = 255;
 
-                    HermiteSplineLookUpTable.Add((byte)value);
+                    HermiteSplineLookUpTable[key] = (byte)value;
                 }
             }
         }

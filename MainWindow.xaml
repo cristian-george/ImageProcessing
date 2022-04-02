@@ -100,6 +100,12 @@
                           Command="{Binding Path=ReplicatePadding}"/>
                 <Separator/>
                 <MenuItem Header="Adjust brightness and contrast">
+                    <MenuItem Header="Based on liniar operators">
+                        <MenuItem Header="Increase brightness +"
+                                  Command="{Binding Path=IncreaseBrightnessPlus}"/>
+                        <MenuItem Header="Decrease brightness -"
+                                  Command="{Binding Path=DecreaseBrightnessMinus}"/>
+                    </MenuItem>
                     <MenuItem Header="Based on Cubic Hermite spline">
                         <MenuItem Header="Interactive plot"
                               Command="{Binding Path=HermiteSplineDisplay}" />
