@@ -885,6 +885,118 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #region Operator * (keep black)
+        private ICommand m_increaseBrightnessKeepBlack;
+        public ICommand IncreaseBrightnessKeepBlack
+        {
+            get
+            {
+                if (m_increaseBrightnessKeepBlack == null)
+                    m_increaseBrightnessKeepBlack = new RelayCommand(IncBrightnessKeepBlack);
+                return m_increaseBrightnessKeepBlack;
+            }
+        }
+
+        public void IncBrightnessKeepBlack(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "a value (a > 1):"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                double a = response[0];
+                if (a > 1)
+                {
+                    int[] lookUpTable = Tools.IncreaseBrightnessKeepBlack(a);
+                    if (GrayInitialImage != null)
+                    {
+                        GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                    else if (ColorInitialImage != null)
+                    {
+                        ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                }
+                else MessageBox.Show("Please add a valid value first.");
+            }
+        }
+        #endregion
+
+        #region Operator * (keep white)
+        private ICommand m_increaseBrightnessKeepWhite;
+        public ICommand IncreaseBrightnessKeepWhite
+        {
+            get
+            {
+                if (m_increaseBrightnessKeepWhite == null)
+                    m_increaseBrightnessKeepWhite = new RelayCommand(IncBrightnessMultiplicationKeepWhite);
+                return m_increaseBrightnessKeepWhite;
+            }
+        }
+
+        public void IncBrightnessMultiplicationKeepWhite(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "a value (0 < a < 1):"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                double a = response[0];
+                if (0 < a && a < 1)
+                {
+                    int[] lookUpTable = Tools.IncreaseBrightnessKeepWhite(a);
+                    if (GrayInitialImage != null)
+                    {
+                        GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                    else if (ColorInitialImage != null)
+                    {
+                        ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                }
+                else MessageBox.Show("Please add valid values first.");
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Decrease brightness
@@ -945,8 +1057,196 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #region Operator * (keep black)
+        private ICommand m_decreaseBrightnessKeepBlack;
+        public ICommand DecreaseBrightnessKeepBlack
+        {
+            get
+            {
+                if (m_decreaseBrightnessKeepBlack == null)
+                    m_decreaseBrightnessKeepBlack = new RelayCommand(DecrBrightnessKeepBlack);
+                return m_decreaseBrightnessKeepBlack;
+            }
+        }
+
+        public void DecrBrightnessKeepBlack(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "a value (0 < a < 1):"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                double a = response[0];
+                if (0 < a && a < 1)
+                {
+                    int[] lookUpTable = Tools.DecreaseBrightnessKeepBlack(a);
+                    if (GrayInitialImage != null)
+                    {
+                        GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                    else if (ColorInitialImage != null)
+                    {
+                        ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                }
+                else MessageBox.Show("Please add a valid value first.");
+            }
+        }
         #endregion
 
+        #region Operator * (keep white)
+        private ICommand m_decreaseBrightnessKeepWhite;
+        public ICommand DecreaseBrightnessKeepWhite
+        {
+            get
+            {
+                if (m_decreaseBrightnessKeepWhite == null)
+                    m_decreaseBrightnessKeepWhite = new RelayCommand(DecrBrightnessKeepWhite);
+                return m_decreaseBrightnessKeepWhite;
+            }
+        }
+
+        public void DecrBrightnessKeepWhite(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "a value (a > 1):"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                double a = response[0];
+                if (a > 1)
+                {
+                    int[] lookUpTable = Tools.DecreaseBrightnessKeepWhite(a);
+                    if (GrayInitialImage != null)
+                    {
+                        GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                    else if (ColorInitialImage != null)
+                    {
+                        ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                }
+                else MessageBox.Show("Please add valid values first.");
+            }
+        }
+        #endregion
+
+        #endregion
+
+        #endregion
+
+        #region Log operator
+        private ICommand m_logOperator;
+        public ICommand LogOperator
+        {
+            get
+            {
+                if (m_logOperator == null)
+                    m_logOperator = new RelayCommand(LogarithmicOperator);
+                return m_logOperator;
+            }
+        }
+
+        public void LogarithmicOperator(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            int[] lookUpTable = Tools.LogarithmicOperator();
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+            else if (ColorInitialImage != null)
+            {
+                ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+        }
+        #endregion
+
+        #region Inverse Log operator
+        private ICommand m_expOperator;
+        public ICommand ExpOperator
+        {
+            get
+            {
+                if (m_expOperator == null)
+                    m_expOperator = new RelayCommand(ExponentialOperator);
+                return m_expOperator;
+            }
+        }
+
+        public void ExponentialOperator(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            int[] lookUpTable = Tools.ExponentialOperator();
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+            else if (ColorInitialImage != null)
+            {
+                ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+        }
         #endregion
 
         #region Cubic Hermite spline

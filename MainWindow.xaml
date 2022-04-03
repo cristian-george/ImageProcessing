@@ -105,7 +105,23 @@
                                   Command="{Binding Path=IncreaseBrightnessPlus}"/>
                         <MenuItem Header="Decrease brightness -"
                                   Command="{Binding Path=DecreaseBrightnessMinus}"/>
+                        <MenuItem Header="Increase brightness * (keep black)"
+                                  Command="{Binding Path=IncreaseBrightnessKeepBlack}"/>
+                        <MenuItem Header="Increase brightness * (keep white)"
+                                  Command="{Binding Path=IncreaseBrightnessKeepWhite}"/>
+                        <MenuItem Header="Decrease brightness * (keep black)"
+                                  Command="{Binding Path=DecreaseBrightnessKeepBlack}"/>
+                        <MenuItem Header="Decrease brightness * (keep white)"
+                                  Command="{Binding Path=DecreaseBrightnessKeepWhite}"/>
                     </MenuItem>
+                    <MenuItem Header="Based on logarithmic operator"
+                              Command="{Binding Path=LogOperator}"/>
+                    <MenuItem Header="Based on inverse logarithmic operator"
+                              Command="{Binding Path=ExpOperator}"/>
+                    <MenuItem Header="Based on gamma operator"
+                              Command="{Binding Path=GammaOperator}"/>
+                    <MenuItem Header="Piecewise linear contrast"
+                              Command="{Binding Path=PiecewiseLinearContrast}"/>
                     <MenuItem Header="Based on Cubic Hermite spline">
                         <MenuItem Header="Interactive plot"
                               Command="{Binding Path=HermiteSplineDisplay}" />

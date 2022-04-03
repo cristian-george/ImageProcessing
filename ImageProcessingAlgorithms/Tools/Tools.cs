@@ -385,6 +385,107 @@ namespace ImageProcessingAlgorithms.Tools
         }
         #endregion
 
+        #region Operator * for increasing brightness and contrast
+        public static int[] IncreaseBrightnessKeepBlack(double a)
+        {
+            int[] lookUpTable = new int[256];
+
+            for (int pixel = 0; pixel <= 255; ++pixel)
+            {
+                if (pixel <= 255 / a)
+                    lookUpTable[pixel] = (int)(a * pixel + 0.5);
+                else
+                    lookUpTable[pixel] = 255;
+            }
+
+            return lookUpTable;
+        }
+
+        public static int[] IncreaseBrightnessKeepWhite(double a)
+        {
+            int[] lookUpTable = new int[256];
+            int b = (int)(255 * (1 - a));
+
+            for (int pixel = 0; pixel <= 255; ++pixel)
+            {
+                int value = (int)(a * pixel + b + 0.5);
+                if (value < 0) value = 0;
+                else if (value > 255) value = 255;
+
+                lookUpTable[pixel] = value;
+            }
+
+            return lookUpTable;
+        }
+        #endregion
+
+        #region Operator * for decreasing brightness and contrast
+        public static int[] DecreaseBrightnessKeepBlack(double a)
+        {
+            int[] lookUpTable = new int[256];
+
+            for (int pixel = 0; pixel <= 255; ++pixel)
+            {
+                lookUpTable[pixel] = (int)(a * pixel + 0.5);
+            }
+
+            return lookUpTable;
+        }
+
+        public static int[] DecreaseBrightnessKeepWhite(double a)
+        {
+            int[] lookUpTable = new int[256];
+            int b = (int)(255 * (a - 1));
+
+            for (int pixel = 0; pixel <= 255; ++pixel)
+            {
+                if (b / a <= pixel && pixel <= 255)
+                {
+                    int value = (int)(a * pixel - b + 0.5);
+                    if (value < 0) value = 0;
+                    else if (value > 255) value = 255;
+
+                    lookUpTable[pixel] = value;
+                }
+                else
+                    lookUpTable[pixel] = 0;
+            }
+
+            return lookUpTable;
+        }
+        #endregion
+
+        #region Log operator for increasing brightness and contrast
+        public static int[] LogarithmicOperator()
+        {
+            int[] lookUpTable = new int[256];
+            double c = 255 / System.Math.Log(256);
+
+            for (int pixel = 0; pixel <= 255; ++pixel)
+            {
+                lookUpTable[pixel] = (int)(c * System.Math.Log(pixel + 1) + 0.5);
+            }
+
+            return lookUpTable;
+        }
+
+        #endregion
+
+        #region InverseLog operator for decreasing brightness and contrast
+        public static int[] ExponentialOperator()
+        {
+            int[] lookUpTable = new int[256];
+            double c = 255 / System.Math.Log(256);
+
+            for (int pixel = 0; pixel <= 255; ++pixel)
+            {
+                lookUpTable[pixel] = (int)(System.Math.Exp(pixel / c) - 1 + 0.5);
+            }
+
+            return lookUpTable;
+        }
+        #endregion
+
         #region Compute histogram
         private static double[] GetHistogram(Image<Gray, byte> inputImage)
         {
