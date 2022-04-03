@@ -486,6 +486,21 @@ namespace ImageProcessingAlgorithms.Tools
         }
         #endregion
 
+        #region Gamma operator for inc/decr brightness and contrast
+        public static int[] GammaCorrection(double gamma)
+        {
+            int[] lookUpTable = new int[256];
+            double a = System.Math.Pow(255, 1 - gamma);
+
+            for (int pixel = 0; pixel <= 255; ++pixel)
+            {
+                lookUpTable[pixel] = (int)(a * System.Math.Pow(pixel, gamma) + 0.5);
+            }
+
+            return lookUpTable;
+        }
+        #endregion
+
         #region Compute histogram
         private static double[] GetHistogram(Image<Gray, byte> inputImage)
         {

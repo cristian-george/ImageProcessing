@@ -1249,6 +1249,62 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #region Gamma operator
+        private ICommand m_gammaOperator;
+        public ICommand GammaOperator
+        {
+            get
+            {
+                if (m_gammaOperator == null)
+                    m_gammaOperator = new RelayCommand(GammaCorrection);
+                return m_gammaOperator;
+            }
+        }
+
+        public void GammaCorrection(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Gamma value"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                double gamma = response[0];
+                if (gamma > 0)
+                {
+                    int[] lookUpTable = Tools.GammaCorrection(gamma);
+                    if (GrayInitialImage != null)
+                    {
+                        GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                    else if (ColorInitialImage != null)
+                    {
+                        ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                }
+                else MessageBox.Show("Please add a valid b value first.");
+            }
+        }
+        #endregion
+
         #region Cubic Hermite spline
 
         #region Window
