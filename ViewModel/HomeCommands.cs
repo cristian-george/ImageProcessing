@@ -1540,18 +1540,18 @@ namespace ImageProcessingFramework.ViewModel
         #endregion
 
         #region Interpolation
-        private ICommand m_cubicHermiteSplineInterpolation;
-        public ICommand HermiteSplineInterpolation
+        private ICommand m_splineInterpolation;
+        public ICommand SplineInterpolation
         {
             get
             {
-                if (m_cubicHermiteSplineInterpolation == null)
-                    m_cubicHermiteSplineInterpolation = new RelayCommand(HermiteSplineInterpolationImage);
-                return m_cubicHermiteSplineInterpolation;
+                if (m_splineInterpolation == null)
+                    m_splineInterpolation = new RelayCommand(HermiteSpline);
+                return m_splineInterpolation;
             }
         }
 
-        public void HermiteSplineInterpolationImage(object parameter)
+        public void HermiteSpline(object parameter)
         {
             if (GrayInitialImage == null && ColorInitialImage == null)
             {
@@ -1580,6 +1580,77 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #endregion
+
+        #region Histogram equalization
+        private ICommand m_histogramEq;
+        public ICommand HistogramEq
+        {
+            get
+            {
+                if (m_histogramEq == null)
+                    m_histogramEq = new RelayCommand(HistogramEqualization);
+                return m_histogramEq;
+            }
+        }
+
+        public void HistogramEqualization(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            if (GrayInitialImage != null)
+            {
+                int[] lookUpTable = Tools.HistogramEqualization(GrayInitialImage);
+                GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+            else
+            if (ColorInitialImage != null)
+            {
+                m_isProcessedImageGray = true;
+                GrayProcessedImage = Tools.Convert(ColorInitialImage);
+
+                int[] lookUpTable = Tools.HistogramEqualization(GrayProcessedImage);
+                GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayProcessedImage, lookUpTable);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+        }
+        #endregion
+
+        #region Color histogram equalization
+        private ICommand m_colorHistogramEq;
+        public ICommand ColorHistogramEq
+        {
+            get
+            {
+                if (m_colorHistogramEq == null)
+                    m_colorHistogramEq = new RelayCommand(ColorHistogramEqualization);
+                return m_colorHistogramEq;
+            }
+        }
+
+        public void ColorHistogramEqualization(object parameter)
+        {
+            if (ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add a color image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            ColorProcessedImage = Tools.ColorHistogramEqualization(ColorInitialImage);
+            ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+            OnPropertyChanged("ProcessedImage");
+        }
         #endregion
 
         #endregion

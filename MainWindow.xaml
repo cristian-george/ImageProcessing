@@ -79,21 +79,21 @@
                 <MenuItem Header="Invert" 
                           Command="{Binding Path=Invert}"/>
                 <MenuItem Header="Transform to gray image"
-                          Command="{Binding Path=ConvertToGrayImage}" />
+                          Command="{Binding Path=ConvertToGrayImage}"/>
                 <Separator/>
                 <MenuItem Header="Crop image"
                           Command="{Binding Path=Crop}" />
                 <MenuItem Header="Mirror image">
                     <MenuItem Header="Vertically"
-                              Command="{Binding Path=MirrorVertically}" />
+                              Command="{Binding Path=MirrorVertically}"/>
                     <MenuItem Header="Horizontally"
-                              Command="{Binding Path=MirrorHorizontally}" />
+                              Command="{Binding Path=MirrorHorizontally}"/>
                 </MenuItem>
                 <MenuItem Header="Rotate image">
                     <MenuItem Header="Clockwise"
-                              Command="{Binding Path=RotateClockwise}" />
+                              Command="{Binding Path=RotateClockwise}"/>
                     <MenuItem Header="Anti-clockwise"
-                              Command="{Binding Path=RotateAntiClockwise}" />
+                              Command="{Binding Path=RotateAntiClockwise}"/>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="Replicate padding"
@@ -134,8 +134,12 @@
                         <MenuItem Header="Interactive plot"
                               Command="{Binding Path=HermiteSplineDisplay}" />
                         <MenuItem Header="Apply changes"
-                              Command="{Binding Path=HermiteSplineInterpolation}" />
+                              Command="{Binding Path=SplineInterpolation}" />
                     </MenuItem>
+                    <MenuItem Header="Histogram Equalization"
+                              Command="{Binding Path=HistogramEq}"/>
+                    <MenuItem Header="Color Histogram Equalization"
+                              Command="{Binding Path=ColorHistogramEq}"/>
                 </MenuItem>
                 <MenuItem Header="Thresholding">
                     <MenuItem Header="With a given value"

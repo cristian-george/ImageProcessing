@@ -64,12 +64,27 @@ namespace ImageProcessingAlgorithms.Tools
         }
         #endregion
 
-        #region Convert
+        #region Convert RGB to grayscale
         public static Image<Gray, byte> Convert(Image<Bgr, byte> coloredImage)
         {
             Image<Gray, byte> grayImage = coloredImage.Convert<Gray, byte>();
-
             return grayImage;
+        }
+        #endregion
+
+        #region Convert RGB to HSV
+        public static Image<Hsv, byte> ConvertBgrToHsv(Image<Bgr, byte> coloredImage)
+        {
+            Image<Hsv, byte> hsvImage = coloredImage.Convert<Hsv, byte>();
+            return hsvImage;
+        }
+        #endregion
+
+        #region Convert HSV to RGB
+        public static Image<Bgr, byte> ConvertHsvToBgr(Image<Hsv, byte> hsvImage)
+        {
+            Image<Bgr, byte> coloredImage = hsvImage.Convert<Bgr, byte>();
+            return coloredImage;
         }
         #endregion
 
@@ -312,6 +327,67 @@ namespace ImageProcessingAlgorithms.Tools
         {
             Image<Bgr, byte> transpose = Transpose(inputImage);
             return MirrorHorizontally(transpose);
+        }
+        #endregion
+
+        #region Compute histograms
+        private static double[] RelativeHistogram(Image<Gray, byte> inputImage)
+        {
+            int numberOfPixels = inputImage.Height * inputImage.Width;
+            double[] histogram = new double[256];
+
+            for (int y = 0; y < inputImage.Height; y++)
+            {
+                for (int x = 0; x < inputImage.Width; x++)
+                {
+                    ++histogram[inputImage.Data[y, x, 0]];
+                }
+            }
+
+            for (int color = 0; color < 256; ++color)
+            {
+                histogram[color] = histogram[color] / numberOfPixels;
+            }
+
+            return histogram;
+        }
+
+        private static double[] CummulativeHistogram(Image<Gray, byte> inputImage)
+        {
+            double[] relativeHist = RelativeHistogram(inputImage);
+            double[] cummulativeHist = new double[256];
+
+            for (int pixel = 0; pixel <= 255; ++pixel)
+            {
+                for (int j = 0; j <= pixel; ++j)
+                {
+                    cummulativeHist[pixel] += relativeHist[j];
+                }
+            }
+
+            return cummulativeHist;
+        }
+
+        private static double GetHistogramProbability(int inf, int sup, double[] histogram)
+        {
+            double probability = 0;
+            for (int k = inf; k <= sup; ++k)
+            {
+                probability += histogram[k];
+            }
+
+            return probability;
+        }
+
+        private static double GetHistogramSum(int inf, int sup, double[] histogram)
+        {
+            double sum = 0;
+            for (int k = inf; k <= sup; ++k)
+            {
+                sum += k * histogram[k];
+            }
+
+            return sum;
         }
         #endregion
 
@@ -577,8 +653,24 @@ namespace ImageProcessingAlgorithms.Tools
         }
         #endregion
 
-        #region Compute histogram
-        private static double[] GetHistogram(Image<Gray, byte> inputImage)
+        #region Histogram equalization
+        public static int[] HistogramEqualization(Image<Gray, byte> inputImage)
+        {
+            int[] lookUpTable = new int[256];
+
+            double[] cummulativeHist = CummulativeHistogram(inputImage);
+            for (int pixel = 0; pixel <= 255; ++pixel)
+            {
+                lookUpTable[pixel] =
+                    (int)((255 * (cummulativeHist[pixel] - cummulativeHist[0]) / (1 - cummulativeHist[0])) + 0.5);
+            }
+
+            return lookUpTable;
+        }
+        #endregion
+
+        #region Color histogram equalization
+        private static double[] RelativeHistogram(Image<Hsv, byte> inputImage)
         {
             int numberOfPixels = inputImage.Height * inputImage.Width;
             double[] histogram = new double[256];
@@ -587,11 +679,11 @@ namespace ImageProcessingAlgorithms.Tools
             {
                 for (int x = 0; x < inputImage.Width; x++)
                 {
-                    ++histogram[inputImage.Data[y, x, 0]];
+                    ++histogram[inputImage.Data[y, x, 2]];
                 }
             }
 
-            for (int color = 0; color < 256; color++)
+            for (int color = 0; color < 256; ++color)
             {
                 histogram[color] = histogram[color] / numberOfPixels;
             }
@@ -599,33 +691,50 @@ namespace ImageProcessingAlgorithms.Tools
             return histogram;
         }
 
-        private static double GetHistogramProbability(int inf, int sup, double[] histogram)
+        private static double[] CummulativeHistogram(Image<Hsv, byte> inputImage)
         {
-            double probability = 0;
-            for (int k = inf; k <= sup; ++k)
+            double[] relativeHist = RelativeHistogram(inputImage);
+            double[] cummulativeHist = new double[256];
+
+            for (int pixel = 0; pixel <= 255; ++pixel)
             {
-                probability += histogram[k];
+                for (int j = 0; j <= pixel; ++j)
+                {
+                    cummulativeHist[pixel] += relativeHist[j];
+                }
             }
 
-            return probability;
+            return cummulativeHist;
         }
-
-        private static double GetHistogramSum(int inf, int sup, double[] histogram)
+        public static Image<Bgr, byte> ColorHistogramEqualization(Image<Bgr, byte> inputImage)
         {
-            double sum = 0;
-            for (int k = inf; k <= sup; ++k)
+            Image<Hsv, byte> hsvImage = ConvertBgrToHsv(inputImage);
+
+            int[] lookUpTable = new int[256];
+            double[] cummulativeHist = CummulativeHistogram(hsvImage);
+
+            for (int pixel = 0; pixel <= 255; ++pixel)
             {
-                sum += k * histogram[k];
+                lookUpTable[pixel] =
+                    (int)((255 * (cummulativeHist[pixel] - cummulativeHist[0]) / (1 - cummulativeHist[0])) + 0.5);
             }
 
-            return sum;
+            for (int y = 0; y < hsvImage.Height; ++y)
+            {
+                for (int x = 0; x < hsvImage.Width; ++x)
+                {
+                    hsvImage.Data[y, x, 2] = (byte)lookUpTable[hsvImage.Data[y, x, 2]];
+                }
+            }
+
+            return ConvertHsvToBgr(hsvImage);
         }
         #endregion
 
         #region Otsu two-threshold
         private static System.Tuple<int, int> GetThresholdValues(Image<Gray, byte> inputImage)
         {
-            double[] histogram = GetHistogram(inputImage);
+            double[] histogram = RelativeHistogram(inputImage);
             double mu = Mean(inputImage);
 
             double maxInterclassVariance = 0;
