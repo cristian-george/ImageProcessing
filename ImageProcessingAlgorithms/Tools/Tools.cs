@@ -561,6 +561,22 @@ namespace ImageProcessingAlgorithms.Tools
         }
         #endregion
 
+        #region EM - operator
+        public static int[] EmOperator(double m, double E)
+        {
+            int[] lookUpTable = new int[256];
+            double c = 1 / 255 * System.Math.Pow(m, E) * (System.Math.Pow(255, E) + System.Math.Pow(m, E));
+
+            for (int pixel = 0; pixel <= 255; ++pixel)
+            {
+                lookUpTable[pixel] =
+                (int)(255 * (System.Math.Pow(pixel, E) / (System.Math.Pow(pixel, E) + System.Math.Pow(m, E)) + c * pixel) + 0.5);
+            }
+
+            return lookUpTable;
+        }
+        #endregion
+
         #region Compute histogram
         private static double[] GetHistogram(Image<Gray, byte> inputImage)
         {

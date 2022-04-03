@@ -1449,6 +1449,64 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #region EM - operator
+        private ICommand m_emOp;
+        public ICommand EmOp
+        {
+            get
+            {
+                if (m_emOp == null)
+                    m_emOp = new RelayCommand(EmOperator);
+                return m_emOp;
+            }
+        }
+
+        public void EmOperator(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "m value:",
+                    "E value:"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                double m = response[0];
+                double E = response[1];
+                if (m != 0 && E != 0)
+                {
+                    int[] lookUpTable = Tools.EmOperator(m, E);
+                    if (GrayInitialImage != null)
+                    {
+                        GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                    else if (ColorInitialImage != null)
+                    {
+                        ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                }
+                else MessageBox.Show("Please add valid values first.");
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Cubic Hermite spline
