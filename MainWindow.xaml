@@ -125,6 +125,8 @@
                     <MenuItem Header="Based on Nonlinear operators">
                         <MenuItem Header="Sinusoidal operator"
                                   Command="{Binding Path=SinusoidalOp}"/>
+                        <MenuItem Header="Polynomial operator"
+                                  Command="{Binding Path=PolynomialOp}"/>
                     </MenuItem>
                     <MenuItem Header="Based on Cubic Hermite spline">
                         <MenuItem Header="Interactive plot"

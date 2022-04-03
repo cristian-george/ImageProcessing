@@ -1,7 +1,6 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace ImageProcessingAlgorithms.Tools
 {
@@ -540,6 +539,22 @@ namespace ImageProcessingAlgorithms.Tools
             for (int pixel = 0; pixel <= 255; ++pixel)
             {
                 lookUpTable[pixel] = (int)(alfa * (System.Math.Sin(beta * pixel + gamma) + 1) + 0.5);
+            }
+
+            return lookUpTable;
+        }
+        #endregion
+
+        #region Polynomial operator
+        public static int[] PolynomialOperator()
+        {
+            int[] lookUpTable = new int[256];
+            double a = -2 * System.Math.Pow(255, -2);
+            double b = System.Math.Pow(85, -1);
+
+            for (int pixel = 0; pixel <= 255; ++pixel)
+            {
+                lookUpTable[pixel] = (int)(System.Math.Pow(pixel, 2) * (a * pixel + b) + 0.5);
             }
 
             return lookUpTable;

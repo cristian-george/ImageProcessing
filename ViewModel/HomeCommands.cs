@@ -1411,6 +1411,44 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #region Polynomial operator
+        private ICommand m_polynomialOp;
+        public ICommand PolynomialOp
+        {
+            get
+            {
+                if (m_polynomialOp == null)
+                    m_polynomialOp = new RelayCommand(PolynomialOperator);
+                return m_polynomialOp;
+            }
+        }
+
+        public void PolynomialOperator(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            int[] lookUpTable = Tools.PolynomialOperator();
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+            else if (ColorInitialImage != null)
+            {
+                ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Cubic Hermite spline
