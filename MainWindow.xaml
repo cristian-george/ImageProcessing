@@ -122,6 +122,10 @@
                               Command="{Binding Path=GammaOperator}"/>
                     <MenuItem Header="Piecewise linear contrast"
                               Command="{Binding Path=PiecewiseLinearContrast}"/>
+                    <MenuItem Header="Based on Nonlinear operators">
+                        <MenuItem Header="Sinusoidal operator"
+                                  Command="{Binding Path=SinusoidalOp}"/>
+                    </MenuItem>
                     <MenuItem Header="Based on Cubic Hermite spline">
                         <MenuItem Header="Interactive plot"
                               Command="{Binding Path=HermiteSplineDisplay}" />

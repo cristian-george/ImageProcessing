@@ -1371,6 +1371,48 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #region Non-linear operators
+
+        #region Sinusoidal operator
+        private ICommand m_sinusoidalOp;
+        public ICommand SinusoidalOp
+        {
+            get
+            {
+                if (m_sinusoidalOp == null)
+                    m_sinusoidalOp = new RelayCommand(SinusoidalOperator);
+                return m_sinusoidalOp;
+            }
+        }
+
+        public void SinusoidalOperator(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            int[] lookUpTable = Tools.SinusoidalOperator();
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+            else if (ColorInitialImage != null)
+            {
+                ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+        }
+        #endregion
+
+        #endregion
+
         #region Cubic Hermite spline
 
         #region Window

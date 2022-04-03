@@ -529,6 +529,23 @@ namespace ImageProcessingAlgorithms.Tools
         }
         #endregion
 
+        #region Sinusoidal operator
+        public static int[] SinusoidalOperator()
+        {
+            int[] lookUpTable = new int[256];
+            double alfa = 127.5;
+            double beta = System.Math.PI / 255;
+            double gamma = -System.Math.PI / 2;
+
+            for (int pixel = 0; pixel <= 255; ++pixel)
+            {
+                lookUpTable[pixel] = (int)(alfa * (System.Math.Sin(beta * pixel + gamma) + 1) + 0.5);
+            }
+
+            return lookUpTable;
+        }
+        #endregion
+
         #region Compute histogram
         private static double[] GetHistogram(Image<Gray, byte> inputImage)
         {
