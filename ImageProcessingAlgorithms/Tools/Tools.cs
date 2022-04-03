@@ -501,6 +501,34 @@ namespace ImageProcessingAlgorithms.Tools
         }
         #endregion
 
+        #region Piecewise linear contrast enhancement
+        public static int[] PiecewiseLinearContrast(int r1, int s1, int r2, int s2)
+        {
+            int[] lookUpTable = new int[256];
+            double alfa = (double)s1 / r1;
+            double beta = (double)(s2 - s1) / (r2 - r1);
+            double gamma = (double)(255 - s2) / (255 - r2);
+
+            for (int pixel = 0; pixel <= 255; ++pixel)
+            {
+                if (0 <= pixel && pixel < r1)
+                {
+                    lookUpTable[pixel] = (int)(alfa * pixel + 0.5);
+                }
+                else if (r1 <= pixel && pixel < r2)
+                {
+                    lookUpTable[pixel] = (int)(beta * (pixel - r1) + s1 + 0.5);
+                }
+                else if (r2 <= pixel && pixel <= 255)
+                {
+                    lookUpTable[pixel] = (int)(gamma * (pixel - r2) + s2 + 0.5);
+                }
+            }
+
+            return lookUpTable;
+        }
+        #endregion
+
         #region Compute histogram
         private static double[] GetHistogram(Image<Gray, byte> inputImage)
         {

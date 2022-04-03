@@ -1274,7 +1274,7 @@ namespace ImageProcessingFramework.ViewModel
             DialogBox dialogBox = new DialogBox();
             System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
                 {
-                    "Gamma value"
+                    "Gamma value:"
                 };
 
             dialogBox.CreateDialogBox(prop);
@@ -1301,6 +1301,72 @@ namespace ImageProcessingFramework.ViewModel
                     }
                 }
                 else MessageBox.Show("Please add a valid b value first.");
+            }
+        }
+        #endregion
+
+        #region Piecewise linear contrast
+        private ICommand m_piecewiseLinearContrast;
+        public ICommand PiecewiseLinearContrast
+        {
+            get
+            {
+                if (m_piecewiseLinearContrast == null)
+                    m_piecewiseLinearContrast = new RelayCommand(PiecewiseLinearOperator);
+                return m_piecewiseLinearContrast;
+            }
+        }
+
+        public void PiecewiseLinearOperator(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "r1:",
+                    "s1:",
+                    "r2:",
+                    "s2"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int r1 = (int)response[0];
+                int s1 = (int)response[1];
+                int r2 = (int)response[2];
+                int s2 = (int)response[3];
+
+                if (0 <= r1 && r1 <= r2 && r2 <= 255 &&
+                    0 <= s1 && s1 <= s2 && s2 <= 255)
+                {
+                    int[] lookUpTable = Tools.PiecewiseLinearContrast(r1, s1, r2, s2);
+                    if (GrayInitialImage != null)
+                    {
+                        GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                    else if (ColorInitialImage != null)
+                    {
+                        ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                }
+                else MessageBox.Show("Please add valid values first " +
+                    "(0 <= r1 <= r2 <= 255 and " +
+                    "0 <= s1 <= s2 <= 255).");
             }
         }
         #endregion
