@@ -1668,6 +1668,7 @@ namespace ImageProcessingFramework.ViewModel
                 return m_thresholding;
             }
         }
+
         public void ThresholdingImage(object parameter)
         {
             if (GrayInitialImage != null)
@@ -1709,6 +1710,7 @@ namespace ImageProcessingFramework.ViewModel
                 return m_quantileThreshold;
             }
         }
+
         public void QuantileThresholding(object parameter)
         {
             if (GrayInitialImage != null)
@@ -1735,6 +1737,31 @@ namespace ImageProcessingFramework.ViewModel
                     }
                     else MessageBox.Show("Please add a threshold value first.");
                 }
+            }
+            else MessageBox.Show("No grayscale image!");
+        }
+        #endregion
+
+        #region Median threshold
+        private ICommand m_medianThreshold;
+        public ICommand MedianThreshold
+        {
+            get
+            {
+                if (m_medianThreshold == null)
+                    m_medianThreshold = new RelayCommand(MedianThresholding);
+                return m_medianThreshold;
+            }
+        }
+
+        public void MedianThresholding(object parameter)
+        {
+            if (GrayInitialImage != null)
+            {
+                int threshold = Tools.MedianThreshold(GrayInitialImage);
+                GrayProcessedImage = Tools.Thresholding(GrayInitialImage, threshold);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
             }
             else MessageBox.Show("No grayscale image!");
         }

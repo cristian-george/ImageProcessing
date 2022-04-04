@@ -146,6 +146,8 @@
                               Command="{Binding Path=Thresholding}"/>
                     <MenuItem Header="Quantile threshold"
                               Command="{Binding Path=QuantileThreshold}"/>
+                    <MenuItem Header="Median threshold"
+                              Command="{Binding Path=MedianThreshold}"/>
                     <MenuItem Header="Otsu two-threshold"
                               Command="{Binding Path=OtsuTwoThreshold}"/>
                 </MenuItem>

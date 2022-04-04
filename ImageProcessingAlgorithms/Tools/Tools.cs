@@ -767,6 +767,19 @@ namespace ImageProcessingAlgorithms.Tools
         }
         #endregion
 
+        #region Median threshold
+        public static int MedianThreshold(Image<Gray, byte> inputImage)
+        {
+            // return QuantileThreshold(inputImage, 0.5);
+
+            int[] histogram = Histogram(inputImage);
+            int resolution = inputImage.Height * inputImage.Width;
+
+            int threshold = GetMedianValue(histogram, resolution / 2);
+            return threshold;
+        }
+        #endregion
+
         #region Otsu two-threshold
         private static System.Tuple<int, int> GetThresholdValues(Image<Gray, byte> inputImage)
         {
@@ -849,7 +862,6 @@ namespace ImageProcessingAlgorithms.Tools
         #endregion
 
         #region Replicate padding
-
         public static Image<Gray, byte> BorderReplicate(Image<Gray, byte> inputImage, int thickness)
         {
             Image<Gray, byte> borderedImage = new Image<Gray, byte>(inputImage.Width + thickness, inputImage.Height + thickness);
@@ -1011,7 +1023,6 @@ namespace ImageProcessingAlgorithms.Tools
         #endregion
 
         #region Median filtering
-
         private static byte GetMedianValue(Image<Gray, byte> inputImage, int maskSize, int y, int x)
         {
             int maskRadius = maskSize / 2;
@@ -1050,14 +1061,13 @@ namespace ImageProcessingAlgorithms.Tools
         #endregion
 
         #region Fast median filtering
-
-        private static byte GetMedianValue(int[] maskHistogram, int middle)
+        private static byte GetMedianValue(int[] histogram, int middle)
         {
             byte median;
             int sum = 0;
             for (median = 0; median <= 255; ++median)
             {
-                sum += maskHistogram[median];
+                sum += histogram[median];
                 if (sum >= middle)
                     break;
             }
@@ -1190,7 +1200,6 @@ namespace ImageProcessingAlgorithms.Tools
         #endregion
 
         #region Bilateral gaussian filtering
-
         private static double MedianMask(int i, int j, double variance_d)
         {
             return System.Math.Exp(-((i * i) + (j * j)) / (2 * variance_d * variance_d));
