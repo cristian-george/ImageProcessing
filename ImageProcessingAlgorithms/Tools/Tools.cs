@@ -780,6 +780,13 @@ namespace ImageProcessingAlgorithms.Tools
         }
         #endregion
 
+        #region Intermeans threshold
+        public static int IntermeansThreshold(Image<Gray, byte> inputImage)
+        {
+            return 0;
+        }
+        #endregion
+
         #region Otsu two-threshold
         private static System.Tuple<int, int> GetThresholdValues(Image<Gray, byte> inputImage)
         {

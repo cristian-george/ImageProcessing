@@ -716,15 +716,15 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                GrayInitialImage = Tools.RotateClockwise(GrayInitialImage);
-                InitialImage = ImageConverter.Convert(GrayInitialImage);
-                OnPropertyChanged("InitialImage");
+                GrayProcessedImage = Tools.RotateClockwise(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
             }
             else if (ColorInitialImage != null)
             {
-                ColorInitialImage = Tools.RotateClockwise(ColorInitialImage);
-                InitialImage = ImageConverter.Convert(ColorInitialImage);
-                OnPropertyChanged("InitialImage");
+                ColorProcessedImage = Tools.RotateClockwise(ColorInitialImage);
+                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                OnPropertyChanged("ProcessedImage");
             }
         }
         #endregion
@@ -753,15 +753,15 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                GrayInitialImage = Tools.RotateAntiClockwise(GrayInitialImage);
-                InitialImage = ImageConverter.Convert(GrayInitialImage);
-                OnPropertyChanged("InitialImage");
+                GrayProcessedImage = Tools.RotateAntiClockwise(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
             }
             else if (ColorInitialImage != null)
             {
-                ColorInitialImage = Tools.RotateAntiClockwise(ColorInitialImage);
-                InitialImage = ImageConverter.Convert(ColorInitialImage);
-                OnPropertyChanged("InitialImage");
+                ColorProcessedImage = Tools.RotateAntiClockwise(ColorInitialImage);
+                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                OnPropertyChanged("ProcessedImage");
             }
         }
         #endregion
@@ -1759,6 +1759,31 @@ namespace ImageProcessingFramework.ViewModel
             if (GrayInitialImage != null)
             {
                 int threshold = Tools.MedianThreshold(GrayInitialImage);
+                GrayProcessedImage = Tools.Thresholding(GrayInitialImage, threshold);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+            else MessageBox.Show("No grayscale image!");
+        }
+        #endregion
+
+        #region Intermeans threshold
+        private ICommand m_intermeansThreshold;
+        public ICommand IntermeansThreshold
+        {
+            get
+            {
+                if (m_intermeansThreshold == null)
+                    m_intermeansThreshold = new RelayCommand(IntermeansThresholding);
+                return m_intermeansThreshold;
+            }
+        }
+
+        public void IntermeansThresholding(object parameter)
+        {
+            if (GrayInitialImage != null)
+            {
+                int threshold = Tools.IntermeansThreshold(GrayInitialImage);
                 GrayProcessedImage = Tools.Thresholding(GrayInitialImage, threshold);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 OnPropertyChanged("ProcessedImage");

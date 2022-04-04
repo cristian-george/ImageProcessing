@@ -133,7 +133,7 @@ namespace ImageProcessingFramework
         private void WindowMouseMove(object sender, MouseEventArgs e)
         {
             ResizeCanvas(canvasOriginalImage, sliderZoom.Value);
-            ResizeCanvas(canvasProcessedImage, sliderZoom.Value);
+            ResizeCanvas(canvasProcessedImage, sliderZoom.Value, false);
 
             DrawRectangle(sender, e as MouseButtonEventArgs);
             DrawRowLine(sender, e as MouseButtonEventArgs);
