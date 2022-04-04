@@ -104,7 +104,7 @@ namespace ImageProcessingAlgorithms.Tools
         }
         #endregion
 
-        #region Crop
+        #region Crop image
         public static Image<Gray, byte> CropImage(Image<Gray, byte> inputImage, int leftTopX, int leftTopY, int rightBottomX, int rightBottomY)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(rightBottomX - leftTopX, rightBottomY - leftTopY);
@@ -331,10 +331,10 @@ namespace ImageProcessingAlgorithms.Tools
         #endregion
 
         #region Compute histograms
-        private static double[] RelativeHistogram(Image<Gray, byte> inputImage)
+
+        private static int[] Histogram(Image<Gray, byte> inputImage)
         {
-            int numberOfPixels = inputImage.Height * inputImage.Width;
-            double[] histogram = new double[256];
+            int[] histogram = new int[256];
 
             for (int y = 0; y < inputImage.Height; y++)
             {
@@ -344,12 +344,21 @@ namespace ImageProcessingAlgorithms.Tools
                 }
             }
 
+            return histogram;
+        }
+
+        private static double[] RelativeHistogram(Image<Gray, byte> inputImage)
+        {
+            int resolution = inputImage.Height * inputImage.Width;
+            int[] histogram = Histogram(inputImage);
+
+            double[] relativeHistogram = new double[256];
             for (int color = 0; color < 256; ++color)
             {
-                histogram[color] = histogram[color] / numberOfPixels;
+                relativeHistogram[color] = (double)histogram[color] / resolution;
             }
 
-            return histogram;
+            return relativeHistogram;
         }
 
         private static double[] CummulativeHistogram(Image<Gray, byte> inputImage)
@@ -706,6 +715,7 @@ namespace ImageProcessingAlgorithms.Tools
 
             return cummulativeHist;
         }
+
         public static Image<Bgr, byte> ColorHistogramEqualization(Image<Bgr, byte> inputImage)
         {
             Image<Hsv, byte> hsvImage = ConvertBgrToHsv(inputImage);
@@ -728,6 +738,32 @@ namespace ImageProcessingAlgorithms.Tools
             }
 
             return ConvertHsvToBgr(hsvImage);
+        }
+        #endregion
+
+        #region Quantile threshold
+        public static int QuantileThreshold(Image<Gray, byte> inputImage, double percent)
+        {
+            int resolution = inputImage.Height * inputImage.Width;
+            int[] histogram = Histogram(inputImage);
+
+            int threshold = 0;
+            for (int pixel = 0; pixel <= 255; ++pixel)
+            {
+                int sum = 0;
+                for (int k = 0; k <= pixel; ++k)
+                {
+                    sum += histogram[k];
+                }
+
+                if (sum >= resolution * percent)
+                {
+                    threshold = pixel;
+                    break;
+                }
+            }
+
+            return threshold;
         }
         #endregion
 

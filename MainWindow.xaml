@@ -143,29 +143,27 @@
                 </MenuItem>
                 <MenuItem Header="Thresholding">
                     <MenuItem Header="With a given value"
-                              Command="{Binding Path=Thresholding}" />
+                              Command="{Binding Path=Thresholding}"/>
+                    <MenuItem Header="Quantile threshold"
+                              Command="{Binding Path=QuantileThreshold}"/>
                     <MenuItem Header="Otsu two-threshold"
-                              Command="{Binding Path=OtsuTwoThreshold}" />
+                              Command="{Binding Path=OtsuTwoThreshold}"/>
                 </MenuItem>
             </MenuItem>
 
             <MenuItem Header="Filters" 
                       Background="AliceBlue">
                 <MenuItem Header="Low-pass">
-                    <MenuItem Header="On grayscale image">
-                        <MenuItem Header="Median"
-                                  Command="{Binding Path=Median}"/>
-                        <MenuItem Header="Fast Median"
-                                  Command="{Binding Path=FastMedian}"/>
-                        <MenuItem Header="Gaussian bilateral"
-                                  Command="{Binding Path=GaussianBilateral}"/>
-                    </MenuItem>
+                    <MenuItem Header="Slow Median filtering"
+                              Command="{Binding Path=Median}"/>
+                    <MenuItem Header="Fast Median filtering"
+                              Command="{Binding Path=FastMedian}"/>
+                    <MenuItem Header="Gaussian bilateral filtering"
+                              Command="{Binding Path=GaussianBilateral}"/>
                 </MenuItem>
                 <MenuItem Header="High-pass">
-                    <MenuItem Header="On colored image">
-                        <MenuItem Header="Sobel"
-                                  Command="{Binding Path=SobelColor}"/>
-                    </MenuItem>
+                    <MenuItem Header="Sobel"
+                              Command="{Binding Path=SobelOp}"/>
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Save as original image" 

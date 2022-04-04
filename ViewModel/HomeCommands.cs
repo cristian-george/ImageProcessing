@@ -1698,6 +1698,48 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #region Quantile threshold
+        private ICommand m_quantileThreshold;
+        public ICommand QuantileThreshold
+        {
+            get
+            {
+                if (m_quantileThreshold == null)
+                    m_quantileThreshold = new RelayCommand(QuantileThresholding);
+                return m_quantileThreshold;
+            }
+        }
+        public void QuantileThresholding(object parameter)
+        {
+            if (GrayInitialImage != null)
+            {
+                DialogBox dialogBox = new DialogBox();
+                System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Background pixels percent (0 <= p <= 1):"
+                };
+
+                dialogBox.CreateDialogBox(prop);
+                dialogBox.ShowDialog();
+
+                System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+                if (response != null)
+                {
+                    double percent = response[0];
+                    if (0 <= percent && percent <= 1)
+                    {
+                        int threshold = Tools.QuantileThreshold(GrayInitialImage, percent);
+                        GrayProcessedImage = Tools.Thresholding(GrayInitialImage, threshold);
+                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                    else MessageBox.Show("Please add a threshold value first.");
+                }
+            }
+            else MessageBox.Show("No grayscale image!");
+        }
+        #endregion
+
         #region Otsu two-threshold
         private ICommand m_otsuTwoThreshold;
         public ICommand OtsuTwoThreshold
@@ -1912,7 +1954,28 @@ namespace ImageProcessingFramework.ViewModel
 
         #region High-pass filters
 
-        #region
+        #region Sobel
+        private ICommand m_sobelOp;
+        public ICommand SobelOp
+        {
+            get
+            {
+                if (m_sobelOp == null)
+                    m_sobelOp = new RelayCommand(Sobel);
+                return m_sobelOp;
+            }
+        }
+
+        public void Sobel(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+        }
         #endregion
 
         #endregion
