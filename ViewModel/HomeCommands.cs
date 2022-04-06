@@ -2006,6 +2006,37 @@ namespace ImageProcessingFramework.ViewModel
 
         #region High-pass filters
 
+        #region Prewitt
+        private ICommand m_prewittOp;
+        public ICommand PrewittOp
+        {
+            get
+            {
+                if (m_prewittOp == null)
+                    m_prewittOp = new RelayCommand(Prewitt);
+                return m_prewittOp;
+            }
+        }
+
+        public void Prewitt(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = Tools.PrewittGradient(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+        }
+        #endregion
+
         #region Sobel
         private ICommand m_sobelOp;
         public ICommand SobelOp
