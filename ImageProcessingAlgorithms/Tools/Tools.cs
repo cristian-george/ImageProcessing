@@ -1267,5 +1267,32 @@ namespace ImageProcessingAlgorithms.Tools
         }
 
         #endregion
+
+        #region Sobel on grayscale
+        public static Image<Gray, byte> SobelGradient(Image<Gray, byte> inputImage)
+        {
+            Image<Gray, byte> gradient = new Image<Gray, byte>(inputImage.Size);
+
+            for (int y = 1; y < inputImage.Height - 1; ++y)
+            {
+                for (int x = 1; x < inputImage.Width - 1; ++x)
+                {
+                    int fx = inputImage.Data[y + 1, x - 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y + 1, x, 0] -
+                               2 * inputImage.Data[y - 1, x, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y - 1, x + 1, 0];
+
+                    int fy = inputImage.Data[y - 1, x + 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y, x + 1, 0] -
+                               2 * inputImage.Data[y, x - 1, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y + 1, x - 1, 0];
+
+                    double grad = System.Math.Sqrt((fx * fx) + (fy * fy));
+
+                    if (grad > 255) grad = 255;
+                    gradient.Data[y, x, 0] = (byte)grad;
+                }
+            }
+
+            return gradient;
+        }
+
+        #endregion
     }
 }

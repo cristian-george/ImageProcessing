@@ -166,7 +166,9 @@
                               Command="{Binding Path=GaussianBilateral}"/>
                 </MenuItem>
                 <MenuItem Header="High-pass">
-                    <MenuItem Header="Sobel"
+                    <MenuItem Header="Prewitt operator"
+                              Command="{Binding Path=PrewittOp}"/>
+                    <MenuItem Header="Sobel operator"
                               Command="{Binding Path=SobelOp}"/>
                 </MenuItem>
             </MenuItem>

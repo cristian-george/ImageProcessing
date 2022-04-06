@@ -2027,6 +2027,13 @@ namespace ImageProcessingFramework.ViewModel
             }
 
             ResetProcessedCanvas(parameter);
+
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = Tools.SobelGradient(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
         }
         #endregion
 
