@@ -1320,5 +1320,32 @@ namespace ImageProcessingAlgorithms.Tools
         }
 
         #endregion
+
+        #region Roberts
+        public static Image<Gray, byte> RobertsGradient(Image<Gray, byte> inputImage)
+        {
+            Image<Gray, byte> gradient = new Image<Gray, byte>(inputImage.Size);
+
+            for (int y = 1; y < inputImage.Height - 1; ++y)
+            {
+                for (int x = 1; x < inputImage.Width - 1; ++x)
+                {
+                    int diagonal1 = -2 * inputImage.Data[y - 1, x - 1, 0] - inputImage.Data[y - 1, x, 0] - inputImage.Data[y, x - 1, 0] +
+                                     2 * inputImage.Data[y + 1, x + 1, 0] + inputImage.Data[y + 1, x, 0] + inputImage.Data[y, x + 1, 0];
+
+                    int diagonal2 = -2 * inputImage.Data[y - 1, x + 1, 0] - inputImage.Data[y - 1, x, 0] - inputImage.Data[y, x + 1, 0] +
+                                     2 * inputImage.Data[y + 1, x - 1, 0] + inputImage.Data[y + 1, x, 0] + inputImage.Data[y, x - 1, 0];
+
+                    double grad = System.Math.Sqrt((diagonal1 * diagonal1) + (diagonal2 * diagonal2));
+
+                    if (grad > 255) grad = 255;
+                    gradient.Data[y, x, 0] = (byte)grad;
+                }
+            }
+
+            return gradient;
+        }
+
+        #endregion
     }
 }

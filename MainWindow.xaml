@@ -170,6 +170,8 @@
                               Command="{Binding Path=PrewittOp}"/>
                     <MenuItem Header="Sobel operator"
                               Command="{Binding Path=SobelOp}"/>
+                    <MenuItem Header="Roberts operator"
+                              Command="{Binding Path=RobertsOp}"/>
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Save as original image" 

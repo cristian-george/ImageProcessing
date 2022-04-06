@@ -2068,6 +2068,37 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #region Roberts
+        private ICommand m_robertsOp;
+        public ICommand RobertsOp
+        {
+            get
+            {
+                if (m_robertsOp == null)
+                    m_robertsOp = new RelayCommand(Roberts);
+                return m_robertsOp;
+            }
+        }
+
+        public void Roberts(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = Tools.RobertsGradient(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+        }
+        #endregion
+
         #endregion
     }
 }
