@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using ImageProcessingAlgorithms.Tools;
+using ImageProcessingAlgorithms.Filters;
+using ImageProcessingAlgorithms.AlgorithmsHelper;
 using ImageConverter = ImageProcessingFramework.Model.ImageConverter;
 using static ImageProcessingFramework.Model.DataProvider;
 using ImageProcessingFramework.View;
@@ -869,13 +871,13 @@ namespace ImageProcessingFramework.ViewModel
                     int[] lookUpTable = Tools.IncreaseBrightnessPlus(b);
                     if (GrayInitialImage != null)
                     {
-                        GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                        GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                         OnPropertyChanged("ProcessedImage");
                     }
                     else if (ColorInitialImage != null)
                     {
-                        ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                        ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                         OnPropertyChanged("ProcessedImage");
                     }
@@ -925,13 +927,13 @@ namespace ImageProcessingFramework.ViewModel
                     int[] lookUpTable = Tools.IncreaseBrightnessKeepBlack(a);
                     if (GrayInitialImage != null)
                     {
-                        GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                        GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                         OnPropertyChanged("ProcessedImage");
                     }
                     else if (ColorInitialImage != null)
                     {
-                        ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                        ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                         OnPropertyChanged("ProcessedImage");
                     }
@@ -981,13 +983,13 @@ namespace ImageProcessingFramework.ViewModel
                     int[] lookUpTable = Tools.IncreaseBrightnessKeepWhite(a);
                     if (GrayInitialImage != null)
                     {
-                        GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                        GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                         OnPropertyChanged("ProcessedImage");
                     }
                     else if (ColorInitialImage != null)
                     {
-                        ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                        ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                         OnPropertyChanged("ProcessedImage");
                     }
@@ -1041,13 +1043,13 @@ namespace ImageProcessingFramework.ViewModel
                     int[] lookUpTable = Tools.DecreaseBrightnessMinus(b);
                     if (GrayInitialImage != null)
                     {
-                        GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                        GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                         OnPropertyChanged("ProcessedImage");
                     }
                     else if (ColorInitialImage != null)
                     {
-                        ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                        ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                         OnPropertyChanged("ProcessedImage");
                     }
@@ -1097,13 +1099,13 @@ namespace ImageProcessingFramework.ViewModel
                     int[] lookUpTable = Tools.DecreaseBrightnessKeepBlack(a);
                     if (GrayInitialImage != null)
                     {
-                        GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                        GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                         OnPropertyChanged("ProcessedImage");
                     }
                     else if (ColorInitialImage != null)
                     {
-                        ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                        ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                         OnPropertyChanged("ProcessedImage");
                     }
@@ -1153,13 +1155,13 @@ namespace ImageProcessingFramework.ViewModel
                     int[] lookUpTable = Tools.DecreaseBrightnessKeepWhite(a);
                     if (GrayInitialImage != null)
                     {
-                        GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                        GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                         OnPropertyChanged("ProcessedImage");
                     }
                     else if (ColorInitialImage != null)
                     {
-                        ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                        ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                         OnPropertyChanged("ProcessedImage");
                     }
@@ -1198,13 +1200,13 @@ namespace ImageProcessingFramework.ViewModel
             int[] lookUpTable = Tools.LogarithmicOperator();
             if (GrayInitialImage != null)
             {
-                GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }
             else if (ColorInitialImage != null)
             {
-                ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }
@@ -1236,13 +1238,13 @@ namespace ImageProcessingFramework.ViewModel
             int[] lookUpTable = Tools.ExponentialOperator();
             if (GrayInitialImage != null)
             {
-                GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }
             else if (ColorInitialImage != null)
             {
-                ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }
@@ -1289,13 +1291,13 @@ namespace ImageProcessingFramework.ViewModel
                     int[] lookUpTable = Tools.GammaCorrection(gamma);
                     if (GrayInitialImage != null)
                     {
-                        GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                        GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                         OnPropertyChanged("ProcessedImage");
                     }
                     else if (ColorInitialImage != null)
                     {
-                        ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                        ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                         OnPropertyChanged("ProcessedImage");
                     }
@@ -1353,13 +1355,13 @@ namespace ImageProcessingFramework.ViewModel
                     int[] lookUpTable = Tools.PiecewiseLinearContrast(r1, s1, r2, s2);
                     if (GrayInitialImage != null)
                     {
-                        GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                        GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                         OnPropertyChanged("ProcessedImage");
                     }
                     else if (ColorInitialImage != null)
                     {
-                        ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                        ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                         OnPropertyChanged("ProcessedImage");
                     }
@@ -1398,13 +1400,13 @@ namespace ImageProcessingFramework.ViewModel
             int[] lookUpTable = Tools.SinusoidalOperator();
             if (GrayInitialImage != null)
             {
-                GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }
             else if (ColorInitialImage != null)
             {
-                ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }
@@ -1436,13 +1438,13 @@ namespace ImageProcessingFramework.ViewModel
             int[] lookUpTable = Tools.PolynomialOperator();
             if (GrayInitialImage != null)
             {
-                GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }
             else if (ColorInitialImage != null)
             {
-                ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }
@@ -1491,13 +1493,13 @@ namespace ImageProcessingFramework.ViewModel
                     int[] lookUpTable = Tools.EmOperator(m, E);
                     if (GrayInitialImage != null)
                     {
-                        GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                        GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                         OnPropertyChanged("ProcessedImage");
                     }
                     else if (ColorInitialImage != null)
                     {
-                        ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                        ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                         OnPropertyChanged("ProcessedImage");
                     }
@@ -1565,13 +1567,13 @@ namespace ImageProcessingFramework.ViewModel
             {
                 if (GrayInitialImage != null)
                 {
-                    GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, HermiteSplineLookUpTable);
+                    GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, HermiteSplineLookUpTable);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                     OnPropertyChanged("ProcessedImage");
                 }
                 else if (ColorInitialImage != null)
                 {
-                    ColorProcessedImage = Tools.AdjustBrightnessAndContrast(ColorInitialImage, HermiteSplineLookUpTable);
+                    ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, HermiteSplineLookUpTable);
                     ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                     OnPropertyChanged("ProcessedImage");
                 }
@@ -1607,7 +1609,7 @@ namespace ImageProcessingFramework.ViewModel
             if (GrayInitialImage != null)
             {
                 int[] lookUpTable = Tools.HistogramEqualization(GrayInitialImage);
-                GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }
@@ -1618,7 +1620,7 @@ namespace ImageProcessingFramework.ViewModel
                 GrayProcessedImage = Tools.Convert(ColorInitialImage);
 
                 int[] lookUpTable = Tools.HistogramEqualization(GrayProcessedImage);
-                GrayProcessedImage = Tools.AdjustBrightnessAndContrast(GrayProcessedImage, lookUpTable);
+                GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayProcessedImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }
@@ -1871,11 +1873,11 @@ namespace ImageProcessingFramework.ViewModel
                     {
                         m_isProcessedImageGray = true;
                         GrayProcessedImage = Tools.Convert(ColorInitialImage);
-                        GrayProcessedImage = Tools.MedianFiltering(GrayProcessedImage, maskSize);
+                        GrayProcessedImage = Filters.MedianFiltering(GrayProcessedImage, maskSize);
                     }
                     else if (GrayInitialImage != null)
                     {
-                        GrayProcessedImage = Tools.MedianFiltering(GrayInitialImage, maskSize);
+                        GrayProcessedImage = Filters.MedianFiltering(GrayInitialImage, maskSize);
                     }
 
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
@@ -1928,11 +1930,11 @@ namespace ImageProcessingFramework.ViewModel
                     {
                         m_isProcessedImageGray = true;
                         GrayProcessedImage = Tools.Convert(ColorInitialImage);
-                        GrayProcessedImage = Tools.FastMedianFiltering(GrayProcessedImage, maskSize);
+                        GrayProcessedImage = Filters.FastMedianFiltering(GrayProcessedImage, maskSize);
                     }
                     else if (GrayInitialImage != null)
                     {
-                        GrayProcessedImage = Tools.FastMedianFiltering(GrayInitialImage, maskSize);
+                        GrayProcessedImage = Filters.FastMedianFiltering(GrayInitialImage, maskSize);
                     }
 
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
@@ -1987,11 +1989,11 @@ namespace ImageProcessingFramework.ViewModel
                     {
                         m_isProcessedImageGray = true;
                         GrayProcessedImage = Tools.Convert(ColorInitialImage);
-                        GrayProcessedImage = Tools.GaussianBilateralFiltering(GrayProcessedImage, variance_d, variance_r);
+                        GrayProcessedImage = Filters.GaussianBilateralFiltering(GrayProcessedImage, variance_d, variance_r);
                     }
                     else if (GrayInitialImage != null)
                     {
-                        GrayProcessedImage = Tools.GaussianBilateralFiltering(GrayInitialImage, variance_d, variance_r);
+                        GrayProcessedImage = Filters.GaussianBilateralFiltering(GrayInitialImage, variance_d, variance_r);
                     }
 
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
@@ -2030,7 +2032,7 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                GrayProcessedImage = Tools.PrewittGradient(GrayInitialImage);
+                GrayProcessedImage = Filters.PrewittGradient(GrayInitialImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }
@@ -2061,7 +2063,7 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                GrayProcessedImage = Tools.SobelGradient(GrayInitialImage);
+                GrayProcessedImage = Filters.SobelGradient(GrayInitialImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }
@@ -2092,7 +2094,7 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                GrayProcessedImage = Tools.RobertsGradient(GrayInitialImage);
+                GrayProcessedImage = Filters.RobertsGradient(GrayInitialImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }

@@ -74,6 +74,7 @@
                           Command="{Binding Path=RowDisplay}"/>
                 <MenuItem Header="GLevelsColumn" 
                           Command="{Binding Path=ColumnDisplay}"/>
+                <Separator/>
                 <MenuItem Header="Copy" 
                           Command="{Binding Path=Copy}"/>
                 <MenuItem Header="Invert" 
