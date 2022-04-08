@@ -1867,7 +1867,7 @@ namespace ImageProcessingFramework.ViewModel
             if (response != null)
             {
                 int maskSize = (int)response[0];
-                if (maskSize != 0 && maskSize % 2 == 1)
+                if (maskSize > 0 && maskSize % 2 == 1)
                 {
                     if (ColorInitialImage != null)
                     {
@@ -1924,7 +1924,7 @@ namespace ImageProcessingFramework.ViewModel
             if (response != null)
             {
                 int maskSize = (int)response[0];
-                if (maskSize > 2 && maskSize % 2 == 1)
+                if (maskSize > 0 && maskSize % 2 == 1)
                 {
                     if (ColorInitialImage != null)
                     {
@@ -1938,6 +1938,52 @@ namespace ImageProcessingFramework.ViewModel
                     }
 
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                    OnPropertyChanged("ProcessedImage");
+                }
+                else MessageBox.Show("Please add a valid dimension first.");
+            }
+        }
+        #endregion
+
+        #region Vector Median
+        private ICommand m_vectorMedian;
+        public ICommand VectorMedian
+        {
+            get
+            {
+                if (m_vectorMedian == null)
+                    m_vectorMedian = new RelayCommand(VectorMedianFiltering);
+                return m_vectorMedian;
+            }
+        }
+
+        public void VectorMedianFiltering(object parameter)
+        {
+            if (ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add a color image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Mask dimension"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int maskSize = (int)response[0];
+                if (maskSize > 0 && maskSize % 2 == 1)
+                {
+                    ColorProcessedImage = Filters.VectorMedianFiltering(ColorInitialImage, maskSize);
+                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                     OnPropertyChanged("ProcessedImage");
                 }
                 else MessageBox.Show("Please add a valid dimension first.");

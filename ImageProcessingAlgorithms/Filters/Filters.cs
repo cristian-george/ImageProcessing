@@ -2,6 +2,7 @@
 using Emgu.CV.Structure;
 using static ImageProcessingAlgorithms.Tools.Tools;
 using static ImageProcessingAlgorithms.AlgorithmsHelper.Helper;
+using System.Collections.Generic;
 
 namespace ImageProcessingAlgorithms.Filters
 {
@@ -147,6 +148,77 @@ namespace ImageProcessingAlgorithms.Filters
                 }
 
                 direction *= -1;
+            }
+
+            return CropImage(result, maskRadius, maskRadius, inputImage.Width + maskRadius, inputImage.Height + maskRadius);
+        }
+        #endregion
+
+        #region Vector median filtering
+        public static Image<Bgr, byte> VectorMedianFiltering(Image<Bgr, byte> inputImage, int maskSize)
+        {
+            Image<Bgr, byte> borderedImage = BorderReplicate(inputImage, maskSize);
+            Image<Bgr, byte> result = new Image<Bgr, byte>(borderedImage.Size);
+
+            int maskRadius = maskSize / 2;
+            int size = maskSize * maskSize;
+
+            for (int y = maskRadius; y < borderedImage.Height - maskRadius; ++y)
+            {
+                for (int x = maskRadius; x < borderedImage.Width - maskRadius; ++x)
+                {
+                    List<System.Tuple<int, int, int>> neighbourhood = new List<System.Tuple<int, int, int>>();
+
+                    for (int i = -maskRadius; i <= maskRadius; ++i)
+                    {
+                        for (int j = -maskRadius; j <= maskRadius; ++j)
+                        {
+                            int blue = borderedImage.Data[y + i, x + j, 0];
+                            int green = borderedImage.Data[y + i, x + j, 1];
+                            int red = borderedImage.Data[y + i, x + j, 2];
+
+                            System.Tuple<int, int, int> color = new System.Tuple<int, int, int>(blue, green, red);
+                            neighbourhood.Add(color);
+                        }
+                    }
+
+                    double[,] distances = new double[size, size];
+
+                    double minSumOnRows = double.MaxValue;
+                    int pixel = 0;
+
+                    for (int i = 0; i < size - 1; ++i)
+                    {
+                        for (int j = i + 1; j < size; ++j)
+                        {
+                            int blue = (int)System.Math.Pow(neighbourhood[i].Item1 - neighbourhood[j].Item1, 2);
+                            int green = (int)System.Math.Pow(neighbourhood[i].Item2 - neighbourhood[j].Item2, 2);
+                            int red = (int)System.Math.Pow(neighbourhood[i].Item3 - neighbourhood[j].Item3, 2);
+
+                            distances[i, j] = distances[j, i] = System.Math.Sqrt(blue + green + red);
+                        }
+                    }
+
+                    for (int i = 0; i < size; ++i)
+                    {
+                        double sumOnRow = 0;
+
+                        for (int j = 0; j < size; ++j)
+                        {
+                            sumOnRow += distances[i, j];
+                        }
+
+                        if (sumOnRow < minSumOnRows)
+                        {
+                            minSumOnRows = sumOnRow;
+                            pixel = i;
+                        }
+                    }
+
+                    result.Data[y, x, 0] = (byte)neighbourhood[pixel].Item1;
+                    result.Data[y, x, 1] = (byte)neighbourhood[pixel].Item2;
+                    result.Data[y, x, 2] = (byte)neighbourhood[pixel].Item3;
+                }
             }
 
             return CropImage(result, maskRadius, maskRadius, inputImage.Width + maskRadius, inputImage.Height + maskRadius);

@@ -163,6 +163,8 @@
                               Command="{Binding Path=Median}"/>
                     <MenuItem Header="Fast Median filtering"
                               Command="{Binding Path=FastMedian}"/>
+                    <MenuItem Header="Vector Median filtering"
+                              Command="{Binding Path=VectorMedian}"/>
                     <MenuItem Header="Gaussian bilateral filtering"
                               Command="{Binding Path=GaussianBilateral}"/>
                 </MenuItem>
