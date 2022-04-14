@@ -8,6 +8,8 @@ namespace ImageProcessingAlgorithms.Filters
 {
     public class Filters
     {
+        #region Low-pass filters
+
         #region Median filtering
         public static Image<Gray, byte> MedianFiltering(Image<Gray, byte> inputImage, int maskSize)
         {
@@ -225,6 +227,108 @@ namespace ImageProcessingAlgorithms.Filters
         }
         #endregion
 
+        #region Gaussian filtering
+        private static double[,] GaussianMask(int maskRadius, double variance)
+        {
+            double[,] gaussianMask = new double[(2 * maskRadius) + 1, (2 * maskRadius) + 1];
+            double maskCoefficient = 0;
+
+            for (int i = -maskRadius; i <= maskRadius; ++i)
+            {
+                for (int j = -maskRadius; j <= maskRadius; ++j)
+                {
+                    gaussianMask[i + maskRadius, j + maskRadius] = System.Math.Exp(-(i * i + j * j) / (2 * variance * variance)) / (2 * System.Math.PI * variance * variance);
+                    maskCoefficient += gaussianMask[i + maskRadius, j + maskRadius];
+                }
+            }
+
+            for (int i = -maskRadius; i <= maskRadius; ++i)
+            {
+                for (int j = -maskRadius; j <= maskRadius; ++j)
+                {
+                    gaussianMask[i + maskRadius, j + maskRadius] /= maskCoefficient;
+                }
+            }
+
+            return gaussianMask;
+        }
+
+        public static Image<Gray, byte> GaussianFiltering(Image<Gray, byte> inputImage, double variance)
+        {
+            int maskSize = (int)System.Math.Ceiling(4 * variance);
+            if (maskSize % 2 == 0) maskSize++;
+
+            Image<Gray, byte> borderedImage = BorderReplicate(inputImage, maskSize);
+            Image<Gray, byte> result = new Image<Gray, byte>(borderedImage.Size);
+
+            int maskRadius = maskSize / 2;
+            double[,] mask = GaussianMask(maskRadius, variance);
+
+            for (int y = maskRadius; y < borderedImage.Height - maskRadius; ++y)
+            {
+                for (int x = maskRadius; x < borderedImage.Width - maskRadius; ++x)
+                {
+                    double sum = 0;
+                    for (int i = -maskRadius; i <= maskRadius; ++i)
+                    {
+                        for (int j = -maskRadius; j <= maskRadius; ++j)
+                        {
+                            sum += mask[i + maskRadius, j + maskRadius] * borderedImage.Data[y + i, x + j, 0];
+                        }
+                    }
+
+                    if (sum > 255)
+                        sum = 255;
+
+                    result.Data[y, x, 0] = (byte)sum;
+                }
+            }
+
+            return CropImage(result, maskRadius, maskRadius, inputImage.Width + maskRadius, inputImage.Height + maskRadius);
+        }
+
+        public static Image<Bgr, byte> GaussianFiltering(Image<Bgr, byte> inputImage, double variance)
+        {
+            int maskSize = (int)System.Math.Ceiling(4 * variance);
+            if (maskSize % 2 == 0) maskSize++;
+
+            Image<Bgr, byte> borderedImage = BorderReplicate(inputImage, maskSize);
+            Image<Bgr, byte> result = new Image<Bgr, byte>(borderedImage.Size);
+
+            int maskRadius = maskSize / 2;
+            double[,] mask = GaussianMask(maskRadius, variance);
+
+            for (int y = maskRadius; y < borderedImage.Height - maskRadius; ++y)
+            {
+                for (int x = maskRadius; x < borderedImage.Width - maskRadius; ++x)
+                {
+                    double sumB = 0, sumG = 0, sumR = 0;
+                    for (int i = -maskRadius; i <= maskRadius; ++i)
+                    {
+                        for (int j = -maskRadius; j <= maskRadius; ++j)
+                        {
+                            sumB += mask[i + maskRadius, j + maskRadius] * borderedImage.Data[y + i, x + j, 0];
+                            sumG += mask[i + maskRadius, j + maskRadius] * borderedImage.Data[y + i, x + j, 1];
+                            sumR += mask[i + maskRadius, j + maskRadius] * borderedImage.Data[y + i, x + j, 2];
+                        }
+                    }
+
+                    if (sumB > 255) sumB = 255;
+                    result.Data[y, x, 0] = (byte)sumB;
+
+                    if (sumG > 255) sumG = 255;
+                    result.Data[y, x, 1] = (byte)sumG;
+
+                    if (sumR > 255) sumR = 255;
+                    result.Data[y, x, 2] = (byte)sumR;
+                }
+            }
+
+            return CropImage(result, maskRadius, maskRadius, inputImage.Width + maskRadius, inputImage.Height + maskRadius);
+        }
+
+        #endregion
+
         #region Bilateral gaussian filtering
         private static double MedianMask(int i, int j, double variance_d)
         {
@@ -286,6 +390,10 @@ namespace ImageProcessingAlgorithms.Filters
         }
 
         #endregion
+
+        #endregion
+
+        #region High-pass filters
 
         #region Prewitt
         public static Image<Gray, byte> PrewittGradient(Image<Gray, byte> inputImage)
@@ -364,6 +472,8 @@ namespace ImageProcessingAlgorithms.Filters
 
             return gradient;
         }
+
+        #endregion
 
         #endregion
     }

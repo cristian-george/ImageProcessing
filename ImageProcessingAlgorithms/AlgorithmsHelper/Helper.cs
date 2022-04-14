@@ -292,5 +292,64 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
             return cummulativeHist;
         }
         #endregion
+
+        #region Integral image
+        public static int[,] IntegralImage(Image<Gray, byte> inputImage)
+        {
+            int[,] integralImage = new int[inputImage.Height, inputImage.Width];
+
+            for (int y = 0; y < inputImage.Height; ++y)
+            {
+                for (int x = 0; x < inputImage.Width; ++x)
+                {
+                    if (y == 0 && x == 0)
+                    {
+                        integralImage[y, x] = inputImage.Data[0, 0, 0];
+                    }
+                    else if (y == 0 && x != 0)
+                    {
+                        integralImage[y, x] = integralImage[0, x - 1] + inputImage.Data[0, x, 0];
+                    }
+                    else if (y != 0 && x == 0)
+                    {
+                        integralImage[y, x] = integralImage[y - 1, 0] + inputImage.Data[y, 0, 0];
+                    }
+                    else
+                    {
+                        integralImage[y, x] = integralImage[y - 1, x] + integralImage[y, x - 1] - integralImage[y - 1, x - 1] + inputImage.Data[y, x, 0];
+                    }
+                }
+            }
+
+            return integralImage;
+        }
+
+        #endregion
+
+        #region Calculate sum of values in a rectangular subset of a grid from the image
+        public static int SummedArea(Image<Gray, byte> inputImage, int y0, int x0, int y1, int x1)
+        {
+            int[,] integralImage = IntegralImage(inputImage);
+            
+            if (x0 == 0 && y0 == 0)
+            {
+                return integralImage[y1, x1];
+            }
+            else if (y0 == 0)
+            {
+                return integralImage[y1, x1] - integralImage[y0 - 1, x1];
+            }
+            else if (x0 == 0)
+            {
+                return integralImage[y1, x1] - integralImage[y1, x0 - 1];
+            }
+
+            return integralImage[y1, x1] + integralImage[y0 - 1, x0 - 1] - integralImage[y0 - 1, x1] - integralImage[y1, x0 - 1];
+        }
+        #endregion
+
+        #region Calculate mean using integral image
+
+        #endregion
     }
 }

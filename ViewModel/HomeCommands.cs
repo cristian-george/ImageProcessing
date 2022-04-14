@@ -1991,6 +1991,62 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #region Gaussian
+        private ICommand m_gaussian;
+        public ICommand Gaussian
+        {
+            get
+            {
+                if (m_gaussian == null)
+                    m_gaussian = new RelayCommand(GaussianFiltering);
+                return m_gaussian;
+            }
+        }
+
+        public void GaussianFiltering(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Variance value:",
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                double variance = response[0];
+
+                if (variance > 0)
+                {
+                    if (ColorInitialImage != null)
+                    {
+                        ColorProcessedImage = Filters.GaussianFiltering(ColorInitialImage, variance);
+                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                    else if (GrayInitialImage != null)
+                    {
+                        GrayProcessedImage = Filters.GaussianFiltering(GrayInitialImage, variance);
+                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                        OnPropertyChanged("ProcessedImage");
+                    }
+                }
+                else MessageBox.Show("Please add a valid dimension first.");
+            }
+        }
+        #endregion
+
         #region Gaussian bilateral
         private ICommand m_gaussianBilateral;
         public ICommand GaussianBilateral
