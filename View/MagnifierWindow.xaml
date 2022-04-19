@@ -17,7 +17,7 @@
     <Window.DataContext>
         <local:MagnifierCommands/>
     </Window.DataContext>
-    <Grid Background="#E5F9E0">
+    <Grid Background="#1E1E1E">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
@@ -49,6 +49,7 @@
                    Grid.Column="0"
                    Text="Original Image"
                    FontSize="15" 
+                   Foreground="#FFF1F1F1"
                    Width="120"
                    Height="20"
                    HorizontalAlignment="Center"/>
@@ -58,6 +59,7 @@
                    Width="120"
                    Height="20"
                    FontSize="15" 
+                   Foreground="#FFF1F1F1"
                    HorizontalAlignment="Center"/>
     </Grid>
 </Window>

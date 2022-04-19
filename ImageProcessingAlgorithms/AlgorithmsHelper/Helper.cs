@@ -330,7 +330,7 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
         public static int SummedArea(Image<Gray, byte> inputImage, int y0, int x0, int y1, int x1)
         {
             int[,] integralImage = IntegralImage(inputImage);
-            
+
             if (x0 == 0 && y0 == 0)
             {
                 return integralImage[y1, x1];
@@ -350,6 +350,12 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
 
         #region Calculate mean using integral image
 
+        #endregion
+
+        #region Hysteresys tresholding
+        public static void HysteresysTresholding(double[,] gradient, int T1, int T2)
+        {
+        }
         #endregion
     }
 }

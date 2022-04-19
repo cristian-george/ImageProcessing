@@ -9,7 +9,7 @@
         Title="GraphWindow" 
         Height="400" 
         Width="400">
-    <Grid Background="#E5F9E0">
+    <Grid Background="#1E1E1E">
         <Label Grid.Row="1"
                Grid.Column="0">
             <oxy:PlotView Name="graphView"

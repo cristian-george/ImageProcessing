@@ -18,9 +18,9 @@ namespace ImageProcessingFramework
         {
             InitializeComponent();
             MousePosition = new Point(0, 0);
+            LastPosition = MousePosition;
             VectorOfMousePosition = new PointCollection();
 
-            LastPosition = MousePosition;
             InitialCanvas = canvasOriginalImage;
             ProcessedCanvas = canvasProcessedImage;
 

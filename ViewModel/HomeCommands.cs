@@ -2132,11 +2132,25 @@ namespace ImageProcessingFramework.ViewModel
 
             ResetProcessedCanvas(parameter);
 
-            if (GrayInitialImage != null)
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Threshold value:"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
             {
-                GrayProcessedImage = Filters.PrewittGradient(GrayInitialImage);
-                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
+                int threshold = (int)response[0];
+                if (GrayInitialImage != null)
+                {
+                    GrayProcessedImage = Filters.Prewitt(GrayInitialImage, threshold);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                    OnPropertyChanged("ProcessedImage");
+                }
             }
         }
         #endregion
@@ -2163,11 +2177,25 @@ namespace ImageProcessingFramework.ViewModel
 
             ResetProcessedCanvas(parameter);
 
-            if (GrayInitialImage != null)
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Threshold value:"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
             {
-                GrayProcessedImage = Filters.SobelGradient(GrayInitialImage);
-                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
+                int threshold = (int)response[0];
+                if (GrayInitialImage != null)
+                {
+                    GrayProcessedImage = Filters.Sobel(GrayInitialImage, threshold);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                    OnPropertyChanged("ProcessedImage");
+                }
             }
         }
         #endregion
@@ -2194,14 +2222,318 @@ namespace ImageProcessingFramework.ViewModel
 
             ResetProcessedCanvas(parameter);
 
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Threshold value:"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int threshold = (int)response[0];
+                if (GrayInitialImage != null)
+                {
+                    GrayProcessedImage = Filters.Roberts(GrayInitialImage, threshold);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                    OnPropertyChanged("ProcessedImage");
+                }
+            }
+        }
+        #endregion
+
+        #region Canny
+
+        #region Smoothing
+        private ICommand m_cannySmooth;
+        public ICommand CannySmooth
+        {
+            get
+            {
+                if (m_cannySmooth == null)
+                    m_cannySmooth = new RelayCommand(CannySmoothing);
+                return m_cannySmooth;
+            }
+        }
+
+        public void CannySmoothing(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
             if (GrayInitialImage != null)
             {
-                GrayProcessedImage = Filters.RobertsGradient(GrayInitialImage);
+                GrayProcessedImage = Filters.GaussianFiltering(GrayInitialImage, 1);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+            else if (ColorInitialImage != null)
+            {
+                ColorProcessedImage = Filters.GaussianFiltering(ColorInitialImage, 1);
+                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+        }
+        #endregion
+
+        #region Gradient magnitude image
+        private ICommand m_cannyGradient;
+        public ICommand CannyGradient
+        {
+            get
+            {
+                if (m_cannyGradient == null)
+                    m_cannyGradient = new RelayCommand(CannyGradientImage);
+                return m_cannyGradient;
+            }
+        }
+
+        public void CannyGradientImage(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = Filters.CannyGradientImage(GrayInitialImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 OnPropertyChanged("ProcessedImage");
             }
         }
         #endregion
+
+        #region Angle image
+        private ICommand m_cannyAngle;
+        public ICommand CannyAngle
+        {
+            get
+            {
+                if (m_cannyAngle == null)
+                    m_cannyAngle = new RelayCommand(CannyAngleImage);
+                return m_cannyAngle;
+            }
+        }
+
+        public void CannyAngleImage(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = Filters.CannyAngleImage(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+        }
+        #endregion
+
+        #region Nonmaxima suppression
+        private ICommand m_cannyNonmaxSup;
+        public ICommand CannyNonmaxSup
+        {
+            get
+            {
+                if (m_cannyNonmaxSup == null)
+                    m_cannyNonmaxSup = new RelayCommand(CannyNonmaximaSuppression);
+                return m_cannyNonmaxSup;
+            }
+        }
+
+        public void CannyNonmaximaSuppression(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = Filters.CannyNonmaximaSuppression(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+        }
+        #endregion
+
+        #region Hysteresys thresholding
+
+        #region Double thresholding
+        private ICommand m_cannyDoubleThreshold;
+        public ICommand CannyDoubleThreshold
+        {
+            get
+            {
+                if (m_cannyDoubleThreshold == null)
+                    m_cannyDoubleThreshold = new RelayCommand(CannyDoubleThresholding);
+                return m_cannyDoubleThreshold;
+            }
+        }
+
+        public void CannyDoubleThresholding(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Threshold 1:",
+                    "Threshold 2:"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int threshold1 = (int)response[0];
+                int threshold2 = (int)response[1];
+
+                if (GrayInitialImage != null)
+                {
+                    GrayProcessedImage = Filters.CannyDoubleThresholding(GrayInitialImage, threshold1, threshold2);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                    OnPropertyChanged("ProcessedImage");
+                }
+            }
+        }
+        #endregion
+
+        #region Connectivity analysis
+        private ICommand m_cannyLinkEdges;
+        public ICommand CannyLinkEdges
+        {
+            get
+            {
+                if (m_cannyLinkEdges == null)
+                    m_cannyLinkEdges = new RelayCommand(CannyConnectivityAnalysis);
+                return m_cannyLinkEdges;
+            }
+        }
+
+        public void CannyConnectivityAnalysis(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Threshold 1:",
+                    "Threshold 2:"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int threshold1 = (int)response[0];
+                int threshold2 = (int)response[1];
+
+                if (GrayInitialImage != null)
+                {
+                    GrayProcessedImage = Filters.CannyLinkEdges(GrayInitialImage, threshold1, threshold2);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                    OnPropertyChanged("ProcessedImage");
+                }
+            }
+        }
+        #endregion
+
+        #endregion
+
+
+        #region Canny operator
+        private ICommand m_cannyOp;
+        public ICommand CannyOp
+        {
+            get
+            {
+                if (m_cannyOp == null)
+                    m_cannyOp = new RelayCommand(Canny);
+                return m_cannyOp;
+            }
+        }
+
+        public void Canny(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Threshold 1:",
+                    "Threshold 2:"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int threshold1 = (int)response[0];
+                int threshold2 = (int)response[1];
+
+                if (GrayInitialImage != null)
+                {
+                    GrayProcessedImage = Filters.Canny(GrayInitialImage, threshold1, threshold2);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                    OnPropertyChanged("ProcessedImage");
+                }
+                else if (ColorInitialImage != null)
+                {
+                    ColorProcessedImage = Filters.Canny(ColorInitialImage, threshold1, threshold2);
+                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                    OnPropertyChanged("ProcessedImage");
+                }
+            }
+        }
+        #endregion
+
+        #endregion
+
 
         #endregion
     }

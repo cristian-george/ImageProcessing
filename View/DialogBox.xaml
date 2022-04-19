@@ -14,7 +14,7 @@
         Top="200"
         ResizeMode="NoResize">
     <Grid x:Name="mainGrid" 
-          Background="#FF3E3E40">
+          Background="#1E1E1E">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>

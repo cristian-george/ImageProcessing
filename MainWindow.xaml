@@ -16,7 +16,7 @@
         <local:HomeCommands/>
     </Window.DataContext>
 
-    <Grid Background="#FF3E3E40">
+    <Grid Background="#1E1E1E">
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
             <RowDefinition Height="20"/>
@@ -28,7 +28,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Menu Background="MediumSlateBlue"
+        <Menu Background="#533370"
               Grid.Row="0" 
               Grid.ColumnSpan="2">
             <Menu.ItemsPanel>
@@ -177,6 +177,25 @@
                               Command="{Binding Path=SobelOp}"/>
                     <MenuItem Header="Roberts operator"
                               Command="{Binding Path=RobertsOp}"/>
+                    <MenuItem Header="Canny operator">
+                        <MenuItem Header="Smoothing (Gaussian filter)"
+                                  Command="{Binding Path=CannySmooth}"/>
+                        <MenuItem Header="Gradient magnitude image"
+                                  Command="{Binding Path=CannyGradient}"/>
+                        <MenuItem Header="Angle image"
+                                  Command="{Binding Path=CannyAngle}"/>
+                        <MenuItem Header="Nonmaxima suppression"
+                                  Command="{Binding Path=CannyNonmaxSup}"/>
+                        <MenuItem Header="Hysteresys thresholding">
+                            <MenuItem Header="Double thresholding"
+                                  Command="{Binding Path=CannyDoubleThreshold}"/>
+                            <MenuItem Header="Connectivity analysis"
+                                  Command="{Binding Path=CannyLinkEdges}"/>
+                        </MenuItem>
+                        <MenuItem Header="Canny on grayscale"
+                                  Command="{Binding Path=CannyOp}"/>
+
+                    </MenuItem>
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Save as original image" 
@@ -190,7 +209,7 @@
                Width="auto" 
                Height="auto" 
                Margin="10,10,30,10"
-               BorderBrush="#FF252526" 
+               BorderBrush="#4E4492" 
                BorderThickness="5.0"
                VerticalContentAlignment="Center" 
                HorizontalContentAlignment="Center"
@@ -225,7 +244,7 @@
                Width="auto" 
                Height="auto" 
                Margin="30,10,10,10"
-               BorderBrush="#FF252526" 
+               BorderBrush="#4E4492" 
                BorderThickness="5.0"
                VerticalContentAlignment="Center" 
                HorizontalContentAlignment="Center">
@@ -258,7 +277,7 @@
                 CommandParameter="{Binding ElementName=sliderZoom}" 
                 Background="AliceBlue"
                 BorderThickness="2"
-                BorderBrush="MediumSlateBlue"
+                BorderBrush="#4E4492"
                 Grid.Row="3" 
                 Margin="10,26,0,42"
                 Width="80"

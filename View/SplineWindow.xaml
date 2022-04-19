@@ -20,7 +20,7 @@
         <local:SplineCommands/>
     </Window.DataContext>
 
-    <Grid Background="#FF3E3E40">
+    <Grid Background="#1E1E1E">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
