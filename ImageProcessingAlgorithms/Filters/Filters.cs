@@ -509,6 +509,72 @@ namespace ImageProcessingAlgorithms.Filters
 
         #endregion
 
+        #region Sobel on color using Euclidean distance
+
+        private static double EuclideanDistance(byte red1, byte green1, byte blue1, byte red2, byte green2, byte blue2)
+        {
+            return System.Math.Sqrt(
+                System.Math.Pow(red1 - red2, 2) +
+                System.Math.Pow(green1 - green2, 2) +
+                System.Math.Pow(blue1 - blue2, 2));
+        }
+
+        public static double[,] SobelGradient(Image<Bgr, byte> inputImage)
+        {
+            Image<Bgr, byte> borderedImage = BorderReplicate(inputImage, 2);
+            double[,] gradient = new double[inputImage.Height, inputImage.Width];
+
+            int[] dy1 = { 1, 1, 1, -1, 0, 0 };
+            int[] dx1 = { -1, 0, 1, 1, 1, 1 };
+
+            int[] dy2 = { -1, -1, -1, -1, 0, 1 };
+            int[] dx2 = { -1, 0, 1, -1, -1, -1 };
+
+            for (int y = 1; y < borderedImage.Height - 1; ++y)
+            {
+                for (int x = 1; x < borderedImage.Width - 1; ++x)
+                {
+                    double[] distances = new double[6];
+                    for (int i = 0; i < 6; ++i)
+                    {
+                        byte blue1 = borderedImage.Data[y + dy1[i], x + dx1[i], 0];
+                        byte green1 = borderedImage.Data[y + dy1[i], x + dx1[i], 1];
+                        byte red1 = borderedImage.Data[y + dy1[i], x + dx1[i], 2];
+
+                        byte blue2 = borderedImage.Data[y + dy2[i], x + dx2[i], 0];
+                        byte green2 = borderedImage.Data[y + dy2[i], x + dx2[i], 1];
+                        byte red2 = borderedImage.Data[y + dy2[i], x + dx2[i], 2];
+
+                        distances[i] = EuclideanDistance(red1, green1, blue1, red2, green2, blue2);
+                    };
+
+                    gradient[y - 1, x - 1] = System.Linq.Enumerable.Max(distances);
+                }
+            }
+
+            return gradient;
+        }
+
+        public static Image<Gray, byte> Sobel(Image<Bgr, byte> inputImage, int threshold)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+            double[,] gradient = SobelGradient(inputImage);
+
+            for (int y = 0; y < inputImage.Height; ++y)
+            {
+                for (int x = 0; x < inputImage.Width; ++x)
+                {
+                    double grad = gradient[y, x];
+                    grad = grad < threshold ? 0 : 255;
+
+                    result.Data[y, x, 0] = (byte)grad;
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
         #region Roberts
         public static double[,] RobertsGradient(Image<Gray, byte> inputImage)
         {

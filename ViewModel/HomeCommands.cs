@@ -2196,6 +2196,13 @@ namespace ImageProcessingFramework.ViewModel
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                     OnPropertyChanged("ProcessedImage");
                 }
+                else if (ColorInitialImage != null)
+                {
+                    m_isProcessedImageGray = true;
+                    GrayProcessedImage = Filters.Sobel(ColorInitialImage, threshold);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                    OnPropertyChanged("ProcessedImage");
+                }
             }
         }
         #endregion
@@ -2476,7 +2483,6 @@ namespace ImageProcessingFramework.ViewModel
         #endregion
 
         #endregion
-
 
         #region Canny operator
         private ICommand m_cannyOp;
