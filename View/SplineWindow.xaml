@@ -115,7 +115,7 @@
                 BorderThickness="2"
                 BorderBrush="MediumSlateBlue"
                 Name="applyButton"
-                Content="Generate look-up table"
+                Content="Apply"
                 Margin="40,50,40,250"
                 Height="30"
                 Click="ApplyEffect"

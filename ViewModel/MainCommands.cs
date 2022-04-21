@@ -1531,19 +1531,18 @@ namespace ImageProcessingFramework.ViewModel
 
         #region Cubic Hermite spline
 
-        #region Window
-        private ICommand m_cubicHermiteSplineWindow;
-        public ICommand HermiteSplineDisplay
+        private ICommand m_cubicHermite;
+        public ICommand SplineInterpolation
         {
             get
             {
-                if (m_cubicHermiteSplineWindow == null)
-                    m_cubicHermiteSplineWindow = new RelayCommand(HermiteSplineShow);
-                return m_cubicHermiteSplineWindow;
+                if (m_cubicHermite == null)
+                    m_cubicHermite = new RelayCommand(HermiteSpline);
+                return m_cubicHermite;
             }
         }
 
-        private void HermiteSplineShow(object parameter)
+        public void HermiteSpline(object parameter)
         {
             if (HermiteSplineOn == true) return;
 
@@ -1553,53 +1552,12 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
-            SplineWindow splineShow = new SplineWindow();
+            ResetProcessedCanvas(parameter);
+
+            SplineWindow splineShow = new SplineWindow(this);
             splineShow.Show();
             HermiteSplineOn = true;
         }
-        #endregion
-
-        #region Interpolation
-        private ICommand m_splineInterpolation;
-        public ICommand SplineInterpolation
-        {
-            get
-            {
-                if (m_splineInterpolation == null)
-                    m_splineInterpolation = new RelayCommand(HermiteSpline);
-                return m_splineInterpolation;
-            }
-        }
-
-        public void HermiteSpline(object parameter)
-        {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ResetProcessedCanvas(parameter);
-
-            if (HermiteSplineLookUpTable != null)
-            {
-                if (GrayInitialImage != null)
-                {
-                    GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, HermiteSplineLookUpTable);
-                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    OnPropertyChanged("ProcessedImage");
-                }
-                else if (ColorInitialImage != null)
-                {
-                    ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, HermiteSplineLookUpTable);
-                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                    OnPropertyChanged("ProcessedImage");
-                }
-            }
-            else MessageBox.Show("No look-up table available! Please compute it first.");
-        }
-        #endregion
-
         #endregion
 
         #region Histogram equalization

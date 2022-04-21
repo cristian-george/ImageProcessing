@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Windows;
+using ImageProcessingAlgorithms.AlgorithmsHelper;
+using ImageProcessingFramework.Model;
 using ImageProcessingFramework.ViewModel;
 using OxyPlot;
 using static ImageProcessingFramework.Model.DataProvider;
@@ -12,11 +13,14 @@ namespace ImageProcessingFramework.View
         private SplineCommands GraphViewCommands;
         private SplineCommands HermiteSplineCommands;
 
-        public SplineWindow()
+        private MainCommands Commands;
+        public SplineWindow(object dataContext)
         {
             InitializeComponent();
             GraphViewCommands = new SplineCommands();
             graphView.Model = GraphViewCommands.InteractivePlot(0, 0, 255, 255);
+
+            Commands = dataContext as MainCommands;
         }
 
         private void WindowUpdate(object sender, System.Windows.Input.MouseEventArgs e)
@@ -57,6 +61,23 @@ namespace ImageProcessingFramework.View
             graphView.Model = GraphViewCommands.InteractivePlot(0, 0, 255, 255);
         }
 
+        private void ModifyProcessedImage(int[] lookUpTable)
+        {
+            if (lookUpTable != null)
+            {
+                if (GrayInitialImage != null)
+                {
+                    GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                    Commands.ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                }
+                else if (ColorInitialImage != null)
+                {
+                    ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                    Commands.ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                }
+            }
+        }
+
         private void ApplyEffect(object sender, RoutedEventArgs e)
         {
             if (HermiteSplineCommands != null)
@@ -75,15 +96,17 @@ namespace ImageProcessingFramework.View
                     sumOfValues[pos] += point.Y;
                 }
 
-                HermiteSplineLookUpTable = new int[256];
+                int[] lookUpTable = new int[256];
                 for (int key = 0; key < 256; key++)
                 {
                     int value = (int)((sumOfValues[key] / frequenceOfKeys[key]) + 0.5);
                     if (value < 0) value = 0;
                     else if (value > 255) value = 255;
 
-                    HermiteSplineLookUpTable[key] = (byte)value;
+                    lookUpTable[key] = (byte)value;
                 }
+
+                ModifyProcessedImage(lookUpTable);
             }
         }
     }

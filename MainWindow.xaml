@@ -131,12 +131,9 @@
                         <MenuItem Header="EM - operator"
                                   Command="{Binding Path=EmOp}"/>
                     </MenuItem>
-                    <MenuItem Header="Based on Cubic Hermite spline">
-                        <MenuItem Header="Interactive plot"
-                              Command="{Binding Path=HermiteSplineDisplay}" />
-                        <MenuItem Header="Apply changes"
-                              Command="{Binding Path=SplineInterpolation}" />
-                    </MenuItem>
+                    <MenuItem Header="Based on Cubic Hermite spline"
+                              Command="{Binding Path=SplineInterpolation}"/>
+
                     <MenuItem Header="Histogram Equalization"
                               Command="{Binding Path=HistogramEq}"/>
                     <MenuItem Header="Color Histogram Equalization"

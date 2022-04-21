@@ -77,12 +77,6 @@ namespace ImageProcessingFramework.Model
             set;
         }
 
-        public static int[] HermiteSplineLookUpTable
-        {
-            get;
-            set;
-        }
-
         public static PointCollection VectorOfMousePosition
         {
             get;
