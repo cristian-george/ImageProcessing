@@ -110,6 +110,9 @@
     <Compile Include="ViewModel\NotifyPropertyChanged.cs" />
     <Compile Include="ViewModel\SplineCommands.cs" />
     <Compile Include="ViewModel\MagnifierCommands.cs" />
+    <Compile Include="View\CannyThresholdsWindow.xaml.cs">
+      <DependentUpon>CannyThresholdsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ColumnDisplayWindow.xaml.cs">
       <DependentUpon>ColumnDisplayWindow.xaml</DependentUpon>
     </Compile>
@@ -128,7 +131,7 @@
     <Compile Include="View\RowDisplayWindow.xaml.cs">
       <DependentUpon>RowDisplayWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\HomeCommands.cs" />
+    <Compile Include="ViewModel\MainCommands.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="ViewModel\RowDisplayCommands.cs" />
     <Page Include="MainWindow.xaml">
@@ -143,6 +146,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\CannyThresholdsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\ColumnDisplayWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

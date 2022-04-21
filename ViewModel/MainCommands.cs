@@ -16,17 +16,34 @@ using ImageProcessingFramework.Model;
 
 namespace ImageProcessingFramework.ViewModel
 {
-    class HomeCommands : NotifyPropertyChanged
+    class MainCommands : NotifyPropertyChanged
     {
+        private ImageSource initialImage;
         public ImageSource InitialImage
         {
-            get;
-            set;
+            get
+            {
+                return initialImage;
+            }
+            set
+            {
+                initialImage = value;
+                OnPropertyChanged("InitialImage");
+            }
         }
+
+        private ImageSource processedImage;
         public ImageSource ProcessedImage
         {
-            get;
-            set;
+            get
+            {
+                return processedImage;
+            }
+            set
+            {
+                processedImage = value;
+                OnPropertyChanged("ProcessedImage");
+            }
         }
 
         private bool m_isInitialImageColor;
@@ -337,6 +354,7 @@ namespace ImageProcessingFramework.ViewModel
             GLevelsRowOn = false;
             GLevelsColumnOn = false;
             HermiteSplineOn = false;
+            CannyWindowOn = false;
         }
 
         public void ClearUi(object parameter)
@@ -2313,11 +2331,26 @@ namespace ImageProcessingFramework.ViewModel
 
             ResetProcessedCanvas(parameter);
 
-            if (GrayInitialImage != null)
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Threshold 1:"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
             {
-                GrayProcessedImage = Filters.CannyGradientImage(GrayInitialImage);
-                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
+                int threshold1 = (int)response[0];
+
+                if (GrayInitialImage != null)
+                {
+                    GrayProcessedImage = Filters.CannyGradientImage(GrayInitialImage, threshold1);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                    OnPropertyChanged("ProcessedImage");
+                }
             }
         }
         #endregion
@@ -2344,11 +2377,26 @@ namespace ImageProcessingFramework.ViewModel
 
             ResetProcessedCanvas(parameter);
 
-            if (GrayInitialImage != null)
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Threshold 1:"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
             {
-                GrayProcessedImage = Filters.CannyAngleImage(GrayInitialImage);
-                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
+                int threshold1 = (int)response[0];
+
+                if (GrayInitialImage != null)
+                {
+                    ColorProcessedImage = Filters.CannyAngleImage(GrayInitialImage, threshold1);
+                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                    OnPropertyChanged("ProcessedImage");
+                }
             }
         }
         #endregion
@@ -2375,30 +2423,44 @@ namespace ImageProcessingFramework.ViewModel
 
             ResetProcessedCanvas(parameter);
 
-            if (GrayInitialImage != null)
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Threshold 1:"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
             {
-                GrayProcessedImage = Filters.CannyNonmaximaSuppression(GrayInitialImage);
-                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
+                int threshold1 = (int)response[0];
+
+                if (GrayInitialImage != null)
+                {
+                    GrayProcessedImage = Filters.CannyNonmaximaSuppression(GrayInitialImage, threshold1);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                    OnPropertyChanged("ProcessedImage");
+                }
             }
         }
         #endregion
 
         #region Hysteresys thresholding
 
-        #region Double thresholding
-        private ICommand m_cannyDoubleThreshold;
-        public ICommand CannyDoubleThreshold
+        private ICommand m_cannyHysteresysThreshold;
+        public ICommand CannyHysteresysThreshold
         {
             get
             {
-                if (m_cannyDoubleThreshold == null)
-                    m_cannyDoubleThreshold = new RelayCommand(CannyDoubleThresholding);
-                return m_cannyDoubleThreshold;
+                if (m_cannyHysteresysThreshold == null)
+                    m_cannyHysteresysThreshold = new RelayCommand(CannyHysteresysThresholding);
+                return m_cannyHysteresysThreshold;
             }
         }
 
-        public void CannyDoubleThresholding(object parameter)
+        public void CannyHysteresysThresholding(object parameter)
         {
             if (GrayInitialImage == null && ColorInitialImage == null)
             {
@@ -2426,62 +2488,12 @@ namespace ImageProcessingFramework.ViewModel
 
                 if (GrayInitialImage != null)
                 {
-                    GrayProcessedImage = Filters.CannyDoubleThresholding(GrayInitialImage, threshold1, threshold2);
+                    GrayProcessedImage = Filters.CannyHysteresysThresholding(GrayInitialImage, threshold1, threshold2);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                     OnPropertyChanged("ProcessedImage");
                 }
             }
         }
-        #endregion
-
-        #region Connectivity analysis
-        private ICommand m_cannyLinkEdges;
-        public ICommand CannyLinkEdges
-        {
-            get
-            {
-                if (m_cannyLinkEdges == null)
-                    m_cannyLinkEdges = new RelayCommand(CannyConnectivityAnalysis);
-                return m_cannyLinkEdges;
-            }
-        }
-
-        public void CannyConnectivityAnalysis(object parameter)
-        {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image.");
-                return;
-            }
-
-            ResetProcessedCanvas(parameter);
-
-            DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
-                {
-                    "Threshold 1:",
-                    "Threshold 2:"
-                };
-
-            dialogBox.CreateDialogBox(prop);
-            dialogBox.ShowDialog();
-
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
-            {
-                int threshold1 = (int)response[0];
-                int threshold2 = (int)response[1];
-
-                if (GrayInitialImage != null)
-                {
-                    GrayProcessedImage = Filters.CannyLinkEdges(GrayInitialImage, threshold1, threshold2);
-                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    OnPropertyChanged("ProcessedImage");
-                }
-            }
-        }
-        #endregion
-
         #endregion
 
         #region Canny operator
@@ -2498,6 +2510,8 @@ namespace ImageProcessingFramework.ViewModel
 
         public void Canny(object parameter)
         {
+            if (CannyWindowOn == true) return;
+
             if (GrayInitialImage == null && ColorInitialImage == null)
             {
                 MessageBox.Show("Please add an image.");
@@ -2506,40 +2520,13 @@ namespace ImageProcessingFramework.ViewModel
 
             ResetProcessedCanvas(parameter);
 
-            DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
-                {
-                    "Threshold 1:",
-                    "Threshold 2:"
-                };
-
-            dialogBox.CreateDialogBox(prop);
-            dialogBox.ShowDialog();
-
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
-            {
-                int threshold1 = (int)response[0];
-                int threshold2 = (int)response[1];
-
-                if (GrayInitialImage != null)
-                {
-                    GrayProcessedImage = Filters.Canny(GrayInitialImage, threshold1, threshold2);
-                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    OnPropertyChanged("ProcessedImage");
-                }
-                else if (ColorInitialImage != null)
-                {
-                    ColorProcessedImage = Filters.Canny(ColorInitialImage, threshold1, threshold2);
-                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                    OnPropertyChanged("ProcessedImage");
-                }
-            }
+            CannySliders cannySliders = new CannySliders(this);
+            cannySliders.Show();
+            CannyWindowOn = true;
         }
         #endregion
 
         #endregion
-
 
         #endregion
     }

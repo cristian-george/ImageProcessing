@@ -71,6 +71,12 @@ namespace ImageProcessingFramework.Model
             set;
         }
 
+        public static bool CannyWindowOn
+        {
+            get;
+            set;
+        }
+
         public static int[] HermiteSplineLookUpTable
         {
             get;
