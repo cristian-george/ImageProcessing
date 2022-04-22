@@ -179,19 +179,14 @@
                     <MenuItem Header="Roberts operator"
                               Command="{Binding Path=RobertsOp}"/>
                     <MenuItem Header="Canny operator">
-                        <MenuItem Header="Smoothing (Gaussian filter with σ=1)"
-                                  Command="{Binding Path=CannySmooth}"/>
                         <MenuItem Header="Gradient magnitude image"
                                   Command="{Binding Path=CannyGradient}"/>
                         <MenuItem Header="Angle image"
                                   Command="{Binding Path=CannyAngle}"/>
                         <MenuItem Header="Nonmaxima suppression"
                                   Command="{Binding Path=CannyNonmaxSup}"/>
-                        <MenuItem Header="Hysteresys thresholding"
-                                  Command="{Binding Path=CannyHysteresysThreshold}"/>
                         <MenuItem Header="Canny on grayscale"
                                   Command="{Binding Path=CannyOp}"/>
-
                     </MenuItem>
                 </MenuItem>
             </MenuItem>

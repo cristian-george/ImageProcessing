@@ -18,36 +18,33 @@ namespace ImageProcessingFramework.ViewModel
 {
     class MainCommands : NotifyPropertyChanged
     {
-        private ImageSource initialImage;
+        private ImageSource m_initialImage;
         public ImageSource InitialImage
         {
             get
             {
-                return initialImage;
+                return m_initialImage;
             }
             set
             {
-                initialImage = value;
+                m_initialImage = value;
                 OnPropertyChanged("InitialImage");
             }
         }
 
-        private ImageSource processedImage;
+        private ImageSource m_processedImage;
         public ImageSource ProcessedImage
         {
             get
             {
-                return processedImage;
+                return m_processedImage;
             }
             set
             {
-                processedImage = value;
+                m_processedImage = value;
                 OnPropertyChanged("ProcessedImage");
             }
         }
-
-        private bool m_isInitialImageColor;
-        private bool m_isProcessedImageGray;
 
         #region Load grayscale image
         private ICommand m_loadGrayImage;
@@ -67,8 +64,8 @@ namespace ImageProcessingFramework.ViewModel
 
             var op = new OpenFileDialog
             {
-                Title = "Select a picture",
-                Filter = "Image files(*.jpg, *.jpeg, *.jfif, *.jpe, *.bmp, *.png) | *.jpg; *.jpeg; *.jfif; *.jpe; *.bmp; *.png"
+                Title = "Select a gray picture",
+                Filter = "Image files (*.jpg, *.jpeg, *.jfif, *.jpe, *.bmp, *.png) | *.jpg; *.jpeg; *.jfif; *.jpe; *.bmp; *.png"
             };
             op.ShowDialog();
             if (op.FileName.CompareTo("") == 0)
@@ -76,7 +73,6 @@ namespace ImageProcessingFramework.ViewModel
 
             GrayInitialImage = new Image<Gray, byte>(op.FileName);
             InitialImage = ImageConverter.Convert(GrayInitialImage);
-            OnPropertyChanged("InitialImage");
         }
         #endregion
 
@@ -98,8 +94,8 @@ namespace ImageProcessingFramework.ViewModel
 
             var op = new OpenFileDialog
             {
-                Title = "Select a picture",
-                Filter = "Image files(*.jpg, *.jpeg, *.jfif, *.jpe, *.bmp, *.png) | *.jpg; *.jpeg; *.jfif; *.jpe; *.bmp; *.png"
+                Title = "Select a color picture",
+                Filter = "Image files (*.jpg, *.jpeg, *.jfif, *.jpe, *.bmp, *.png) | *.jpg; *.jpeg; *.jfif; *.jpe; *.bmp; *.png"
             };
             op.ShowDialog();
             if (op.FileName.CompareTo("") == 0)
@@ -107,8 +103,6 @@ namespace ImageProcessingFramework.ViewModel
 
             ColorInitialImage = new Image<Bgr, byte>(op.FileName);
             InitialImage = ImageConverter.Convert(ColorInitialImage);
-            OnPropertyChanged("InitialImage");
-            m_isInitialImageColor = true;
         }
         #endregion
 
@@ -218,50 +212,45 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
-            switch (m_isInitialImageColor)
+            if (GrayInitialImage != null)
             {
-                case true:
-                    {
-                        if (m_isProcessedImageGray == true)
-                        {
-                            m_isInitialImageColor = false;
-                            m_isProcessedImageGray = false;
+                if (GrayProcessedImage != null)
+                {
+                    GrayInitialImage = GrayProcessedImage;
+                    InitialImage = ImageConverter.Convert(GrayInitialImage);
 
-                            GrayInitialImage = GrayProcessedImage;
-                            InitialImage = ImageConverter.Convert(GrayInitialImage);
+                    GrayProcessedImage = null;
+                    ProcessedImage = null;
+                }
+                else if (ColorProcessedImage != null)
+                {
+                    ColorInitialImage = ColorProcessedImage;
+                    InitialImage = ImageConverter.Convert(ColorInitialImage);
 
-                            ColorInitialImage = null;
-                            GrayProcessedImage = null;
-                        }
-                        else
-                        {
-                            ColorInitialImage = ColorProcessedImage;
-                            InitialImage = ImageConverter.Convert(ColorInitialImage);
-                            ColorProcessedImage = null;
-                        }
+                    GrayInitialImage = null;
+                    ColorProcessedImage = null;
+                    ProcessedImage = null;
+                }
+            }
+            else if (ColorInitialImage != null)
+            {
+                if (GrayProcessedImage != null)
+                {
+                    GrayInitialImage = GrayProcessedImage;
+                    InitialImage = ImageConverter.Convert(GrayInitialImage);
 
-                        ProcessedImage = null;
-                        OnPropertyChanged("InitialImage");
-                        OnPropertyChanged("ProcessedImage");
-                        break;
-                    }
+                    ColorInitialImage = null;
+                    GrayProcessedImage = null;
+                    ProcessedImage = null;
+                }
+                else if (ColorProcessedImage != null)
+                {
+                    ColorInitialImage = ColorProcessedImage;
+                    InitialImage = ImageConverter.Convert(ColorInitialImage);
 
-                case false:
-                    {
-                        if (GrayProcessedImage == null)
-                        {
-                            MessageBox.Show("Doesn't exist a grayscale processed image.");
-                            return;
-                        }
-
-                        GrayInitialImage = GrayProcessedImage;
-                        InitialImage = ImageConverter.Convert(GrayInitialImage);
-                        GrayProcessedImage = null;
-                        ProcessedImage = null;
-                        OnPropertyChanged("InitialImage");
-                        OnPropertyChanged("ProcessedImage");
-                        break;
-                    }
+                    ColorProcessedImage = null;
+                    ProcessedImage = null;
+                }
             }
         }
         #endregion
@@ -283,9 +272,6 @@ namespace ImageProcessingFramework.ViewModel
             GrayInitialImage = null;
             ColorInitialImage = null;
             InitialImage = null;
-            OnPropertyChanged("InitialImage");
-
-            m_isInitialImageColor = false;
         }
         #endregion
 
@@ -306,9 +292,6 @@ namespace ImageProcessingFramework.ViewModel
             GrayProcessedImage = null;
             ColorProcessedImage = null;
             ProcessedImage = null;
-            OnPropertyChanged("ProcessedImage");
-
-            m_isProcessedImageGray = false;
         }
         #endregion
 
@@ -404,6 +387,7 @@ namespace ImageProcessingFramework.ViewModel
         #endregion
 
         #region Gray levels
+
         #region On row
         private ICommand m_rowDisplay;
         public ICommand RowDisplay
@@ -471,6 +455,7 @@ namespace ImageProcessingFramework.ViewModel
             GLevelsColumnOn = true;
         }
         #endregion
+
         #endregion
 
         #region Copy
@@ -499,13 +484,11 @@ namespace ImageProcessingFramework.ViewModel
             {
                 ColorProcessedImage = Tools.Copy(ColorInitialImage);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
             else if (GrayInitialImage != null)
             {
                 GrayProcessedImage = Tools.Copy(GrayInitialImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
         }
         #endregion
@@ -536,13 +519,11 @@ namespace ImageProcessingFramework.ViewModel
             {
                 GrayProcessedImage = Tools.Invert(GrayInitialImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
             else if (ColorInitialImage != null)
             {
                 ColorProcessedImage = Tools.Invert(ColorInitialImage);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
         }
         #endregion
@@ -565,10 +546,8 @@ namespace ImageProcessingFramework.ViewModel
 
             if (ColorInitialImage != null)
             {
-                m_isProcessedImageGray = true;
                 GrayProcessedImage = Tools.Convert(ColorInitialImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
                 return;
             }
 
@@ -621,13 +600,11 @@ namespace ImageProcessingFramework.ViewModel
             {
                 GrayProcessedImage = Tools.CropImage(GrayInitialImage, leftTopX, leftTopY, rightBottomX, rightBottomY);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
             else if (ColorInitialImage != null)
             {
                 ColorProcessedImage = Tools.CropImage(ColorInitialImage, leftTopX, leftTopY, rightBottomX, rightBottomY);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
         }
         #endregion
@@ -660,13 +637,11 @@ namespace ImageProcessingFramework.ViewModel
             {
                 GrayProcessedImage = Tools.MirrorVertically(GrayInitialImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
             else if (ColorInitialImage != null)
             {
                 ColorProcessedImage = Tools.MirrorVertically(ColorInitialImage);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
         }
         #endregion
@@ -697,13 +672,11 @@ namespace ImageProcessingFramework.ViewModel
             {
                 GrayProcessedImage = Tools.MirrorHorizontally(GrayInitialImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
             else if (ColorInitialImage != null)
             {
                 ColorProcessedImage = Tools.MirrorHorizontally(ColorInitialImage);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
         }
         #endregion
@@ -738,13 +711,11 @@ namespace ImageProcessingFramework.ViewModel
             {
                 GrayProcessedImage = Tools.RotateClockwise(GrayInitialImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
             else if (ColorInitialImage != null)
             {
                 ColorProcessedImage = Tools.RotateClockwise(ColorInitialImage);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
         }
         #endregion
@@ -775,13 +746,11 @@ namespace ImageProcessingFramework.ViewModel
             {
                 GrayProcessedImage = Tools.RotateAntiClockwise(GrayInitialImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
             else if (ColorInitialImage != null)
             {
                 ColorProcessedImage = Tools.RotateAntiClockwise(ColorInitialImage);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
         }
         #endregion
@@ -829,13 +798,11 @@ namespace ImageProcessingFramework.ViewModel
                     {
                         ColorProcessedImage = Tools.BorderReplicate(ColorInitialImage, thickness);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                     else if (GrayInitialImage != null)
                     {
                         GrayProcessedImage = Tools.BorderReplicate(GrayInitialImage, thickness);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                 }
                 else MessageBox.Show("Please add a valid thickness value first.");
@@ -891,13 +858,11 @@ namespace ImageProcessingFramework.ViewModel
                     {
                         GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                     else if (ColorInitialImage != null)
                     {
                         ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                 }
                 else MessageBox.Show("Please add a valid b value first.");
@@ -947,13 +912,11 @@ namespace ImageProcessingFramework.ViewModel
                     {
                         GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                     else if (ColorInitialImage != null)
                     {
                         ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                 }
                 else MessageBox.Show("Please add a valid value first.");
@@ -1003,13 +966,11 @@ namespace ImageProcessingFramework.ViewModel
                     {
                         GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                     else if (ColorInitialImage != null)
                     {
                         ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                 }
                 else MessageBox.Show("Please add valid values first.");
@@ -1063,13 +1024,11 @@ namespace ImageProcessingFramework.ViewModel
                     {
                         GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                     else if (ColorInitialImage != null)
                     {
                         ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                 }
                 else MessageBox.Show("Please add a valid b value first.");
@@ -1119,13 +1078,11 @@ namespace ImageProcessingFramework.ViewModel
                     {
                         GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                     else if (ColorInitialImage != null)
                     {
                         ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                 }
                 else MessageBox.Show("Please add a valid value first.");
@@ -1175,13 +1132,11 @@ namespace ImageProcessingFramework.ViewModel
                     {
                         GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                     else if (ColorInitialImage != null)
                     {
                         ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                 }
                 else MessageBox.Show("Please add valid values first.");
@@ -1220,13 +1175,11 @@ namespace ImageProcessingFramework.ViewModel
             {
                 GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
             else if (ColorInitialImage != null)
             {
                 ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
         }
         #endregion
@@ -1258,13 +1211,11 @@ namespace ImageProcessingFramework.ViewModel
             {
                 GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
             else if (ColorInitialImage != null)
             {
                 ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
         }
         #endregion
@@ -1311,13 +1262,11 @@ namespace ImageProcessingFramework.ViewModel
                     {
                         GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                     else if (ColorInitialImage != null)
                     {
                         ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                 }
                 else MessageBox.Show("Please add a valid b value first.");
@@ -1375,13 +1324,11 @@ namespace ImageProcessingFramework.ViewModel
                     {
                         GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                     else if (ColorInitialImage != null)
                     {
                         ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                 }
                 else MessageBox.Show("Please add valid values first " +
@@ -1420,13 +1367,11 @@ namespace ImageProcessingFramework.ViewModel
             {
                 GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
             else if (ColorInitialImage != null)
             {
                 ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
         }
         #endregion
@@ -1458,13 +1403,11 @@ namespace ImageProcessingFramework.ViewModel
             {
                 GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
             else if (ColorInitialImage != null)
             {
                 ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
         }
         #endregion
@@ -1513,13 +1456,11 @@ namespace ImageProcessingFramework.ViewModel
                     {
                         GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                     else if (ColorInitialImage != null)
                     {
                         ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                 }
                 else MessageBox.Show("Please add valid values first.");
@@ -1587,18 +1528,15 @@ namespace ImageProcessingFramework.ViewModel
                 int[] lookUpTable = Tools.HistogramEqualization(GrayInitialImage);
                 GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
             else
             if (ColorInitialImage != null)
             {
-                m_isProcessedImageGray = true;
                 GrayProcessedImage = Tools.Convert(ColorInitialImage);
 
                 int[] lookUpTable = Tools.HistogramEqualization(GrayProcessedImage);
                 GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayProcessedImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
         }
         #endregion
@@ -1627,7 +1565,6 @@ namespace ImageProcessingFramework.ViewModel
 
             ColorProcessedImage = Tools.ColorHistogramEqualization(ColorInitialImage);
             ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-            OnPropertyChanged("ProcessedImage");
         }
         #endregion
 
@@ -1668,7 +1605,6 @@ namespace ImageProcessingFramework.ViewModel
                     {
                         GrayProcessedImage = Tools.Thresholding(GrayInitialImage, threshold);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                     else MessageBox.Show("Please add a threshold value first.");
                 }
@@ -1711,7 +1647,6 @@ namespace ImageProcessingFramework.ViewModel
                         int threshold = Tools.QuantileThreshold(GrayInitialImage, percent);
                         GrayProcessedImage = Tools.Thresholding(GrayInitialImage, threshold);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                     else MessageBox.Show("Please add a threshold value first.");
                 }
@@ -1739,7 +1674,6 @@ namespace ImageProcessingFramework.ViewModel
                 int threshold = Tools.MedianThreshold(GrayInitialImage);
                 GrayProcessedImage = Tools.Thresholding(GrayInitialImage, threshold);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
             else MessageBox.Show("No grayscale image!");
         }
@@ -1764,42 +1698,44 @@ namespace ImageProcessingFramework.ViewModel
                 int threshold = Tools.IntermeansThreshold(GrayInitialImage);
                 GrayProcessedImage = Tools.Thresholding(GrayInitialImage, threshold);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
             else MessageBox.Show("No grayscale image!");
         }
         #endregion
 
         #region Otsu two-threshold
-        private ICommand m_otsuTwoThreshold;
+        private ICommand m_otsuThreshold;
         public ICommand OtsuTwoThreshold
         {
             get
             {
-                if (m_otsuTwoThreshold == null)
-                    m_otsuTwoThreshold = new RelayCommand(OtsuTwoThresholdSegmentation);
-                return m_otsuTwoThreshold;
+                if (m_otsuThreshold == null)
+                    m_otsuThreshold = new RelayCommand(OtsuThreshold);
+                return m_otsuThreshold;
             }
         }
 
-        public void OtsuTwoThresholdSegmentation(object parameter)
+        public void OtsuThreshold(object parameter)
         {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
             if (GrayInitialImage != null)
             {
                 GrayProcessedImage = Tools.OtsuTwoThreshold(GrayInitialImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
-            else
-            if (ColorInitialImage != null)
+            else if (ColorInitialImage != null)
             {
-                m_isProcessedImageGray = true;
                 GrayProcessedImage = Tools.Convert(ColorInitialImage);
                 GrayProcessedImage = Tools.OtsuTwoThreshold(GrayProcessedImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
-            else MessageBox.Show("No grayscale image!");
         }
 
         #endregion
@@ -1847,7 +1783,6 @@ namespace ImageProcessingFramework.ViewModel
                 {
                     if (ColorInitialImage != null)
                     {
-                        m_isProcessedImageGray = true;
                         GrayProcessedImage = Tools.Convert(ColorInitialImage);
                         GrayProcessedImage = Filters.MedianFiltering(GrayProcessedImage, maskSize);
                     }
@@ -1857,8 +1792,6 @@ namespace ImageProcessingFramework.ViewModel
                     }
 
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-
-                    OnPropertyChanged("ProcessedImage");
                 }
                 else MessageBox.Show("Please add a valid dimension first.");
             }
@@ -1904,7 +1837,6 @@ namespace ImageProcessingFramework.ViewModel
                 {
                     if (ColorInitialImage != null)
                     {
-                        m_isProcessedImageGray = true;
                         GrayProcessedImage = Tools.Convert(ColorInitialImage);
                         GrayProcessedImage = Filters.FastMedianFiltering(GrayProcessedImage, maskSize);
                     }
@@ -1914,7 +1846,6 @@ namespace ImageProcessingFramework.ViewModel
                     }
 
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    OnPropertyChanged("ProcessedImage");
                 }
                 else MessageBox.Show("Please add a valid dimension first.");
             }
@@ -1960,7 +1891,6 @@ namespace ImageProcessingFramework.ViewModel
                 {
                     ColorProcessedImage = Filters.VectorMedianFiltering(ColorInitialImage, maskSize);
                     ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                    OnPropertyChanged("ProcessedImage");
                 }
                 else MessageBox.Show("Please add a valid dimension first.");
             }
@@ -2009,13 +1939,11 @@ namespace ImageProcessingFramework.ViewModel
                     {
                         ColorProcessedImage = Filters.GaussianFiltering(ColorInitialImage, variance);
                         ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                     else if (GrayInitialImage != null)
                     {
                         GrayProcessedImage = Filters.GaussianFiltering(GrayInitialImage, variance);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                        OnPropertyChanged("ProcessedImage");
                     }
                 }
                 else MessageBox.Show("Please add a valid dimension first.");
@@ -2065,7 +1993,6 @@ namespace ImageProcessingFramework.ViewModel
                 {
                     if (ColorInitialImage != null)
                     {
-                        m_isProcessedImageGray = true;
                         GrayProcessedImage = Tools.Convert(ColorInitialImage);
                         GrayProcessedImage = Filters.GaussianBilateralFiltering(GrayProcessedImage, variance_d, variance_r);
                     }
@@ -2075,7 +2002,6 @@ namespace ImageProcessingFramework.ViewModel
                     }
 
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    OnPropertyChanged("ProcessedImage");
                 }
                 else MessageBox.Show("Please add a valid dimension first.");
             }
@@ -2125,7 +2051,6 @@ namespace ImageProcessingFramework.ViewModel
                 {
                     GrayProcessedImage = Filters.Prewitt(GrayInitialImage, threshold);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    OnPropertyChanged("ProcessedImage");
                 }
             }
         }
@@ -2170,14 +2095,11 @@ namespace ImageProcessingFramework.ViewModel
                 {
                     GrayProcessedImage = Filters.Sobel(GrayInitialImage, threshold);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    OnPropertyChanged("ProcessedImage");
                 }
                 else if (ColorInitialImage != null)
                 {
-                    m_isProcessedImageGray = true;
                     GrayProcessedImage = Filters.Sobel(ColorInitialImage, threshold);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    OnPropertyChanged("ProcessedImage");
                 }
             }
         }
@@ -2222,50 +2144,12 @@ namespace ImageProcessingFramework.ViewModel
                 {
                     GrayProcessedImage = Filters.Roberts(GrayInitialImage, threshold);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    OnPropertyChanged("ProcessedImage");
                 }
             }
         }
         #endregion
 
         #region Canny
-
-        #region Smoothing
-        private ICommand m_cannySmooth;
-        public ICommand CannySmooth
-        {
-            get
-            {
-                if (m_cannySmooth == null)
-                    m_cannySmooth = new RelayCommand(CannySmoothing);
-                return m_cannySmooth;
-            }
-        }
-
-        public void CannySmoothing(object parameter)
-        {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image.");
-                return;
-            }
-
-            ResetProcessedCanvas(parameter);
-
-            if (GrayInitialImage != null)
-            {
-                GrayProcessedImage = Filters.GaussianFiltering(GrayInitialImage, 1);
-                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                OnPropertyChanged("ProcessedImage");
-            }
-            else if (ColorInitialImage != null)
-            {
-                ColorProcessedImage = Filters.GaussianFiltering(ColorInitialImage, 1);
-                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                OnPropertyChanged("ProcessedImage");
-            }
-        }
-        #endregion
 
         #region Gradient magnitude image
         private ICommand m_cannyGradient;
@@ -2307,7 +2191,6 @@ namespace ImageProcessingFramework.ViewModel
                 {
                     GrayProcessedImage = Filters.CannyGradientImage(GrayInitialImage, threshold1);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    OnPropertyChanged("ProcessedImage");
                 }
             }
         }
@@ -2353,7 +2236,6 @@ namespace ImageProcessingFramework.ViewModel
                 {
                     ColorProcessedImage = Filters.CannyAngleImage(GrayInitialImage, threshold1);
                     ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                    OnPropertyChanged("ProcessedImage");
                 }
             }
         }
@@ -2399,56 +2281,6 @@ namespace ImageProcessingFramework.ViewModel
                 {
                     GrayProcessedImage = Filters.CannyNonmaximaSuppression(GrayInitialImage, threshold1);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    OnPropertyChanged("ProcessedImage");
-                }
-            }
-        }
-        #endregion
-
-        #region Hysteresys thresholding
-
-        private ICommand m_cannyHysteresysThreshold;
-        public ICommand CannyHysteresysThreshold
-        {
-            get
-            {
-                if (m_cannyHysteresysThreshold == null)
-                    m_cannyHysteresysThreshold = new RelayCommand(CannyHysteresysThresholding);
-                return m_cannyHysteresysThreshold;
-            }
-        }
-
-        public void CannyHysteresysThresholding(object parameter)
-        {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image.");
-                return;
-            }
-
-            ResetProcessedCanvas(parameter);
-
-            DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
-                {
-                    "Threshold 1:",
-                    "Threshold 2:"
-                };
-
-            dialogBox.CreateDialogBox(prop);
-            dialogBox.ShowDialog();
-
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
-            {
-                int threshold1 = (int)response[0];
-                int threshold2 = (int)response[1];
-
-                if (GrayInitialImage != null)
-                {
-                    GrayProcessedImage = Filters.CannyHysteresysThresholding(GrayInitialImage, threshold1, threshold2);
-                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    OnPropertyChanged("ProcessedImage");
                 }
             }
         }
@@ -2522,7 +2354,6 @@ namespace ImageProcessingFramework.ViewModel
 
                 ColorProcessedImage = Tools.ConnectedComponents(GrayInitialImage);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                OnPropertyChanged("ProcessedImage");
             }
             else MessageBox.Show("No grayscale image!");
         }
