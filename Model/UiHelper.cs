@@ -82,17 +82,18 @@ namespace ImageProcessingFramework.Model
                 "R: " + colorImage.Data[y, x, 2] : "R: 0";
         }
 
-        public static Rectangle GetRectangle(Canvas canvas, int x, int y, double scaleValue)
+        public static Rectangle GetRectangle(Canvas canvas, double x, double y, double scaleValue)
         {
             var rectangle = new Rectangle
             {
                 Stroke = Brushes.Red,
                 StrokeThickness = 2
             };
-            rectangle.Width = 9;
-            rectangle.Height = 9;
-            Canvas.SetLeft(rectangle, x * scaleValue);
-            Canvas.SetTop(rectangle, y * scaleValue);
+            rectangle.Width = 9 * scaleValue;
+            rectangle.Height = 9 * scaleValue;
+
+            Canvas.SetLeft(rectangle, (x - 4) * scaleValue);
+            Canvas.SetTop(rectangle, (y - 4) * scaleValue);
             canvas.Children.Add(rectangle);
 
             return rectangle;
@@ -103,9 +104,9 @@ namespace ImageProcessingFramework.Model
             var line = new Line
             {
                 X1 = 0,
-                Y1 = MousePosition.Y * scaleValue,
+                Y1 = LastPosition.Y * scaleValue,
                 X2 = image.ActualWidth * scaleValue,
-                Y2 = MousePosition.Y * scaleValue,
+                Y2 = LastPosition.Y * scaleValue,
                 StrokeThickness = 2,
                 Stroke = Brushes.Red
             };
@@ -118,9 +119,9 @@ namespace ImageProcessingFramework.Model
         {
             var line = new Line
             {
-                X1 = MousePosition.X * scaleValue,
+                X1 = LastPosition.X * scaleValue,
                 Y1 = 0,
-                X2 = MousePosition.X * scaleValue,
+                X2 = LastPosition.X * scaleValue,
                 Y2 = image.ActualHeight * scaleValue,
                 StrokeThickness = 2,
                 Stroke = Brushes.Red

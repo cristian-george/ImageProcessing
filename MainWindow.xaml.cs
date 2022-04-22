@@ -18,7 +18,7 @@ namespace ImageProcessingFramework
         {
             InitializeComponent();
             MousePosition = new Point(0, 0);
-            LastPosition = MousePosition;
+            LastPosition = new Point(0, 0);
             VectorOfMousePosition = new PointCollection();
 
             InitialCanvas = canvasOriginalImage;
@@ -41,7 +41,7 @@ namespace ImageProcessingFramework
                 SetUiValues(xPos, yPos, grayValue, bValue, gValue, rValue, GrayInitialImage, ColorInitialImage,
                     (int)position.X, (int)position.Y);
             }
-            else
+            else if (string.Compare(nameImage, processedImage.Name) == 0)
             {
                 var position = e.GetPosition(processedImage);
                 SetUiValues(xPos, yPos, grayValue, bValue, gValue, rValue, GrayProcessedImage, ColorProcessedImage,
@@ -77,7 +77,7 @@ namespace ImageProcessingFramework
             string nameImage = (sender as Image).Name;
             if (string.Compare(nameImage, initialImage.Name) == 0)
                 MousePosition = e.GetPosition(initialImage);
-            else
+            if (string.Compare(nameImage, processedImage.Name) == 0)
                 MousePosition = e.GetPosition(processedImage);
 
             if (LastPosition != MousePosition)
@@ -123,24 +123,24 @@ namespace ImageProcessingFramework
             if (MagnifierOn == false) return;
 
             RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialRectangle, ProcessedRectangle);
-            InitialRectangle = GetRectangle(canvasOriginalImage, (int)MousePosition.X - 4, (int)MousePosition.Y - 4,
+            InitialRectangle = GetRectangle(canvasOriginalImage, LastPosition.X, LastPosition.Y,
                 sliderZoom.Value);
             if (ColorProcessedImage == null && GrayProcessedImage == null) return;
-            ProcessedRectangle = GetRectangle(canvasProcessedImage, (int)MousePosition.X - 4, (int)MousePosition.Y - 4,
+            ProcessedRectangle = GetRectangle(canvasProcessedImage, LastPosition.X, LastPosition.Y,
                 sliderZoom.Value);
         }
 
         private void WindowMouseMove(object sender, MouseEventArgs e)
         {
-            ResizeCanvas(canvasOriginalImage, sliderZoom.Value);
-            ResizeCanvas(canvasProcessedImage, sliderZoom.Value, false);
-
             DrawRectangle(sender, e as MouseButtonEventArgs);
             DrawRowLine(sender, e as MouseButtonEventArgs);
             DrawColumnLine(sender, e as MouseButtonEventArgs);
+
+            ResizeCanvas(canvasOriginalImage, sliderZoom.Value);
+            ResizeCanvas(canvasProcessedImage, sliderZoom.Value, false);
         }
 
-        private static readonly Dictionary<Shape, KeyValuePair<double, double>> shapesProperties = new Dictionary<Shape, KeyValuePair<double, double>>();
+        private static readonly Dictionary<Shape, (double, double)> shapesProperties = new Dictionary<Shape, (double, double)>();
 
         private void SliderZoom_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -166,11 +166,11 @@ namespace ImageProcessingFramework
                         double leftProperty = (double)shape.GetValue(LeftProperty);
                         double topProperty = (double)shape.GetValue(TopProperty);
 
-                        shapesProperties.Add(shape, new KeyValuePair<double, double>(leftProperty, topProperty));
+                        shapesProperties.Add(shape, (leftProperty, topProperty));
                     }
 
-                    Canvas.SetLeft(shape, shapesProperties[shape].Key * sliderZoom.Value);
-                    Canvas.SetTop(shape, shapesProperties[shape].Value * sliderZoom.Value);
+                    Canvas.SetLeft(shape, shapesProperties[shape].Item1 * sliderZoom.Value);
+                    Canvas.SetTop(shape, shapesProperties[shape].Item2 * sliderZoom.Value);
 
                     if (!(shape.LayoutTransform is ScaleTransform))
                     {

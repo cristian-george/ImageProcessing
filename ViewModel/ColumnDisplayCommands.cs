@@ -17,7 +17,7 @@ namespace ImageProcessingFramework.ViewModel
         {
             get
             {
-                return "X: " + ((int)DataProvider.MousePosition.X).ToString();
+                return "X: " + ((int)DataProvider.LastPosition.X).ToString();
             }
         }
 
@@ -25,7 +25,7 @@ namespace ImageProcessingFramework.ViewModel
         {
             get
             {
-                return "Y: " + ((int)DataProvider.MousePosition.Y).ToString();
+                return "Y: " + ((int)DataProvider.LastPosition.Y).ToString();
             }
         }
 
@@ -34,7 +34,7 @@ namespace ImageProcessingFramework.ViewModel
             List<int> channelValues = new List<int>();
 
             for (int y = 0; y < colorImage.Height; y++)
-                channelValues.Add(colorImage.Data[y, (int)DataProvider.MousePosition.X, channel]);
+                channelValues.Add(colorImage.Data[y, (int)DataProvider.LastPosition.X, channel]);
 
             if (color.Equals("Blue"))
             {
@@ -95,7 +95,7 @@ namespace ImageProcessingFramework.ViewModel
             List<int> channelValues = new List<int>();
 
             for (int y = 0; y < grayImage.Height; y++)
-                channelValues.Add(grayImage.Data[y, (int)DataProvider.MousePosition.X, channel]);
+                channelValues.Add(grayImage.Data[y, (int)DataProvider.LastPosition.X, channel]);
 
             if (color.Equals("Gray"))
             {

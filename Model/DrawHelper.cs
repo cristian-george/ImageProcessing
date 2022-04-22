@@ -36,12 +36,13 @@ namespace ImageProcessingFramework.Model
                 StrokeThickness = thickness,
                 Stroke = color
             };
+
             canvas.Children.Add(line);
 
             return line;
         }
 
-        public static Rectangle DrawRectangle(Canvas canvas, int leftTopX, int leftTopY, int rightBottomX, int rightBottomY,
+        public static Rectangle DrawRectangle(Canvas canvas, double leftTopX, double leftTopY, double rightBottomX, double rightBottomY,
             int thickness, Brush color)
         {
             var rectangle = new Rectangle
@@ -51,8 +52,10 @@ namespace ImageProcessingFramework.Model
                 Width = Math.Abs(rightBottomX - leftTopX),
                 Height = Math.Abs(rightBottomY - leftTopY)
             };
+
             Canvas.SetLeft(rectangle, leftTopX);
             Canvas.SetTop(rectangle, leftTopY);
+
             canvas.Children.Add(rectangle);
 
             return rectangle;
@@ -67,8 +70,10 @@ namespace ImageProcessingFramework.Model
                 Width = width,
                 Height = height
             };
+
             Canvas.SetLeft(ellipse, centerX - width / 2.0);
             Canvas.SetTop(ellipse, centerY - height / 2.0);
+
             canvas.Children.Add(ellipse);
 
             return ellipse;
@@ -82,6 +87,7 @@ namespace ImageProcessingFramework.Model
                 StrokeThickness = thickness,
                 Points = vectorOfPoints
             };
+
             canvas.Children.Add(polygon);
 
             return polygon;

@@ -577,7 +577,7 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
-            if (VectorOfMousePosition.Count <= 1)
+            if (VectorOfMousePosition.Count < 2)
             {
                 MessageBox.Show("Please select an area first.");
                 return;
@@ -585,25 +585,45 @@ namespace ImageProcessingFramework.ViewModel
 
             System.Windows.Point firstPosition = VectorOfMousePosition[VectorOfMousePosition.Count - 2];
 
-            int leftTopX = (int)System.Math.Min(firstPosition.X, LastPosition.X);
-            int leftTopY = (int)System.Math.Min(firstPosition.Y, LastPosition.Y);
-            int rightBottomX = (int)System.Math.Max(firstPosition.X, LastPosition.X);
-            int rightBottomY = (int)System.Math.Max(firstPosition.Y, LastPosition.Y);
+            double leftTopX = System.Math.Min(firstPosition.X, LastPosition.X);
+            double leftTopY = System.Math.Min(firstPosition.Y, LastPosition.Y);
+            double rightBottomX = System.Math.Max(firstPosition.X, LastPosition.X);
+            double rightBottomY = System.Math.Max(firstPosition.Y, LastPosition.Y);
 
             RemoveAllDrawnElements(parameter);
             ResetProcessedCanvas(parameter);
 
-            VectorOfRectangles.Add(DrawHelper.DrawRectangle(InitialCanvas, leftTopX, leftTopY, rightBottomX, rightBottomY, 3, Brushes.Red));
-            SliderZoom.Value += 0.01; SliderZoom.Value -= 0.01;
+            VectorOfRectangles.Add(DrawHelper.DrawRectangle(InitialCanvas, leftTopX, leftTopY, rightBottomX, rightBottomY, 1, Brushes.Red));
+
+            if (SliderZoom.Value == SliderZoom.Minimum)
+            {
+                SliderZoom.Value += 0.01;
+                SliderZoom.Value -= 0.01;
+            }
+            else
+            {
+                SliderZoom.Value -= 0.01;
+                SliderZoom.Value += 0.01;
+            }
 
             if (GrayInitialImage != null)
             {
-                GrayProcessedImage = Tools.CropImage(GrayInitialImage, leftTopX, leftTopY, rightBottomX, rightBottomY);
+                GrayProcessedImage = Tools.CropImage(GrayInitialImage,
+                    (int)(leftTopX + 0.5),
+                    (int)(leftTopY + 0.5),
+                    (int)(rightBottomX + 0.5),
+                    (int)(rightBottomY + 0.5));
+
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
             else if (ColorInitialImage != null)
             {
-                ColorProcessedImage = Tools.CropImage(ColorInitialImage, leftTopX, leftTopY, rightBottomX, rightBottomY);
+                ColorProcessedImage = Tools.CropImage(ColorInitialImage,
+                    (int)(leftTopX + 0.5),
+                    (int)(leftTopY + 0.5),
+                    (int)(rightBottomX + 0.5),
+                    (int)(rightBottomY + 0.5));
+
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
             }
         }

@@ -9,34 +9,34 @@ namespace ImageProcessingFramework
     {
         private readonly RowDisplayCommands RowDisplayCommands;
 
+        private Point LastPoint { get; set; }
+
         public RowDisplayWindow()
         {
             InitializeComponent();
             RowDisplayCommands = new RowDisplayCommands();
 
-            if (ColorInitialImage != null)
-                DisplayColor();
+            DisplayGray();
+            DisplayColor();
 
-            if (GrayInitialImage != null)
-                DisplayGray();
+            LastPoint = LastPosition;
         }
 
         private void RowDisplayUpdate(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if (LastPosition != MousePosition)
+            if (LastPoint != LastPosition)
             {
-                LastPosition = MousePosition;
-                xPos.Text = "X: " + ((int)MousePosition.X).ToString();
-                yPos.Text = "Y: " + ((int)MousePosition.Y).ToString();
-                if (GrayInitialImage != null)
-                    DisplayGray();
+                xPos.Text = "X: " + ((int)LastPosition.X).ToString();
+                yPos.Text = "Y: " + ((int)LastPosition.Y).ToString();
 
-                if (ColorInitialImage != null)
-                    DisplayColor();
+                DisplayGray();
+                DisplayColor();
 
                 checkBoxBlue.IsChecked = true;
                 checkBoxGreen.IsChecked = true;
                 checkBoxRed.IsChecked = true;
+
+                LastPoint = LastPosition;
             }
         }
 
@@ -50,14 +50,14 @@ namespace ImageProcessingFramework
 
         private void DisplayColor()
         {
-            originalImageView.Model = RowDisplayCommands.PlotColorImage(ColorInitialImage);
+            if (ColorInitialImage != null)
+                originalImageView.Model = RowDisplayCommands.PlotColorImage(ColorInitialImage);
             if (ColorProcessedImage != null)
                 processedImageView.Model = RowDisplayCommands.PlotColorImage(ColorProcessedImage);
+
             checkBoxBlue.Visibility = Visibility.Visible;
             checkBoxGreen.Visibility = Visibility.Visible;
             checkBoxRed.Visibility = Visibility.Visible;
-
-            DisplayGray();
         }
 
         private void AddBlueSeries(object sender, RoutedEventArgs e)

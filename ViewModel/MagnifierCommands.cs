@@ -26,14 +26,14 @@ namespace ImageProcessingFramework.ViewModel
                 int j = 0;
                 for (int y = -4; y <= 4; ++y)
                 {
-                    if (DataProvider.MousePosition.Y + y >= 0 && DataProvider.MousePosition.X + x >= 0)
+                    if (DataProvider.LastPosition.Y + y >= 0 && DataProvider.LastPosition.X + x >= 0)
                     {
-                        int blueColor = GetColorValue(image, (int)DataProvider.MousePosition.Y + y,
-                            (int)DataProvider.MousePosition.X + x, 0);
-                        int greenColor = GetColorValue(image, (int)DataProvider.MousePosition.Y + y,
-                            (int)DataProvider.MousePosition.X + x, 1);
-                        int redColor = GetColorValue(image, (int)DataProvider.MousePosition.Y + y,
-                            (int)DataProvider.MousePosition.X + x, 2);
+                        int blueColor = GetColorValue(image, (int)DataProvider.LastPosition.Y + y,
+                            (int)DataProvider.LastPosition.X + x, 0);
+                        int greenColor = GetColorValue(image, (int)DataProvider.LastPosition.Y + y,
+                            (int)DataProvider.LastPosition.X + x, 1);
+                        int redColor = GetColorValue(image, (int)DataProvider.LastPosition.Y + y,
+                            (int)DataProvider.LastPosition.X + x, 2);
 
                         string text = redColor + "\n" + greenColor + "\n" + blueColor;
                         Font font = new Font(new FontFamily("Arial"), 7, System.Drawing.FontStyle.Bold, GraphicsUnit.Point);
@@ -72,11 +72,11 @@ namespace ImageProcessingFramework.ViewModel
                 int j = 0;
                 for (int y = -4; y <= 4; ++y)
                 {
-                    if (DataProvider.MousePosition.Y + y >= 0 && DataProvider.MousePosition.X + x >= 0 &&
-                        DataProvider.MousePosition.Y + y < image.Height && DataProvider.MousePosition.X + x < image.Width)
+                    if (DataProvider.LastPosition.Y + y >= 0 && DataProvider.LastPosition.X + x >= 0 &&
+                        DataProvider.LastPosition.Y + y < image.Height && DataProvider.LastPosition.X + x < image.Width)
                     {
-                        int grayColor = GetGrayValue(image, (int)DataProvider.MousePosition.Y + y,
-                            (int)DataProvider.MousePosition.X + x, 0);
+                        int grayColor = GetGrayValue(image, (int)DataProvider.LastPosition.Y + y,
+                            (int)DataProvider.LastPosition.X + x, 0);
 
                         string text = "\n" + grayColor + "\n";
                         Font font = new Font(new FontFamily("Arial"), 7, System.Drawing.FontStyle.Bold, GraphicsUnit.Point);
