@@ -64,6 +64,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlgorithmsHelper\DisjointSet.cs" />
     <Compile Include="AlgorithmsHelper\Helper.cs" />
     <Compile Include="Filters\Filters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -352,10 +352,44 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
 
         #endregion
 
-        #region Hysteresys tresholding
-        public static void HysteresysTresholding(double[,] gradient, int T1, int T2)
+        #region Verify if an image is binary
+        public static bool IsBinaryImage(Image<Gray, byte> inputImage)
         {
+            bool isBinary = true;
+
+            for (int y = 0; y < inputImage.Height && isBinary == true; y++)
+            {
+                for (int x = 0; x < inputImage.Width && isBinary == true; x++)
+                {
+                    if (inputImage.Data[y, x, 0] != 0 && inputImage.Data[y, x, 0] != 255)
+                        isBinary = false;
+                }
+            }
+
+            return isBinary;
         }
+        #endregion
+
+        #region Swap method
+        public static void Swap<T>(ref T lhs, ref T rhs)
+        {
+            (rhs, lhs) = (lhs, rhs);
+        }
+
+        #endregion
+
+        #region Generate random Bgr color
+
+        public static (byte, byte, byte) GenerateRandomBgr(System.Random random)
+        {
+            int max = byte.MaxValue + 1;
+            int r = random.Next(max);
+            int g = random.Next(max);
+            int b = random.Next(max);
+
+            return ((byte)b, (byte)g, (byte)r);
+        }
+
         #endregion
     }
 }

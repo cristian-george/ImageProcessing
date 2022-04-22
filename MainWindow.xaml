@@ -151,6 +151,10 @@
                     <MenuItem Header="Otsu two-threshold"
                               Command="{Binding Path=OtsuTwoThreshold}"/>
                 </MenuItem>
+                <MenuItem Header="Morphology operators">
+                    <MenuItem Header="Connected components"
+                              Command="{Binding Path=ConnectedComp}"/>
+                </MenuItem>
             </MenuItem>
 
             <MenuItem Header="Filters" 

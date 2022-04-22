@@ -2487,5 +2487,47 @@ namespace ImageProcessingFramework.ViewModel
         #endregion
 
         #endregion
+
+        #region Morphology operators
+
+        #region Connected components
+        private ICommand m_connectedComp;
+        public ICommand ConnectedComp
+        {
+            get
+            {
+                if (m_connectedComp == null)
+                    m_connectedComp = new RelayCommand(ConnectedComponents);
+                return m_connectedComp;
+            }
+        }
+
+        public void ConnectedComponents(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            if (GrayInitialImage != null)
+            {
+                if (!Helper.IsBinaryImage(GrayInitialImage))
+                {
+                    MessageBox.Show("The image is not binary!");
+                    return;
+                }
+
+                ColorProcessedImage = Tools.ConnectedComponents(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                OnPropertyChanged("ProcessedImage");
+            }
+            else MessageBox.Show("No grayscale image!");
+        }
+        #endregion
+
+        #endregion
     }
 }
