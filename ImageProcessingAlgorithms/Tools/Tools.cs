@@ -773,6 +773,43 @@ namespace ImageProcessingAlgorithms.Tools
         }
         #endregion
 
+        #region Dilation
+        public static Image<Gray, byte> Dilation(Image<Gray, byte> inputImage, int maskDim)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+
+            int maskRad = maskDim / 2;
+
+            for (int y = maskRad; y < inputImage.Height - maskRad; y++)
+            {
+                for (int x = maskRad; x < inputImage.Width - maskRad; x++)
+                {
+                    if (inputImage.Data[y, x, 0] == 255)
+                    {
+                        result.Data[y, x, 0] = 255;
+                    }
+                    else
+                    {
+                        bool isDilated = false;
+                        for (int i = y - maskRad; i <= y + maskRad && isDilated == false; ++i)
+                        {
+                            for (int j = x - maskRad; j <= x + maskRad && isDilated == false; ++j)
+                            {
+                                if (inputImage.Data[i, j, 0] == 255)
+                                {
+                                    result.Data[y, x, 0] = 255;
+                                    isDilated = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
         #region Connected components using Disjoint Sets
 
         public static Image<Bgr, byte> ConnectedComponents(Image<Gray, byte> inputImage)

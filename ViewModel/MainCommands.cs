@@ -2342,6 +2342,226 @@ namespace ImageProcessingFramework.ViewModel
 
         #region Morphology operators
 
+        #region Dilation
+        private ICommand m_dilationOp;
+        public ICommand DilationOp
+        {
+            get
+            {
+                if (m_dilationOp == null)
+                    m_dilationOp = new RelayCommand(Dilation);
+                return m_dilationOp;
+            }
+        }
+
+        public void Dilation(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            if (GrayInitialImage != null)
+            {
+                if (!Helper.IsBinaryImage(GrayInitialImage))
+                {
+                    MessageBox.Show("The image is not binary!");
+                    return;
+                }
+            }
+            else MessageBox.Show("No grayscale image!");
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Dilation mask size: "
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int maskSize = (int)response[0];
+                if (maskSize > 0 && maskSize % 2 == 1)
+                {
+                    GrayProcessedImage = Tools.Dilation(GrayInitialImage, maskSize);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                }
+                else MessageBox.Show("The mask size is not valid!");
+            }
+        }
+        #endregion
+
+        #region Erosion
+        private ICommand m_erosionOp;
+        public ICommand ErosionOp
+        {
+            get
+            {
+                if (m_erosionOp == null)
+                    m_erosionOp = new RelayCommand(Erosion);
+                return m_erosionOp;
+            }
+        }
+
+        public void Erosion(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            if (GrayInitialImage != null)
+            {
+                if (!Helper.IsBinaryImage(GrayInitialImage))
+                {
+                    MessageBox.Show("The image is not binary!");
+                    return;
+                }
+            }
+            else MessageBox.Show("No grayscale image!");
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Dilation mask size: "
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int maskSize = (int)response[0];
+                if (maskSize > 0 && maskSize % 2 == 1)
+                {
+                    GrayProcessedImage = Tools.Dilation(GrayInitialImage, maskSize);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                }
+                else MessageBox.Show("The mask size is not valid!");
+            }
+        }
+        #endregion
+
+        #region Opening
+        private ICommand m_openingOp;
+        public ICommand OpeningOp
+        {
+            get
+            {
+                if (m_openingOp == null)
+                    m_openingOp = new RelayCommand(Opening);
+                return m_openingOp;
+            }
+        }
+
+        public void Opening(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            if (GrayInitialImage != null)
+            {
+                if (!Helper.IsBinaryImage(GrayInitialImage))
+                {
+                    MessageBox.Show("The image is not binary!");
+                    return;
+                }
+            }
+            else MessageBox.Show("No grayscale image!");
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Dilation mask size: "
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int maskSize = (int)response[0];
+                if (maskSize > 0 && maskSize % 2 == 1)
+                {
+                    GrayProcessedImage = Tools.Dilation(GrayInitialImage, maskSize);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                }
+                else MessageBox.Show("The mask size is not valid!");
+            }
+        }
+        #endregion
+
+        #region Closing
+        private ICommand m_closingOp;
+        public ICommand ClosingOp
+        {
+            get
+            {
+                if (m_closingOp == null)
+                    m_closingOp = new RelayCommand(Closing);
+                return m_closingOp;
+            }
+        }
+
+        public void Closing(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            if (GrayInitialImage != null)
+            {
+                if (!Helper.IsBinaryImage(GrayInitialImage))
+                {
+                    MessageBox.Show("The image is not binary!");
+                    return;
+                }
+            }
+            else MessageBox.Show("No grayscale image!");
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Dilation mask size: "
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int maskSize = (int)response[0];
+                if (maskSize > 0 && maskSize % 2 == 1)
+                {
+                    GrayProcessedImage = Tools.Dilation(GrayInitialImage, maskSize);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                }
+                else MessageBox.Show("The mask size is not valid!");
+            }
+        }
+        #endregion
+
         #region Connected components
         private ICommand m_connectedComp;
         public ICommand ConnectedComp

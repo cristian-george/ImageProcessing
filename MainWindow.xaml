@@ -152,6 +152,14 @@
                               Command="{Binding Path=OtsuTwoThreshold}"/>
                 </MenuItem>
                 <MenuItem Header="Morphology operators">
+                    <MenuItem Header="Dilation"
+                              Command="{Binding Path=DilationOp}"/>
+                    <MenuItem Header="Erosion"
+                              Command="{Binding Path=ErosionOp}"/>
+                    <MenuItem Header="Opening"
+                              Command="{Binding Path=OpeningOp}"/>
+                    <MenuItem Header="Closing"
+                              Command="{Binding Path=ClosingOp}"/>
                     <MenuItem Header="Connected components"
                               Command="{Binding Path=ConnectedComp}"/>
                 </MenuItem>
