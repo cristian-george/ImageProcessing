@@ -847,6 +847,22 @@ namespace ImageProcessingAlgorithms.Tools
         }
         #endregion
 
+        #region Opening
+        public static Image<Gray, byte> Opening(Image<Gray, byte> inputImage, int maskDim)
+        {
+            Image<Gray, byte> erosion = Erosion(inputImage, maskDim);
+            return Dilation(erosion, maskDim);
+        }
+        #endregion
+
+        #region Closing
+        public static Image<Gray, byte> Closing(Image<Gray, byte> inputImage, int maskDim)
+        {
+            Image<Gray, byte> dilation = Dilation(inputImage, maskDim);
+            return Erosion(dilation, maskDim);
+        }
+        #endregion
+
         #region Connected components using Disjoint Sets
 
         public static Image<Bgr, byte> ConnectedComponents(Image<Gray, byte> inputImage)
