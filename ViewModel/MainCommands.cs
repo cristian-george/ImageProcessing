@@ -2212,6 +2212,11 @@ namespace ImageProcessingFramework.ViewModel
                     GrayProcessedImage = Filters.CannyGradientImage(GrayInitialImage, lowThreshold);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
+                else if (ColorInitialImage != null)
+                {
+                    GrayProcessedImage = Filters.CannyGradientImage(ColorInitialImage, lowThreshold);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                }
             }
         }
         #endregion
@@ -2257,6 +2262,12 @@ namespace ImageProcessingFramework.ViewModel
                     ColorProcessedImage = Filters.CannyGradientDirectionImage(GrayInitialImage, lowThreshold);
                     ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                 }
+                else if (ColorInitialImage != null)
+                {
+                    ColorProcessedImage = Filters.CannyGradientDirectionImage(ColorInitialImage, lowThreshold);
+                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                }
+
             }
         }
         #endregion
@@ -2300,6 +2311,63 @@ namespace ImageProcessingFramework.ViewModel
                 if (GrayInitialImage != null)
                 {
                     GrayProcessedImage = Filters.CannyNonmaxSuppressionImage(GrayInitialImage, lowThreshold);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                }
+                else if (ColorInitialImage != null)
+                {
+                    GrayProcessedImage = Filters.CannyNonmaxSuppressionImage(ColorInitialImage, lowThreshold);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                }
+            }
+        }
+        #endregion
+
+        #region Hysteresis thresholding
+        private ICommand m_cannyHysteresisThreshold;
+        public ICommand CannyHysteresisThreshold
+        {
+            get
+            {
+                if (m_cannyHysteresisThreshold == null)
+                    m_cannyHysteresisThreshold = new RelayCommand(CannyHysteresisThresholding);
+                return m_cannyHysteresisThreshold;
+            }
+        }
+
+        public void CannyHysteresisThresholding(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Low threshold: ",
+                    "High threshold: "
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int lowThreshold = (int)response[0];
+                int highThreshold = (int)response[1];
+
+                if (GrayInitialImage != null)
+                {
+                    GrayProcessedImage = Filters.CannyHysteresisThresholdingImage(GrayInitialImage, lowThreshold, highThreshold);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                }
+                else if (ColorInitialImage != null)
+                {
+                    GrayProcessedImage = Filters.CannyHysteresisThresholdingImage(ColorInitialImage, lowThreshold, highThreshold);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
             }

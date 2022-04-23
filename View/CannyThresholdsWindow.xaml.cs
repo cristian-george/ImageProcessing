@@ -38,8 +38,8 @@ namespace ImageProcessingFramework.View
             }
             else if (SmoothColorImage != null)
             {
-                ColorProcessedImage = Filters.Canny(SmoothColorImage, lowThreshold, highThreshold);
-                Commands.ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                GrayProcessedImage = Filters.Canny(SmoothColorImage, lowThreshold, highThreshold);
+                Commands.ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
         }
 

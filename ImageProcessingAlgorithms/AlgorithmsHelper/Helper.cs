@@ -396,5 +396,103 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
         }
 
         #endregion
+
+        #region Direction of maximum variance
+        public static double[,] MaxVariance(Image<Bgr, byte> inputImage)
+        {
+            double[,] gradient = new double[inputImage.Height, inputImage.Width];
+
+            for (int y = 1; y < inputImage.Height - 1; ++y)
+            {
+                for (int x = 1; x < inputImage.Width - 1; ++x)
+                {
+                    int dxB = inputImage.Data[y + 1, x - 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y + 1, x, 0] -
+                               2 * inputImage.Data[y - 1, x, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y - 1, x + 1, 0];
+
+                    int dxG = inputImage.Data[y + 1, x - 1, 1] - inputImage.Data[y - 1, x - 1, 1] + 2 * inputImage.Data[y + 1, x, 1] -
+                               2 * inputImage.Data[y - 1, x, 1] + inputImage.Data[y + 1, x + 1, 1] - inputImage.Data[y - 1, x + 1, 1];
+
+                    int dxR = inputImage.Data[y + 1, x - 1, 2] - inputImage.Data[y - 1, x - 1, 2] + 2 * inputImage.Data[y + 1, x, 2] -
+                               2 * inputImage.Data[y - 1, x, 2] + inputImage.Data[y + 1, x + 1, 2] - inputImage.Data[y - 1, x + 1, 2];
+
+
+                    int dyB = inputImage.Data[y - 1, x + 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y, x + 1, 0] -
+                               2 * inputImage.Data[y, x - 1, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y + 1, x - 1, 0];
+
+                    int dyG = inputImage.Data[y - 1, x + 1, 1] - inputImage.Data[y - 1, x - 1, 1] + 2 * inputImage.Data[y, x + 1, 1] -
+                               2 * inputImage.Data[y, x - 1, 1] + inputImage.Data[y + 1, x + 1, 1] - inputImage.Data[y + 1, x - 1, 1];
+
+                    int dyR = inputImage.Data[y - 1, x + 1, 2] - inputImage.Data[y - 1, x - 1, 2] + 2 * inputImage.Data[y, x + 1, 2] -
+                               2 * inputImage.Data[y, x - 1, 2] + inputImage.Data[y + 1, x + 1, 2] - inputImage.Data[y + 1, x - 1, 2];
+
+                    double[,] maxVariance = new double[2, 2];
+                    maxVariance[0, 0] = System.Math.Pow(dxR, 2) + System.Math.Pow(dxG, 2) + System.Math.Pow(dxB, 2);
+                    maxVariance[0, 1] = maxVariance[1, 0] = dxR * dyR + dxG * dyG + dxB * dyB;
+                    maxVariance[1, 1] = System.Math.Pow(dyR, 2) + System.Math.Pow(dyG, 2) + System.Math.Pow(dyB, 2);
+
+                    double maxProperValue = 0.5 * (maxVariance[0, 0] + maxVariance[1, 1] +
+                        System.Math.Sqrt
+                        (
+                            System.Math.Pow(maxVariance[0, 0] - maxVariance[1, 1], 2) +
+                        4 * System.Math.Pow(maxVariance[1, 0], 2)
+                        ));
+
+                    gradient[y, x] = System.Math.Sqrt(maxProperValue);
+                }
+            }
+
+            return gradient;
+        }
+
+        public static double[,] MaxVarianceDirection(Image<Bgr, byte> inputImage)
+        {
+            double[,] angle = new double[inputImage.Height, inputImage.Width];
+
+            for (int y = 1; y < inputImage.Height - 1; ++y)
+            {
+                for (int x = 1; x < inputImage.Width - 1; ++x)
+                {
+                    int dxB = inputImage.Data[y + 1, x - 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y + 1, x, 0] -
+                               2 * inputImage.Data[y - 1, x, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y - 1, x + 1, 0];
+
+                    int dxG = inputImage.Data[y + 1, x - 1, 1] - inputImage.Data[y - 1, x - 1, 1] + 2 * inputImage.Data[y + 1, x, 1] -
+                               2 * inputImage.Data[y - 1, x, 1] + inputImage.Data[y + 1, x + 1, 1] - inputImage.Data[y - 1, x + 1, 1];
+
+                    int dxR = inputImage.Data[y + 1, x - 1, 2] - inputImage.Data[y - 1, x - 1, 2] + 2 * inputImage.Data[y + 1, x, 2] -
+                               2 * inputImage.Data[y - 1, x, 2] + inputImage.Data[y + 1, x + 1, 2] - inputImage.Data[y - 1, x + 1, 2];
+
+
+                    int dyB = inputImage.Data[y - 1, x + 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y, x + 1, 0] -
+                               2 * inputImage.Data[y, x - 1, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y + 1, x - 1, 0];
+
+                    int dyG = inputImage.Data[y - 1, x + 1, 1] - inputImage.Data[y - 1, x - 1, 1] + 2 * inputImage.Data[y, x + 1, 1] -
+                               2 * inputImage.Data[y, x - 1, 1] + inputImage.Data[y + 1, x + 1, 1] - inputImage.Data[y + 1, x - 1, 1];
+
+                    int dyR = inputImage.Data[y - 1, x + 1, 2] - inputImage.Data[y - 1, x - 1, 2] + 2 * inputImage.Data[y, x + 1, 2] -
+                               2 * inputImage.Data[y, x - 1, 2] + inputImage.Data[y + 1, x + 1, 2] - inputImage.Data[y + 1, x - 1, 2];
+
+                    double[,] maxVariance = new double[2, 2];
+                    maxVariance[0, 0] = System.Math.Pow(dxR, 2) + System.Math.Pow(dxG, 2) + System.Math.Pow(dxB, 2);
+                    maxVariance[0, 1] = maxVariance[1, 0] = dxR * dyR + dxG * dyG + dxB * dyB;
+                    maxVariance[1, 1] = System.Math.Pow(dyR, 2) + System.Math.Pow(dyG, 2) + System.Math.Pow(dyB, 2);
+
+                    if (maxVariance[0, 0] - maxVariance[1, 1] + System.Math.Sqrt
+                        (
+                            System.Math.Pow(maxVariance[0, 0] - maxVariance[1, 1], 2) +
+                        4 * System.Math.Pow(maxVariance[1, 0], 2)) == 0)
+                        angle[y, x] = System.Math.PI / 2;
+                    else
+                        angle[y, x] = 0.5 * System.Math.Atan(2 * maxVariance[0, 1] / (maxVariance[0, 0] - maxVariance[1, 1] + System.Math.Sqrt
+                        (
+                            System.Math.Pow(maxVariance[0, 0] - maxVariance[1, 1], 2) +
+                        4 * System.Math.Pow(maxVariance[1, 0], 2))
+                        ));
+                }
+            }
+
+            return angle;
+        }
+
+        #endregion
     }
 }

@@ -622,20 +622,22 @@ namespace ImageProcessingAlgorithms.Filters
         #region Canny
 
         #region Canny gradient magnitude
+
+        #region On grayscale
         private static double[,] CannyGradient(Image<Gray, byte> smoothImage, int lowThreshold)
         {
-            var sobelGradient = SobelGradient(smoothImage);
+            var gradient = SobelGradient(smoothImage);
 
             for (int y = 0; y < smoothImage.Height; ++y)
             {
                 for (int x = 0; x < smoothImage.Width; ++x)
                 {
-                    if (sobelGradient[y, x] <= lowThreshold)
-                        sobelGradient[y, x] = 0;
+                    if (gradient[y, x] <= lowThreshold)
+                        gradient[y, x] = 0;
                 }
             }
 
-            return sobelGradient;
+            return gradient;
         }
 
         public static Image<Gray, byte> CannyGradientImage(Image<Gray, byte> inputImage, int lowThreshold)
@@ -660,7 +662,50 @@ namespace ImageProcessingAlgorithms.Filters
         }
         #endregion
 
+        #region On color
+        private static double[,] CannyGradient(Image<Bgr, byte> smoothImage, int lowThreshold)
+        {
+            var gradient = MaxVariance(smoothImage);
+
+            for (int y = 0; y < smoothImage.Height; ++y)
+            {
+                for (int x = 0; x < smoothImage.Width; ++x)
+                {
+                    if (gradient[y, x] <= lowThreshold)
+                        gradient[y, x] = 0;
+                }
+            }
+
+            return gradient;
+        }
+
+        public static Image<Gray, byte> CannyGradientImage(Image<Bgr, byte> inputImage, int threshold)
+        {
+            var smoothImage = GaussianFiltering(inputImage, 1);
+            var cannyGradient = CannyGradient(smoothImage, threshold);
+
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+
+            for (int y = 0; y < inputImage.Height; ++y)
+            {
+                for (int x = 0; x < inputImage.Width; ++x)
+                {
+                    int grad = (int)(cannyGradient[y, x] + 0.5);
+                    if (grad > 255) grad = 255;
+
+                    result.Data[y, x, 0] = (byte)grad;
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #endregion
+
         #region Canny gradient direction
+
+        #region On grayscale
         private static int[,] CannyGradientDirection(Image<Gray, byte> smoothImage, int lowThreshold)
         {
             var cannyGradient = CannyGradient(smoothImage, lowThreshold);
@@ -745,7 +790,96 @@ namespace ImageProcessingAlgorithms.Filters
         }
         #endregion
 
+        #region On color
+        private static int[,] CannyGradientDirection(Image<Bgr, byte> smoothImage, int lowThreshold)
+        {
+            var cannyGradient = CannyGradient(smoothImage, lowThreshold);
+            var maxVarianceDirection = MaxVarianceDirection(smoothImage);
+
+            var cannyDirection = new int[smoothImage.Height, smoothImage.Width];
+
+            for (int y = 0; y < smoothImage.Height; ++y)
+            {
+                for (int x = 0; x < smoothImage.Width; ++x)
+                {
+                    if (cannyGradient[y, x] > lowThreshold)
+                    {
+                        double dir = maxVarianceDirection[y, x] * 180 / System.Math.PI;
+
+                        // Direction 0 (horizontal)
+                        if (-22.5 <= dir && dir < 22.5)
+                            cannyDirection[y, x] = 0;
+
+                        // Direction 1 (-45 degrees)
+                        if (-67.5 <= dir && dir < -22.5)
+                            cannyDirection[y, x] = 1;
+
+                        //Direction 2 (vertical)
+                        if ((-90 <= dir && dir < -67.5) || (67.5 <= dir && dir <= 90))
+                            cannyDirection[y, x] = 2;
+
+                        //Direction 3 (45 degrees)
+                        if (22.5 <= dir && dir < 67.5)
+                            cannyDirection[y, x] = 3;
+                    }
+                    else
+                        cannyDirection[y, x] = -1;
+                }
+            }
+
+            return cannyDirection;
+        }
+
+        public static Image<Bgr, byte> CannyGradientDirectionImage(Image<Bgr, byte> inputImage, int lowThreshold)
+        {
+            var smoothImage = GaussianFiltering(inputImage, 1);
+            var cannyDirection = CannyGradientDirection(smoothImage, lowThreshold);
+
+            Image<Bgr, byte> result = new Image<Bgr, byte>(inputImage.Size);
+
+            for (int y = 0; y < inputImage.Height; ++y)
+            {
+                for (int x = 0; x < inputImage.Width; ++x)
+                {
+                    if (cannyDirection[y, x] == 0)
+                    {
+                        result.Data[y, x, 0] = 0;
+                        result.Data[y, x, 1] = 0;
+                        result.Data[y, x, 2] = 255;
+                    }
+
+                    if (cannyDirection[y, x] == 1)
+                    {
+                        result.Data[y, x, 0] = 255;
+                        result.Data[y, x, 1] = 0;
+                        result.Data[y, x, 2] = 0;
+                    }
+
+                    if (cannyDirection[y, x] == 2)
+                    {
+                        result.Data[y, x, 0] = 0;
+                        result.Data[y, x, 1] = 255;
+                        result.Data[y, x, 2] = 0;
+                    }
+
+                    if (cannyDirection[y, x] == 3)
+                    {
+                        result.Data[y, x, 0] = 0;
+                        result.Data[y, x, 1] = 255;
+                        result.Data[y, x, 2] = 255;
+                    }
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #endregion
+
         #region Canny Nonmaxima suppression
+
+        #region On grayscale
         private static double[,] CannyNonmaxSuppression(Image<Gray, byte> smoothImage, int lowThreshold)
         {
             var cannyGradient = CannyGradient(smoothImage, lowThreshold);
@@ -807,7 +941,74 @@ namespace ImageProcessingAlgorithms.Filters
         }
         #endregion
 
-        public static double[,] CannyHysteresisThresholding(Image<Gray, byte> smoothImage, int lowThreshold, int highThreshold)
+        #region On color
+        private static double[,] CannyNonmaxSuppression(Image<Bgr, byte> smoothImage, int lowThreshold)
+        {
+            var cannyGradient = CannyGradient(smoothImage, lowThreshold);
+            var cannyDirection = CannyGradientDirection(smoothImage, lowThreshold);
+
+            for (int y = 2; y < smoothImage.Height - 2; ++y)
+            {
+                for (int x = 2; x < smoothImage.Width - 2; ++x)
+                {
+                    if (cannyDirection[y, x] == 0)
+                    {
+                        if (cannyGradient[y, x] <= cannyGradient[y - 2, x] || cannyGradient[y, x] <= cannyGradient[y + 2, x] ||
+                            cannyGradient[y, x] <= cannyGradient[y - 1, x] || cannyGradient[y, x] <= cannyGradient[y + 1, x])
+                            cannyGradient[y, x] = 0;
+                    }
+                    else if (cannyDirection[y, x] == 1)
+                    {
+                        if (cannyGradient[y, x] <= cannyGradient[y + 2, x - 2] || cannyGradient[y, x] <= cannyGradient[y - 2, x + 2] ||
+                            cannyGradient[y, x] <= cannyGradient[y + 1, x - 1] || cannyGradient[y, x] <= cannyGradient[y - 1, x + 1])
+                            cannyGradient[y, x] = 0;
+                    }
+                    else if (cannyDirection[y, x] == 2)
+                    {
+                        if (cannyGradient[y, x] <= cannyGradient[y, x - 2] || cannyGradient[y, x] <= cannyGradient[y, x + 2] ||
+                            cannyGradient[y, x] <= cannyGradient[y, x - 1] || cannyGradient[y, x] <= cannyGradient[y, x + 1])
+                            cannyGradient[y, x] = 0;
+                    }
+                    else if (cannyDirection[y, x] == 3)
+                    {
+                        if (cannyGradient[y, x] <= cannyGradient[y - 2, x - 2] || cannyGradient[y, x] <= cannyGradient[y + 2, x + 2] ||
+                            cannyGradient[y, x] <= cannyGradient[y - 1, x - 1] || cannyGradient[y, x] <= cannyGradient[y + 1, x + 1])
+                            cannyGradient[y, x] = 0;
+                    }
+                }
+            }
+
+            return cannyGradient;
+        }
+
+        public static Image<Gray, byte> CannyNonmaxSuppressionImage(Image<Bgr, byte> inputImage, int lowThreshold)
+        {
+            var smoothImage = GaussianFiltering(inputImage, 1);
+            var cannyNonmaxSuppresion = CannyNonmaxSuppression(smoothImage, lowThreshold);
+
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+
+            for (int y = 0; y < inputImage.Height; ++y)
+            {
+                for (int x = 0; x < inputImage.Width; ++x)
+                {
+                    int value = (int)(cannyNonmaxSuppresion[y, x] + 0.5);
+                    if (value > 255) value = 255;
+
+                    result.Data[y, x, 0] = (byte)value;
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #endregion
+
+        #region Canny Hysteresis thresholding
+
+        #region On grayscale
+        private static double[,] CannyHysteresisThresholding(Image<Gray, byte> smoothImage, int lowThreshold, int highThreshold)
         {
             var thinEdges = CannyNonmaxSuppression(smoothImage, lowThreshold);
             Queue<(int, int)> strongEdges = new Queue<(int, int)>();
@@ -851,40 +1052,133 @@ namespace ImageProcessingAlgorithms.Filters
                 }
             }
 
+            return thinEdges;
+        }
+
+        public static Image<Gray, byte> CannyHysteresisThresholdingImage(Image<Gray, byte> smoothImage, int lowThreshold, int highThreshold)
+        {
+            var thinEdges = CannyHysteresisThresholding(smoothImage, lowThreshold, highThreshold);
+            var result = new Image<Gray, byte>(smoothImage.Size);
+
+            for (int y = 0; y < smoothImage.Height; y++)
+            {
+                for (int x = 0; x < smoothImage.Width; x++)
+                {
+                    result.Data[y, x, 0] = (byte)(thinEdges[y, x] + 0.5);
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region On color
+        private static double[,] CannyHysteresisThresholding(Image<Bgr, byte> smoothImage, int lowThreshold, int highThreshold)
+        {
+            var thinEdges = CannyNonmaxSuppression(smoothImage, lowThreshold);
+            Queue<(int, int)> strongEdges = new Queue<(int, int)>();
+
             for (int y = 0; y < smoothImage.Height; ++y)
             {
                 for (int x = 0; x < smoothImage.Width; ++x)
                 {
-                    if (lowThreshold < thinEdges[y, x] && thinEdges[y, x] <= highThreshold)
+                    if (thinEdges[y, x] <= lowThreshold)
                         thinEdges[y, x] = 0;
+
+                    if (thinEdges[y, x] > highThreshold)
+                    {
+                        thinEdges[y, x] = 255;
+                        strongEdges.Enqueue((y, x));
+                    }
+                }
+            }
+
+            // 8-connectivity
+            int[] dy = { -1, -1, 0, 1, 1, 1, 0, -1 };
+            int[] dx = { 0, 1, 1, 1, 0, -1, -1, -1 };
+
+            while (strongEdges.Count > 0)
+            {
+                var currentEdge = strongEdges.Dequeue();
+
+                for (int i = 0; i < dy.Length; ++i)
+                {
+                    int Y = currentEdge.Item1 + dy[i];
+                    int X = currentEdge.Item2 + dx[i];
+
+                    if (Y >= 0 && Y < smoothImage.Height && X >= 0 && X < smoothImage.Width)
+                    {
+                        if (lowThreshold < thinEdges[Y, X] && thinEdges[Y, X] <= highThreshold)
+                        {
+                            thinEdges[Y, X] = 255;
+                            strongEdges.Enqueue((Y, X));
+                        }
+                    }
                 }
             }
 
             return thinEdges;
         }
 
-        public static Image<Gray, byte> Canny(Image<Gray, byte> smoothImage, int lowThreshold, int highThreshold)
+        public static Image<Gray, byte> CannyHysteresisThresholdingImage(Image<Bgr, byte> smoothImage, int lowThreshold, int highThreshold)
         {
-            var realEdges = CannyHysteresisThresholding(smoothImage, lowThreshold, highThreshold);
-
-            Image<Gray, byte> result = new Image<Gray, byte>(smoothImage.Size);
+            var thinEdges = CannyHysteresisThresholding(smoothImage, lowThreshold, highThreshold);
+            var result = new Image<Gray, byte>(smoothImage.Size);
 
             for (int y = 0; y < smoothImage.Height; y++)
             {
                 for (int x = 0; x < smoothImage.Width; x++)
                 {
-                    result.Data[y, x, 0] = (byte)(realEdges[y, x] + 0.5);
+                    result.Data[y, x, 0] = (byte)(thinEdges[y, x] + 0.5);
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #endregion
+
+        #region Canny operator
+        public static Image<Gray, byte> Canny(Image<Gray, byte> smoothImage, int lowThreshold, int highThreshold)
+        {
+            var thinEdges = CannyHysteresisThresholding(smoothImage, lowThreshold, highThreshold);
+            var result = new Image<Gray, byte>(smoothImage.Size);
+
+            for (int y = 0; y < smoothImage.Height; y++)
+            {
+                for (int x = 0; x < smoothImage.Width; x++)
+                {
+                    if (lowThreshold < thinEdges[y, x] && thinEdges[y, x] <= highThreshold)
+                        thinEdges[y, x] = 0;
+
+                    result.Data[y, x, 0] = (byte)(thinEdges[y, x] + 0.5);
                 }
             }
 
             return result;
         }
 
-        public static Image<Bgr, byte> Canny(Image<Bgr, byte> smoothImage, int lowThreshold, int highThreshold)
+        public static Image<Gray, byte> Canny(Image<Bgr, byte> smoothImage, int lowThreshold, int highThreshold)
         {
-            Image<Bgr, byte> result = GaussianFiltering(smoothImage, 1);
+            var thinEdges = CannyHysteresisThresholding(smoothImage, lowThreshold, highThreshold);
+            var result = new Image<Gray, byte>(smoothImage.Size);
+
+            for (int y = 0; y < smoothImage.Height; y++)
+            {
+                for (int x = 0; x < smoothImage.Width; x++)
+                {
+                    if (lowThreshold < thinEdges[y, x] && thinEdges[y, x] <= highThreshold)
+                        thinEdges[y, x] = 0;
+
+                    result.Data[y, x, 0] = (byte)(thinEdges[y, x] + 0.5);
+                }
+            }
+
             return result;
         }
+        #endregion
+
         #endregion
 
         #endregion

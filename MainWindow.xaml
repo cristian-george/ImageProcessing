@@ -193,7 +193,9 @@
                                   Command="{Binding Path=CannyAngle}"/>
                         <MenuItem Header="Nonmaxima suppression"
                                   Command="{Binding Path=CannyNonmaxSup}"/>
-                        <MenuItem Header="Canny on grayscale"
+                        <MenuItem Header="Hysteresis thresholding"
+                                  Command="{Binding Path=CannyHysteresisThreshold}"/>
+                        <MenuItem Header="Canny"
                                   Command="{Binding Path=CannyOp}"/>
                     </MenuItem>
                 </MenuItem>
