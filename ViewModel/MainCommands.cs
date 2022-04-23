@@ -2432,7 +2432,7 @@ namespace ImageProcessingFramework.ViewModel
             DialogBox dialogBox = new DialogBox();
             System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
                 {
-                    "Dilation mask size: "
+                    "Erosion mask size: "
                 };
 
             dialogBox.CreateDialogBox(prop);
@@ -2444,7 +2444,7 @@ namespace ImageProcessingFramework.ViewModel
                 int maskSize = (int)response[0];
                 if (maskSize > 0 && maskSize % 2 == 1)
                 {
-                    GrayProcessedImage = Tools.Dilation(GrayInitialImage, maskSize);
+                    GrayProcessedImage = Tools.Erosion(GrayInitialImage, maskSize);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
                 else MessageBox.Show("The mask size is not valid!");
@@ -2487,7 +2487,7 @@ namespace ImageProcessingFramework.ViewModel
             DialogBox dialogBox = new DialogBox();
             System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
                 {
-                    "Dilation mask size: "
+                    "Opening mask size: "
                 };
 
             dialogBox.CreateDialogBox(prop);
@@ -2499,7 +2499,7 @@ namespace ImageProcessingFramework.ViewModel
                 int maskSize = (int)response[0];
                 if (maskSize > 0 && maskSize % 2 == 1)
                 {
-                    GrayProcessedImage = Tools.Dilation(GrayInitialImage, maskSize);
+                    GrayProcessedImage = Tools.Opening(GrayInitialImage, maskSize);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
                 else MessageBox.Show("The mask size is not valid!");
@@ -2542,7 +2542,7 @@ namespace ImageProcessingFramework.ViewModel
             DialogBox dialogBox = new DialogBox();
             System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
                 {
-                    "Dilation mask size: "
+                    "Closing mask size: "
                 };
 
             dialogBox.CreateDialogBox(prop);
@@ -2554,7 +2554,7 @@ namespace ImageProcessingFramework.ViewModel
                 int maskSize = (int)response[0];
                 if (maskSize > 0 && maskSize % 2 == 1)
                 {
-                    GrayProcessedImage = Tools.Dilation(GrayInitialImage, maskSize);
+                    GrayProcessedImage = Tools.Closing(GrayInitialImage, maskSize);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
                 else MessageBox.Show("The mask size is not valid!");
