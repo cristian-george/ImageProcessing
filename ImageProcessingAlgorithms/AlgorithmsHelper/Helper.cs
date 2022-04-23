@@ -327,7 +327,7 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
         #endregion
 
         #region Calculate sum of values in a rectangular subset of a grid from the image
-        public static int SummedArea(Image<Gray, byte> inputImage, int y0, int x0, int y1, int x1)
+        public static int SumArea(Image<Gray, byte> inputImage, int y0, int x0, int y1, int x1)
         {
             int[,] integralImage = IntegralImage(inputImage);
 
@@ -349,7 +349,12 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
         #endregion
 
         #region Calculate mean using integral image
-
+        public static int MeanArea(Image<Gray, byte> inputImage, int y0, int x0, int y1, int x1)
+        {
+            int resolution = (y1 - y0) * (x1 - x0);
+            int sumArea = SumArea(inputImage, y0, x0, y1, x1);
+            return sumArea / resolution;
+        }
         #endregion
 
         #region Verify if an image is binary

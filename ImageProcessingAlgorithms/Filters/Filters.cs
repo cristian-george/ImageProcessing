@@ -442,21 +442,19 @@ namespace ImageProcessingAlgorithms.Filters
         #region Sobel on grayscale
         public static double[,] SobelGradient(Image<Gray, byte> inputImage)
         {
-            Image<Gray, byte> borderedImage = BorderReplicate(inputImage, 2);
             double[,] gradient = new double[inputImage.Height, inputImage.Width];
 
-            for (int y = 1; y < borderedImage.Height - 1; ++y)
+            for (int y = 1; y < inputImage.Height - 1; ++y)
             {
-                for (int x = 1; x < borderedImage.Width - 1; ++x)
+                for (int x = 1; x < inputImage.Width - 1; ++x)
                 {
-                    int fx = borderedImage.Data[y + 1, x - 1, 0] - borderedImage.Data[y - 1, x - 1, 0] + 2 * borderedImage.Data[y + 1, x, 0] -
-                               2 * borderedImage.Data[y - 1, x, 0] + borderedImage.Data[y + 1, x + 1, 0] - borderedImage.Data[y - 1, x + 1, 0];
+                    int fx = inputImage.Data[y + 1, x - 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y + 1, x, 0] -
+                               2 * inputImage.Data[y - 1, x, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y - 1, x + 1, 0];
 
-                    int fy = borderedImage.Data[y - 1, x + 1, 0] - borderedImage.Data[y - 1, x - 1, 0] + 2 * borderedImage.Data[y, x + 1, 0] -
-                               2 * borderedImage.Data[y, x - 1, 0] + borderedImage.Data[y + 1, x + 1, 0] - borderedImage.Data[y + 1, x - 1, 0];
+                    int fy = inputImage.Data[y - 1, x + 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y, x + 1, 0] -
+                               2 * inputImage.Data[y, x - 1, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y + 1, x - 1, 0];
 
-                    double grad = System.Math.Sqrt((fx * fx) + (fy * fy));
-                    gradient[y - 1, x - 1] = grad;
+                    gradient[y, x] = System.Math.Sqrt((fx * fx) + (fy * fy));
                 }
             }
 
@@ -465,27 +463,29 @@ namespace ImageProcessingAlgorithms.Filters
 
         public static double[,] SobelDirection(Image<Gray, byte> inputImage)
         {
-            Image<Gray, byte> borderedImage = BorderReplicate(inputImage, 2);
-            double[,] theta = new double[inputImage.Height, inputImage.Width];
+            double[,] angle = new double[inputImage.Height, inputImage.Width];
 
-            for (int y = 1; y < borderedImage.Height - 1; ++y)
+            for (int y = 1; y < inputImage.Height - 1; ++y)
             {
-                for (int x = 1; x < borderedImage.Width - 1; ++x)
+                for (int x = 1; x < inputImage.Width - 1; ++x)
                 {
-                    int fx = borderedImage.Data[y + 1, x - 1, 0] - borderedImage.Data[y - 1, x - 1, 0] + 2 * borderedImage.Data[y + 1, x, 0] -
-                               2 * borderedImage.Data[y - 1, x, 0] + borderedImage.Data[y + 1, x + 1, 0] - borderedImage.Data[y - 1, x + 1, 0];
+                    int fx = inputImage.Data[y + 1, x - 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y + 1, x, 0] -
+                               2 * inputImage.Data[y - 1, x, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y - 1, x + 1, 0];
 
-                    int fy = borderedImage.Data[y - 1, x + 1, 0] - borderedImage.Data[y - 1, x - 1, 0] + 2 * borderedImage.Data[y, x + 1, 0] -
-                               2 * borderedImage.Data[y, x - 1, 0] + borderedImage.Data[y + 1, x + 1, 0] - borderedImage.Data[y + 1, x - 1, 0];
+                    int fy = inputImage.Data[y - 1, x + 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y, x + 1, 0] -
+                               2 * inputImage.Data[y, x - 1, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y + 1, x - 1, 0];
 
-                    if (fx != 0)
-                        theta[y - 1, x - 1] = System.Math.Atan(fy / fx);
+                    if (fx == 0)
+                    {
+                        if (fy < 0) angle[y, x] = -System.Math.PI / 2;
+                        if (fy > 0) angle[y, x] = System.Math.PI / 2;
+                    }
                     else
-                        theta[y - 1, x - 1] = System.Math.PI / 2;
+                        angle[y, x] = System.Math.Atan(fy / fx);
                 }
             }
 
-            return theta;
+            return angle;
         }
 
         public static Image<Gray, byte> Sobel(Image<Gray, byte> inputImage, int threshold)
@@ -621,27 +621,27 @@ namespace ImageProcessingAlgorithms.Filters
 
         #region Canny
 
+        #region Canny gradient magnitude
         private static double[,] CannyGradient(Image<Gray, byte> smoothImage, int lowThreshold)
         {
-            double[,] gradient = SobelGradient(smoothImage);
+            var sobelGradient = SobelGradient(smoothImage);
 
             for (int y = 0; y < smoothImage.Height; ++y)
             {
                 for (int x = 0; x < smoothImage.Width; ++x)
                 {
-                    if (gradient[y, x] <= lowThreshold)
-                        gradient[y, x] = 0;
+                    if (sobelGradient[y, x] <= lowThreshold)
+                        sobelGradient[y, x] = 0;
                 }
             }
 
-            return gradient;
+            return sobelGradient;
         }
 
         public static Image<Gray, byte> CannyGradientImage(Image<Gray, byte> inputImage, int lowThreshold)
         {
-            Image<Gray, byte> smoothImage = GaussianFiltering(inputImage, 1);
-
-            double[,] cannyGradient = CannyGradient(smoothImage, lowThreshold);
+            var smoothImage = GaussianFiltering(inputImage, 1);
+            var cannyGradient = CannyGradient(smoothImage, lowThreshold);
 
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
 
@@ -658,173 +658,231 @@ namespace ImageProcessingAlgorithms.Filters
 
             return result;
         }
+        #endregion
 
-        public static Image<Bgr, byte> CannyAngleImage(Image<Gray, byte> inputImage, int lowThreshold)
+        #region Canny gradient direction
+        private static int[,] CannyGradientDirection(Image<Gray, byte> smoothImage, int lowThreshold)
         {
-            Image<Gray, byte> smoothImage = GaussianFiltering(inputImage, 1);
+            var cannyGradient = CannyGradient(smoothImage, lowThreshold);
+            var sobelDirection = SobelDirection(smoothImage);
 
-            double[,] gradient = CannyGradient(smoothImage, lowThreshold);
-            double[,] direction = SobelDirection(smoothImage);
+            var cannyDirection = new int[smoothImage.Height, smoothImage.Width];
 
-            Image<Bgr, byte> angleImage = new Image<Bgr, byte>(inputImage.Size);
-
-            for (int y = 0; y < inputImage.Height; ++y)
+            for (int y = 0; y < smoothImage.Height; ++y)
             {
-                for (int x = 0; x < inputImage.Width; ++x)
-                    if (gradient[y, x] != 0)
-                    {
-                        // Direction 0 (horizontal edge)
-                        if (-System.Math.PI / 8 <= direction[y, x] && direction[y, x] <= System.Math.PI / 8)
-                        {
-                            angleImage.Data[y, x, 0] = 0;
-                            angleImage.Data[y, x, 1] = 0;
-                            angleImage.Data[y, x, 2] = 255;
-                        }
-                        else
-                        // Direction 1 (first diagonal edge)
-                        if (System.Math.PI / 8 < direction[y, x] && direction[y, x] < 3 * System.Math.PI / 8)
-                        {
-                            angleImage.Data[y, x, 0] = 255;
-                            angleImage.Data[y, x, 1] = 0;
-                            angleImage.Data[y, x, 2] = 0;
-                        }
-                        else
-                        // Direction 2 (vertical edge)
-                        if ((-System.Math.PI / 2 <= direction[y, x] && direction[y, x] <= -3 * System.Math.PI / 8) ||
-                            (3 * System.Math.PI / 8 <= direction[y, x] && direction[y, x] <= System.Math.PI / 2))
-                        {
-                            angleImage.Data[y, x, 0] = 0;
-                            angleImage.Data[y, x, 1] = 255;
-                            angleImage.Data[y, x, 2] = 0;
-                        }
-                        else
-                        // Direction 3 (second diagonal edge)
-                        if (-3 * System.Math.PI / 8 < direction[y, x] && direction[y, x] < -System.Math.PI / 8)
-                        {
-                            angleImage.Data[y, x, 0] = 0;
-                            angleImage.Data[y, x, 1] = 255;
-                            angleImage.Data[y, x, 2] = 255;
-                        }
-                    }
-            }
-
-            return angleImage;
-        }
-
-        public static Image<Gray, byte> CannyNonmaximaSuppression(Image<Gray, byte> inputImage, int threshold)
-        {
-            Image<Gray, byte> smoothImage = GaussianFiltering(inputImage, 1);
-
-            double[,] gradient = CannyGradient(smoothImage, threshold);
-            double[,] direction = SobelDirection(smoothImage);
-
-            for (int y = 2; y < inputImage.Height - 2; ++y)
-            {
-                for (int x = 2; x < inputImage.Width - 2; ++x)
+                for (int x = 0; x < smoothImage.Width; ++x)
                 {
-                    // Direction 0 (horizontal)
-                    if (-System.Math.PI / 8 <= direction[y, x] && direction[y, x] <= System.Math.PI / 8)
+                    if (cannyGradient[y, x] > lowThreshold)
                     {
-                        if (gradient[y, x] <= gradient[y - 2, x] || gradient[y, x] <= gradient[y - 1, x] || gradient[y, x] <= gradient[y + 1, x] || gradient[y, x] <= gradient[y + 2, x])
-                            gradient[y, x] = 0;
+                        double dir = sobelDirection[y, x] * 180 / System.Math.PI;
+
+                        // Direction 0 (horizontal)
+                        if (-22.5 <= dir && dir < 22.5)
+                            cannyDirection[y, x] = 0;
+
+                        // Direction 1 (-45 degrees)
+                        if (-67.5 <= dir && dir < -22.5)
+                            cannyDirection[y, x] = 1;
+
+                        //Direction 2 (vertical)
+                        if ((-90 <= dir && dir < -67.5) || (67.5 <= dir && dir <= 90))
+                            cannyDirection[y, x] = 2;
+
+                        //Direction 3 (45 degrees)
+                        if (22.5 <= dir && dir < 67.5)
+                            cannyDirection[y, x] = 3;
                     }
                     else
-                    //Direction 1 (-45 degrees)
-                    if (System.Math.PI / 8 < direction[y, x] && direction[y, x] < 3 * System.Math.PI / 8)
-                    {
-                        if (gradient[y, x] <= gradient[y - 2, x - 2] || gradient[y, x] <= gradient[y - 1, x - 1] || gradient[y, x] <= gradient[y + 1, x + 1] || gradient[y, x] <= gradient[y + 2, x + 2])
-                            gradient[y, x] = 0;
-                    }
-                    else
-                    //Direction 2 (vertical)
-                    if ((-System.Math.PI / 2 <= direction[y, x] && direction[y, x] <= -3 * System.Math.PI / 8) ||
-                            (3 * System.Math.PI / 8 <= direction[y, x] && direction[y, x] <= System.Math.PI / 2))
-                    {
-                        if (gradient[y, x] <= gradient[y, x - 2] || gradient[y, x] <= gradient[y, x - 1] || gradient[y, x] <= gradient[y, x + 1] || gradient[y, x] <= gradient[y, x + 2])
-                            gradient[y, x] = 0;
-                    }
-                    else
-                    //Direction 3 (45 degrees)
-                    if (-3 * System.Math.PI / 8 < direction[y, x] && direction[y, x] < -System.Math.PI / 8)
-                    {
-                        if (gradient[y, x] <= gradient[y + 2, x - 2] || gradient[y, x] <= gradient[y + 1, x - 1] || gradient[y, x] <= gradient[y - 1, x + 1] || gradient[y, x] <= gradient[y - 2, x + 2])
-                            gradient[y, x] = 0;
-                    }
+                        cannyDirection[y, x] = -1;
                 }
             }
 
-            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+            return cannyDirection;
+        }
+
+        public static Image<Bgr, byte> CannyGradientDirectionImage(Image<Gray, byte> inputImage, int lowThreshold)
+        {
+            var smoothImage = GaussianFiltering(inputImage, 1);
+            var cannyDirection = CannyGradientDirection(smoothImage, lowThreshold);
+
+            Image<Bgr, byte> result = new Image<Bgr, byte>(inputImage.Size);
 
             for (int y = 0; y < inputImage.Height; ++y)
             {
                 for (int x = 0; x < inputImage.Width; ++x)
                 {
-                    int nonmaxSup = (int)(gradient[y, x] + 0.5);
-                    if (nonmaxSup > 255) nonmaxSup = 255;
+                    if (cannyDirection[y, x] == 0)
+                    {
+                        result.Data[y, x, 0] = 0;
+                        result.Data[y, x, 1] = 0;
+                        result.Data[y, x, 2] = 255;
+                    }
 
-                    result.Data[y, x, 0] = (byte)nonmaxSup;
+                    if (cannyDirection[y, x] == 1)
+                    {
+                        result.Data[y, x, 0] = 255;
+                        result.Data[y, x, 1] = 0;
+                        result.Data[y, x, 2] = 0;
+                    }
+
+                    if (cannyDirection[y, x] == 2)
+                    {
+                        result.Data[y, x, 0] = 0;
+                        result.Data[y, x, 1] = 255;
+                        result.Data[y, x, 2] = 0;
+                    }
+
+                    if (cannyDirection[y, x] == 3)
+                    {
+                        result.Data[y, x, 0] = 0;
+                        result.Data[y, x, 1] = 255;
+                        result.Data[y, x, 2] = 255;
+                    }
                 }
             }
 
             return result;
         }
+        #endregion
 
-        public static Image<Gray, byte> CannyHysteresysThresholding(Image<Gray, byte> inputImage, int T1, int T2)
+        #region Canny Nonmaxima suppression
+        private static double[,] CannyNonmaxSuppression(Image<Gray, byte> smoothImage, int lowThreshold)
         {
-            Image<Gray, byte> nonmaxSupImage = CannyNonmaximaSuppression(inputImage, T1);
+            var cannyGradient = CannyGradient(smoothImage, lowThreshold);
+            var cannyDirection = CannyGradientDirection(smoothImage, lowThreshold);
+
+            for (int y = 2; y < smoothImage.Height - 2; ++y)
+            {
+                for (int x = 2; x < smoothImage.Width - 2; ++x)
+                {
+                    if (cannyDirection[y, x] == 0)
+                    {
+                        if (cannyGradient[y, x] <= cannyGradient[y - 2, x] || cannyGradient[y, x] <= cannyGradient[y + 2, x] ||
+                            cannyGradient[y, x] <= cannyGradient[y - 1, x] || cannyGradient[y, x] <= cannyGradient[y + 1, x])
+                            cannyGradient[y, x] = 0;
+                    }
+                    else if (cannyDirection[y, x] == 1)
+                    {
+                        if (cannyGradient[y, x] <= cannyGradient[y + 2, x - 2] || cannyGradient[y, x] <= cannyGradient[y - 2, x + 2] ||
+                            cannyGradient[y, x] <= cannyGradient[y + 1, x - 1] || cannyGradient[y, x] <= cannyGradient[y - 1, x + 1])
+                            cannyGradient[y, x] = 0;
+                    }
+                    else if (cannyDirection[y, x] == 2)
+                    {
+                        if (cannyGradient[y, x] <= cannyGradient[y, x - 2] || cannyGradient[y, x] <= cannyGradient[y, x + 2] ||
+                            cannyGradient[y, x] <= cannyGradient[y, x - 1] || cannyGradient[y, x] <= cannyGradient[y, x + 1])
+                            cannyGradient[y, x] = 0;
+                    }
+                    else if (cannyDirection[y, x] == 3)
+                    {
+                        if (cannyGradient[y, x] <= cannyGradient[y - 2, x - 2] || cannyGradient[y, x] <= cannyGradient[y + 2, x + 2] ||
+                            cannyGradient[y, x] <= cannyGradient[y - 1, x - 1] || cannyGradient[y, x] <= cannyGradient[y + 1, x + 1])
+                            cannyGradient[y, x] = 0;
+                    }
+                }
+            }
+
+            return cannyGradient;
+        }
+
+        public static Image<Gray, byte> CannyNonmaxSuppressionImage(Image<Gray, byte> inputImage, int lowThreshold)
+        {
+            var smoothImage = GaussianFiltering(inputImage, 1);
+            var cannyNonmaxSuppresion = CannyNonmaxSuppression(smoothImage, lowThreshold);
 
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
 
-            int connectivity = 8;
+            for (int y = 0; y < inputImage.Height; ++y)
+            {
+                for (int x = 0; x < inputImage.Width; ++x)
+                {
+                    int value = (int)(cannyNonmaxSuppresion[y, x] + 0.5);
+                    if (value > 255) value = 255;
 
-            //4-connectivity
-            //int[] dy = { -1, 0, 1, 0 };
-            //int[] dx = { 0, 1, 0, -1 };
+                    result.Data[y, x, 0] = (byte)value;
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        public static double[,] CannyHysteresisThresholding(Image<Gray, byte> smoothImage, int lowThreshold, int highThreshold)
+        {
+            var thinEdges = CannyNonmaxSuppression(smoothImage, lowThreshold);
+            Queue<(int, int)> strongEdges = new Queue<(int, int)>();
+
+            for (int y = 0; y < smoothImage.Height; ++y)
+            {
+                for (int x = 0; x < smoothImage.Width; ++x)
+                {
+                    if (thinEdges[y, x] <= lowThreshold)
+                        thinEdges[y, x] = 0;
+
+                    if (thinEdges[y, x] > highThreshold)
+                    {
+                        thinEdges[y, x] = 255;
+                        strongEdges.Enqueue((y, x));
+                    }
+                }
+            }
 
             // 8-connectivity
             int[] dy = { -1, -1, 0, 1, 1, 1, 0, -1 };
             int[] dx = { 0, 1, 1, 1, 0, -1, -1, -1 };
-            
-            for (int y = 1; y < inputImage.Height - 1; ++y)
+
+            while (strongEdges.Count > 0)
             {
-                for (int x = 1; x < nonmaxSupImage.Width - 1; ++x)
+                var currentEdge = strongEdges.Dequeue();
+
+                for (int i = 0; i < dy.Length; ++i)
                 {
-                    if (nonmaxSupImage.Data[y, x, 0] <= T1)
-                        result.Data[y, x, 0] = 0;
-                    else if (nonmaxSupImage.Data[y, x, 0] > T2)
-                        result.Data[y, x, 0] = 255;
-                    else
+                    int Y = currentEdge.Item1 + dy[i];
+                    int X = currentEdge.Item2 + dx[i];
+
+                    if (Y >= 0 && Y < smoothImage.Height && X >= 0 && X < smoothImage.Width)
                     {
-                        bool isConnected = false;
-                        for (int i = 0; i < connectivity && isConnected == false; ++i)
+                        if (lowThreshold < thinEdges[Y, X] && thinEdges[Y, X] <= highThreshold)
                         {
-                            int Y = y + dy[i];
-                            int X = x + dx[i];
-
-                            if (nonmaxSupImage.Data[Y, X, 0] > T2)
-                            {
-                                result.Data[y, x, 0] = 255;
-                                isConnected = true;
-                            }
+                            thinEdges[Y, X] = 255;
+                            strongEdges.Enqueue((Y, X));
                         }
-
-                        if (isConnected == false)
-                            result.Data[y, x, 0] = 0;
                     }
+                }
+            }
+
+            for (int y = 0; y < smoothImage.Height; ++y)
+            {
+                for (int x = 0; x < smoothImage.Width; ++x)
+                {
+                    if (lowThreshold < thinEdges[y, x] && thinEdges[y, x] <= highThreshold)
+                        thinEdges[y, x] = 0;
+                }
+            }
+
+            return thinEdges;
+        }
+
+        public static Image<Gray, byte> Canny(Image<Gray, byte> smoothImage, int lowThreshold, int highThreshold)
+        {
+            var realEdges = CannyHysteresisThresholding(smoothImage, lowThreshold, highThreshold);
+
+            Image<Gray, byte> result = new Image<Gray, byte>(smoothImage.Size);
+
+            for (int y = 0; y < smoothImage.Height; y++)
+            {
+                for (int x = 0; x < smoothImage.Width; x++)
+                {
+                    result.Data[y, x, 0] = (byte)(realEdges[y, x] + 0.5);
                 }
             }
 
             return result;
         }
 
-        public static Image<Gray, byte> Canny(Image<Gray, byte> inputImage, int T1, int T2)
+        public static Image<Bgr, byte> Canny(Image<Bgr, byte> smoothImage, int lowThreshold, int highThreshold)
         {
-            return CannyHysteresysThresholding(inputImage, T1, T2);
-        }
-
-        public static Image<Bgr, byte> Canny(Image<Bgr, byte> inputImage, int T1, int T2)
-        {
-            Image<Bgr, byte> result = GaussianFiltering(inputImage, 1);
+            Image<Bgr, byte> result = GaussianFiltering(smoothImage, 1);
             return result;
         }
         #endregion

@@ -2196,7 +2196,7 @@ namespace ImageProcessingFramework.ViewModel
             DialogBox dialogBox = new DialogBox();
             System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
                 {
-                    "Threshold 1:"
+                    "Low threshold: "
                 };
 
             dialogBox.CreateDialogBox(prop);
@@ -2205,18 +2205,18 @@ namespace ImageProcessingFramework.ViewModel
             System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
-                int threshold1 = (int)response[0];
+                int lowThreshold = (int)response[0];
 
                 if (GrayInitialImage != null)
                 {
-                    GrayProcessedImage = Filters.CannyGradientImage(GrayInitialImage, threshold1);
+                    GrayProcessedImage = Filters.CannyGradientImage(GrayInitialImage, lowThreshold);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
             }
         }
         #endregion
 
-        #region Angle image
+        #region Gradient direction image
         private ICommand m_cannyAngle;
         public ICommand CannyAngle
         {
@@ -2241,7 +2241,7 @@ namespace ImageProcessingFramework.ViewModel
             DialogBox dialogBox = new DialogBox();
             System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
                 {
-                    "Threshold 1:"
+                    "Low threshold: "
                 };
 
             dialogBox.CreateDialogBox(prop);
@@ -2250,11 +2250,11 @@ namespace ImageProcessingFramework.ViewModel
             System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
-                int threshold1 = (int)response[0];
+                int lowThreshold = (int)response[0];
 
                 if (GrayInitialImage != null)
                 {
-                    ColorProcessedImage = Filters.CannyAngleImage(GrayInitialImage, threshold1);
+                    ColorProcessedImage = Filters.CannyGradientDirectionImage(GrayInitialImage, lowThreshold);
                     ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                 }
             }
@@ -2286,7 +2286,7 @@ namespace ImageProcessingFramework.ViewModel
             DialogBox dialogBox = new DialogBox();
             System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
                 {
-                    "Threshold 1:"
+                    "Low threshold: "
                 };
 
             dialogBox.CreateDialogBox(prop);
@@ -2295,11 +2295,11 @@ namespace ImageProcessingFramework.ViewModel
             System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
-                int threshold1 = (int)response[0];
+                int lowThreshold = (int)response[0];
 
                 if (GrayInitialImage != null)
                 {
-                    GrayProcessedImage = Filters.CannyNonmaximaSuppression(GrayInitialImage, threshold1);
+                    GrayProcessedImage = Filters.CannyNonmaxSuppressionImage(GrayInitialImage, lowThreshold);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
             }

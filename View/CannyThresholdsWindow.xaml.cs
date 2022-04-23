@@ -1,4 +1,6 @@
-﻿using ImageProcessingAlgorithms.Filters;
+﻿using Emgu.CV;
+using Emgu.CV.Structure;
+using ImageProcessingAlgorithms.Filters;
 using ImageProcessingFramework.Model;
 using ImageProcessingFramework.ViewModel;
 using System.Windows;
@@ -8,24 +10,35 @@ namespace ImageProcessingFramework.View
 {
     public partial class CannySliders : Window
     {
-        readonly MainCommands Commands;
+        private readonly MainCommands Commands;
+        private Image<Gray, byte> SmoothGrayImage;
+        private Image<Bgr, byte> SmoothColorImage;
 
         public CannySliders(object dataContext)
         {
             InitializeComponent();
             Commands = dataContext as MainCommands;
+
+            if (GrayInitialImage != null)
+            {
+                SmoothGrayImage = Filters.GaussianFiltering(GrayInitialImage, 1);
+            }
+            else if (ColorInitialImage != null)
+            {
+                SmoothColorImage = Filters.GaussianFiltering(ColorInitialImage, 1);
+            }
         }
 
         private void ModifyProcessedImage(int lowThreshold, int highThreshold)
         {
-            if (GrayInitialImage != null)
+            if (SmoothGrayImage != null)
             {
-                GrayProcessedImage = Filters.Canny(GrayInitialImage, lowThreshold, highThreshold);
+                GrayProcessedImage = Filters.Canny(SmoothGrayImage, lowThreshold, highThreshold);
                 Commands.ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
-            else if (ColorInitialImage != null)
+            else if (SmoothColorImage != null)
             {
-                ColorProcessedImage = Filters.Canny(ColorInitialImage, lowThreshold, highThreshold);
+                ColorProcessedImage = Filters.Canny(SmoothColorImage, lowThreshold, highThreshold);
                 Commands.ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
             }
         }
@@ -37,7 +50,7 @@ namespace ImageProcessingFramework.View
                 int lowThreshold = (int)sliderLowThreshold.Value;
                 int highThreshold = (int)sliderHighThreshold.Value;
 
-                if (Commands != null && lowThreshold < highThreshold)
+                if (Commands != null && lowThreshold < highThreshold && highThreshold != 255)
                 {
                     ModifyProcessedImage(lowThreshold, highThreshold);
                 }
@@ -51,7 +64,7 @@ namespace ImageProcessingFramework.View
                 int lowThreshold = (int)sliderLowThreshold.Value;
                 int highThreshold = (int)sliderHighThreshold.Value;
 
-                if (Commands != null && lowThreshold < highThreshold)
+                if (Commands != null && lowThreshold < highThreshold && highThreshold != 255)
                 {
                     ModifyProcessedImage(lowThreshold, highThreshold);
                 }
