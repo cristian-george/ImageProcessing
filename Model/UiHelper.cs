@@ -72,13 +72,13 @@ namespace ImageProcessingFramework.Model
             xPos.Text = "X: " + x.ToString() + " ";
             yPos.Text = "Y: " + y.ToString();
 
-            grayValue.Text = (grayImage != null && y != grayImage.Height && x != grayImage.Width) ?
+            grayValue.Text = (grayImage != null && y >= 0 && y < grayImage.Height && x >= 0 && x < grayImage.Width) ?
                 "Gray: " + grayImage.Data[y, x, 0] : "Gray: 0";
-            bValue.Text = (colorImage != null && y != colorImage.Height && x != colorImage.Width) ?
+            bValue.Text = (colorImage != null && y >= 0 && y < colorImage.Height && x >= 0 && x < colorImage.Width) ?
                 "B: " + colorImage.Data[y, x, 0] : "B: 0";
-            gValue.Text = (colorImage != null && y != colorImage.Height && x != colorImage.Width) ?
+            gValue.Text = (colorImage != null && y >= 0 && y < colorImage.Height && x >= 0 && x < colorImage.Width) ?
                 "G: " + colorImage.Data[y, x, 1] : "G: 0";
-            rValue.Text = (colorImage != null && y != colorImage.Height && x != colorImage.Width) ?
+            rValue.Text = (colorImage != null && y >= 0 && y < colorImage.Height && x >= 0 && x < colorImage.Width) ?
                 "R: " + colorImage.Data[y, x, 2] : "R: 0";
         }
 

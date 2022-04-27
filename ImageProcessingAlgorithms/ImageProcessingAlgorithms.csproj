@@ -66,8 +66,11 @@
   <ItemGroup>
     <Compile Include="AlgorithmsHelper\DisjointSet.cs" />
     <Compile Include="AlgorithmsHelper\Helper.cs" />
-    <Compile Include="Filters\Filters.cs" />
+    <Compile Include="Algorithms\Filters.cs" />
+    <Compile Include="Algorithms\Morphology.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Algorithms\PunctualOperators.cs" />
+    <Compile Include="Algorithms\ThresholdOperators.cs" />
     <Compile Include="Tools\Tools.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -78,6 +81,7 @@
   <ItemGroup>
     <Content Include="License-LGPL.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

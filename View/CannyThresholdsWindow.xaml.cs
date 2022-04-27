@@ -1,6 +1,6 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
-using ImageProcessingAlgorithms.Filters;
+using ImageProcessingAlgorithms.Algorithms;
 using ImageProcessingFramework.Model;
 using ImageProcessingFramework.ViewModel;
 using System.Windows;

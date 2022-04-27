@@ -4,7 +4,7 @@ using static ImageProcessingAlgorithms.Tools.Tools;
 using static ImageProcessingAlgorithms.AlgorithmsHelper.Helper;
 using System.Collections.Generic;
 
-namespace ImageProcessingAlgorithms.Filters
+namespace ImageProcessingAlgorithms.Algorithms
 {
     public class Filters
     {

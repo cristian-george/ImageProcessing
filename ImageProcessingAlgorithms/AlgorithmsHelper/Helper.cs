@@ -327,10 +327,8 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
         #endregion
 
         #region Calculate sum of values in a rectangular subset of a grid from the image
-        public static int SumArea(Image<Gray, byte> inputImage, int y0, int x0, int y1, int x1)
+        public static int SumArea(int[,] integralImage, int y0, int x0, int y1, int x1)
         {
-            int[,] integralImage = IntegralImage(inputImage);
-
             if (x0 == 0 && y0 == 0)
             {
                 return integralImage[y1, x1];
@@ -349,10 +347,10 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
         #endregion
 
         #region Calculate mean using integral image
-        public static int MeanArea(Image<Gray, byte> inputImage, int y0, int x0, int y1, int x1)
+        public static int MeanArea(int[,] integralImage, int y0, int x0, int y1, int x1)
         {
             int resolution = (y1 - y0) * (x1 - x0);
-            int sumArea = SumArea(inputImage, y0, x0, y1, x1);
+            int sumArea = SumArea(integralImage, y0, x0, y1, x1);
             return sumArea / resolution;
         }
         #endregion
@@ -482,7 +480,7 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
                         4 * System.Math.Pow(maxVariance[1, 0], 2)) == 0)
                         angle[y, x] = System.Math.PI / 2;
                     else
-                        angle[y, x] = 0.5 * System.Math.Atan(2 * maxVariance[0, 1] / (maxVariance[0, 0] - maxVariance[1, 1] + System.Math.Sqrt
+                        angle[y, x] = System.Math.Atan(2 * maxVariance[0, 1] / (maxVariance[0, 0] - maxVariance[1, 1] + System.Math.Sqrt
                         (
                             System.Math.Pow(maxVariance[0, 0] - maxVariance[1, 1], 2) +
                         4 * System.Math.Pow(maxVariance[1, 0], 2))

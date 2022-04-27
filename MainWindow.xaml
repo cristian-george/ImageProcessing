@@ -12,6 +12,7 @@
         Left="125" 
         Top="0"
         Icon="Images\Icon2.png">
+
     <Window.DataContext>
         <local:MainCommands/>
     </Window.DataContext>
@@ -19,6 +20,7 @@
     <Grid Background="#1E1E1E">
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="100"/>
@@ -37,60 +39,80 @@
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>
 
-            <MenuItem Header="File" 
-                      Background="AliceBlue">
-                <MenuItem Header="Load grayscale image" 
+            <MenuItem Header="File"
+                      Background="Transparent"
+                      Foreground="AliceBlue">
+                <MenuItem Header="Load grayscale image"
+                          Foreground="#1E1E1E"
                           Command="{Binding Path=AddGrayImage}"
                           CommandParameter="{Binding ElementName=sliderZoom}"/>
                 <MenuItem Header="Load color image" 
+                          Foreground="#1E1E1E"
                           Command="{Binding Path=AddColorImage}"
                           CommandParameter="{Binding ElementName=sliderZoom}"/>
                 <Separator/>
                 <MenuItem Header="Save processed image" 
+                          Foreground="#1E1E1E"
                           Command="{Binding Path=Save}"/>
                 <Separator/>
                 <MenuItem Header="Exit" 
+                          Foreground="#1E1E1E"
                           Command="{Binding Path=Exit}"/>
             </MenuItem>
 
             <MenuItem Header="Edit"
-                      Background="AliceBlue">
+                      Background="Transparent"
+                      Foreground="AliceBlue">
                 <MenuItem Header="Reset initial canvas"
+                          Foreground="#1E1E1E"
                           Command="{Binding Path=ResetInitial}"/>
                 <MenuItem Header="Reset processed canvas"
+                          Foreground="#1E1E1E"
                           Command="{Binding Path=ResetProcessed}"/>
                 <Separator/>
                 <MenuItem Header="Remove drawn elements"
+                          Foreground="#1E1E1E"
                           Command="{Binding Path=RemoveAllElements}"/>
                 <MenuItem Header="Clear all elements"
+                          Foreground="#1E1E1E"
                           Command="{Binding Path=Clear}"/>
             </MenuItem>
 
             <MenuItem Header="Tools" 
-                      Background="AliceBlue">
+                      Background="Transparent"
+                      Foreground="AliceBlue">
                 <MenuItem Header="Magnifier"
+                          Foreground="#1E1E1E"
                           Command="{Binding Path=Magnifier}"/>
                 <MenuItem Header="GLevelsRow" 
+                          Foreground="#1E1E1E"
                           Command="{Binding Path=RowDisplay}"/>
                 <MenuItem Header="GLevelsColumn" 
+                          Foreground="#1E1E1E"
                           Command="{Binding Path=ColumnDisplay}"/>
                 <Separator/>
                 <MenuItem Header="Copy" 
+                          Foreground="#1E1E1E"
                           Command="{Binding Path=Copy}"/>
                 <MenuItem Header="Invert" 
+                          Foreground="#1E1E1E"
                           Command="{Binding Path=Invert}"/>
                 <MenuItem Header="Transform to gray image"
+                          Foreground="#1E1E1E"
                           Command="{Binding Path=ConvertToGrayImage}"/>
                 <Separator/>
                 <MenuItem Header="Crop image"
+                          Foreground="#1E1E1E"
                           Command="{Binding Path=Crop}" />
-                <MenuItem Header="Mirror image">
+                <MenuItem Header="Mirror image"
+                          Foreground="#1E1E1E">
                     <MenuItem Header="Vertically"
                               Command="{Binding Path=MirrorVertically}"/>
                     <MenuItem Header="Horizontally"
                               Command="{Binding Path=MirrorHorizontally}"/>
                 </MenuItem>
-                <MenuItem Header="Rotate image">
+                <MenuItem Header="Rotate image"
+                          Foreground="#1E1E1E">
                     <MenuItem Header="Clockwise"
                               Command="{Binding Path=RotateClockwise}"/>
                     <MenuItem Header="Anti-clockwise"
@@ -98,76 +120,86 @@
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="Replicate padding"
+                          Foreground="#1E1E1E"
                           Command="{Binding Path=ReplicatePadding}"/>
-                <Separator/>
-                <MenuItem Header="Adjust brightness and contrast">
-                    <MenuItem Header="Based on liniar operators">
-                        <MenuItem Header="Increase brightness +"
-                                  Command="{Binding Path=IncreaseBrightnessPlus}"/>
-                        <MenuItem Header="Decrease brightness -"
-                                  Command="{Binding Path=DecreaseBrightnessMinus}"/>
-                        <MenuItem Header="Increase brightness * (keep black)"
-                                  Command="{Binding Path=IncreaseBrightnessKeepBlack}"/>
-                        <MenuItem Header="Increase brightness * (keep white)"
-                                  Command="{Binding Path=IncreaseBrightnessKeepWhite}"/>
-                        <MenuItem Header="Decrease brightness * (keep black)"
-                                  Command="{Binding Path=DecreaseBrightnessKeepBlack}"/>
-                        <MenuItem Header="Decrease brightness * (keep white)"
-                                  Command="{Binding Path=DecreaseBrightnessKeepWhite}"/>
-                    </MenuItem>
-                    <MenuItem Header="Based on logarithmic operator"
-                              Command="{Binding Path=LogOperator}"/>
-                    <MenuItem Header="Based on inverse logarithmic operator"
-                              Command="{Binding Path=ExpOperator}"/>
-                    <MenuItem Header="Based on gamma operator"
-                              Command="{Binding Path=GammaOperator}"/>
-                    <MenuItem Header="Piecewise linear contrast"
-                              Command="{Binding Path=PiecewiseLinearContrast}"/>
-                    <MenuItem Header="Based on Nonlinear operators">
-                        <MenuItem Header="Sinusoidal operator"
-                                  Command="{Binding Path=SinusoidalOp}"/>
-                        <MenuItem Header="Polynomial operator"
-                                  Command="{Binding Path=PolynomialOp}"/>
-                        <MenuItem Header="EM - operator"
-                                  Command="{Binding Path=EmOp}"/>
-                    </MenuItem>
-                    <MenuItem Header="Based on Cubic Hermite spline"
+            </MenuItem>
+
+            <MenuItem Header="Adjust brightness and contrast"
+                      Background="Transparent"
+                      Foreground="AliceBlue">
+                <MenuItem Header="Based on linear operators"
+                          Foreground="#1E1E1E">
+                    <MenuItem Header="Increase brightness +"
+                              Command="{Binding Path=IncreaseBrightnessPlus}"/>
+                    <MenuItem Header="Decrease brightness -"
+                              Command="{Binding Path=DecreaseBrightnessMinus}"/>
+                    <MenuItem Header="Increase brightness * (keep black)"
+                              Command="{Binding Path=IncreaseBrightnessKeepBlack}"/>
+                    <MenuItem Header="Increase brightness * (keep white)"
+                              Command="{Binding Path=IncreaseBrightnessKeepWhite}"/>
+                    <MenuItem Header="Decrease brightness * (keep black)"
+                              Command="{Binding Path=DecreaseBrightnessKeepBlack}"/>
+                    <MenuItem Header="Decrease brightness * (keep white)"
+                              Command="{Binding Path=DecreaseBrightnessKeepWhite}"/>
+                </MenuItem>
+                <MenuItem Header="Based on logarithmic operator"
+                          Foreground="#1E1E1E"
+                          Command="{Binding Path=LogOperator}"/>
+                <MenuItem Header="Based on inverse logarithmic operator"
+                          Foreground="#1E1E1E"
+                          Command="{Binding Path=ExpOperator}"/>
+                <MenuItem Header="Based on gamma operator"
+                          Foreground="#1E1E1E"
+                          Command="{Binding Path=GammaOperator}"/>
+                <MenuItem Header="Piecewise linear contrast"
+                          Foreground="#1E1E1E"
+                          Command="{Binding Path=PiecewiseLinearContrast}"/>
+                <MenuItem Header="Based on Nonlinear operators"
+                          Foreground="#1E1E1E">
+                    <MenuItem Header="Sinusoidal operator"
+                              Command="{Binding Path=SinusoidalOp}"/>
+                    <MenuItem Header="Polynomial operator"
+                              Command="{Binding Path=PolynomialOp}"/>
+                    <MenuItem Header="EM - operator"
+                              Command="{Binding Path=EmOp}"/>
+                </MenuItem>
+                <MenuItem Header="Based on Cubic Hermite spline"
+                          Foreground="#1E1E1E"
                               Command="{Binding Path=SplineInterpolation}"/>
 
-                    <MenuItem Header="Histogram Equalization"
+                <MenuItem Header="Histogram Equalization"
+                          Foreground="#1E1E1E"
                               Command="{Binding Path=HistogramEq}"/>
-                    <MenuItem Header="Color Histogram Equalization"
+                <MenuItem Header="Color Histogram Equalization"
+                          Foreground="#1E1E1E"
                               Command="{Binding Path=ColorHistogramEq}"/>
-                </MenuItem>
-                <MenuItem Header="Thresholding">
-                    <MenuItem Header="With a given value"
+            </MenuItem>
+
+            <MenuItem Header="Thresholding"
+                      Background="Transparent"
+                      Foreground="AliceBlue">
+                <MenuItem Header="With a given value"
+                          Foreground="#1E1E1E"
                               Command="{Binding Path=Thresholding}"/>
-                    <MenuItem Header="Quantile threshold"
+                <MenuItem Header="Quantile threshold"
+                          Foreground="#1E1E1E"
                               Command="{Binding Path=QuantileThreshold}"/>
-                    <MenuItem Header="Median threshold"
+                <MenuItem Header="Median threshold"
+                          Foreground="#1E1E1E"
                               Command="{Binding Path=MedianThreshold}"/>
-                    <MenuItem Header="Intermeans threshold"
+                <MenuItem Header="Intermeans threshold"
+                          Foreground="#1E1E1E"
                               Command="{Binding Path=IntermeansThreshold}"/>
-                    <MenuItem Header="Otsu two-threshold"
+                <MenuItem Header="Otsu two-threshold"
+                          Foreground="#1E1E1E"
                               Command="{Binding Path=OtsuTwoThreshold}"/>
-                </MenuItem>
-                <MenuItem Header="Morphology operators">
-                    <MenuItem Header="Dilation"
-                              Command="{Binding Path=DilationOp}"/>
-                    <MenuItem Header="Erosion"
-                              Command="{Binding Path=ErosionOp}"/>
-                    <MenuItem Header="Opening"
-                              Command="{Binding Path=OpeningOp}"/>
-                    <MenuItem Header="Closing"
-                              Command="{Binding Path=ClosingOp}"/>
-                    <MenuItem Header="Connected components"
-                              Command="{Binding Path=ConnectedComp}"/>
-                </MenuItem>
             </MenuItem>
 
             <MenuItem Header="Filters" 
-                      Background="AliceBlue">
-                <MenuItem Header="Low-pass">
+                      Background="Transparent"
+                      Foreground="AliceBlue">
+                <MenuItem Header="Low-pass"
+                          Foreground="#1E1E1E">
                     <MenuItem Header="Slow Median filtering"
                               Command="{Binding Path=Median}"/>
                     <MenuItem Header="Fast Median filtering"
@@ -179,7 +211,8 @@
                     <MenuItem Header="Gaussian bilateral filtering"
                               Command="{Binding Path=GaussianBilateral}"/>
                 </MenuItem>
-                <MenuItem Header="High-pass">
+                <MenuItem Header="High-pass"
+                          Foreground="#1E1E1E">
                     <MenuItem Header="Prewitt operator"
                               Command="{Binding Path=PrewittOp}"/>
                     <MenuItem Header="Sobel operator"
@@ -200,14 +233,36 @@
                     </MenuItem>
                 </MenuItem>
             </MenuItem>
+
+            <MenuItem Header="Morphology"
+                      Background="Transparent"
+                      Foreground="AliceBlue">
+                <MenuItem Header="Dilation"
+                          Foreground="#1E1E1E"
+                              Command="{Binding Path=DilationOp}"/>
+                <MenuItem Header="Erosion"
+                          Foreground="#1E1E1E"
+                              Command="{Binding Path=ErosionOp}"/>
+                <MenuItem Header="Opening"
+                          Foreground="#1E1E1E"
+                              Command="{Binding Path=OpeningOp}"/>
+                <MenuItem Header="Closing"
+                          Foreground="#1E1E1E"
+                              Command="{Binding Path=ClosingOp}"/>
+                <MenuItem Header="Connected components"
+                          Foreground="#1E1E1E"
+                              Command="{Binding Path=ConnectedComp}"/>
+            </MenuItem>
+
             <MenuItem Header="Save as original image" 
-                      Background="AliceBlue"
+                      Background="Transparent"
+                      Foreground="AliceBlue"
                       HorizontalAlignment="Right" 
                       Command="{Binding Path=SaveAsOriginalImage}"/>
         </Menu>
 
         <Label Grid.Column="0" 
-               Grid.Row="2"
+               Grid.Row="3"
                Width="auto" 
                Height="auto" 
                Margin="10,10,30,10"
@@ -242,7 +297,7 @@
         </Label>
 
         <Label Grid.Column="1" 
-               Grid.Row="2"
+               Grid.Row="3"
                Width="auto" 
                Height="auto" 
                Margin="30,10,10,10"
@@ -280,14 +335,14 @@
                 Background="AliceBlue"
                 BorderThickness="2"
                 BorderBrush="#4E4492"
-                Grid.Row="3" 
+                Grid.Row="4" 
                 Margin="10,26,0,42"
                 Width="80"
                 Height="auto" 
                 HorizontalAlignment="Left"/>
         <StackPanel Margin="95,30,59.333,28" 
                     Grid.ColumnSpan="2" 
-                    Grid.Row="3" 
+                    Grid.Row="4" 
                     Height="auto">
             <Slider x:Name="sliderZoom"
                     Orientation="Horizontal"
@@ -312,7 +367,7 @@
                    Height="28" 
                    VerticalAlignment="Bottom" 
                    Grid.Column="1" 
-                   Grid.Row="3" 
+                   Grid.Row="4" 
                    HorizontalAlignment="Right" 
                    Width="63"/>
         <Label Content="x" 
@@ -322,10 +377,10 @@
                VerticalContentAlignment="Center" 
                Grid.Column="1" 
                Margin="0,10,10.5,41" 
-               Grid.Row="3" 
+               Grid.Row="4" 
                HorizontalAlignment="Right" 
                Width="44"/>
-        <TextBlock Grid.Row="1"
+        <TextBlock Grid.Row="2"
                    Grid.Column="0"
                    Foreground="#FFF1F1F1"
                    Text="Original Image"
@@ -334,7 +389,7 @@
                    Height="20"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"/>
-        <TextBlock Grid.Row="1"
+        <TextBlock Grid.Row="2"
                    Grid.Column="1"
                    Foreground="#FFF1F1F1"
                    Text="Processed Image"
@@ -345,7 +400,7 @@
                    VerticalAlignment="Center"/>
 
         <Grid Grid.Column="0" 
-              Grid.Row="4"
+              Grid.Row="5"
               Grid.ColumnSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>

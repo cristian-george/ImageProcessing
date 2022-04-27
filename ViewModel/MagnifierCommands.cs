@@ -26,7 +26,8 @@ namespace ImageProcessingFramework.ViewModel
                 int j = 0;
                 for (int y = -4; y <= 4; ++y)
                 {
-                    if (DataProvider.LastPosition.Y + y >= 0 && DataProvider.LastPosition.X + x >= 0)
+                    if (DataProvider.LastPosition.Y + y >= 0 && DataProvider.LastPosition.X + x >= 0 &&
+                        DataProvider.LastPosition.Y + y < image.Height && DataProvider.LastPosition.X + x < image.Width)
                     {
                         int blueColor = GetColorValue(image, (int)DataProvider.LastPosition.Y + y,
                             (int)DataProvider.LastPosition.X + x, 0);

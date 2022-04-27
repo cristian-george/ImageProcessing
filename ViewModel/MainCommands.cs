@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using ImageProcessingAlgorithms.Tools;
-using ImageProcessingAlgorithms.Filters;
+using ImageProcessingAlgorithms.Algorithms;
 using ImageProcessingAlgorithms.AlgorithmsHelper;
 using ImageConverter = ImageProcessingFramework.Model.ImageConverter;
 using static ImageProcessingFramework.Model.DataProvider;
@@ -873,7 +873,7 @@ namespace ImageProcessingFramework.ViewModel
                 int b = (int)response[0];
                 if (b >= 0 && b <= 255)
                 {
-                    int[] lookUpTable = Tools.IncreaseBrightnessPlus(b);
+                    int[] lookUpTable = PunctualOperators.IncreaseBrightnessPlus(b);
                     if (GrayInitialImage != null)
                     {
                         GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
@@ -927,7 +927,7 @@ namespace ImageProcessingFramework.ViewModel
                 double a = response[0];
                 if (a > 1)
                 {
-                    int[] lookUpTable = Tools.IncreaseBrightnessKeepBlack(a);
+                    int[] lookUpTable = PunctualOperators.IncreaseBrightnessKeepBlack(a);
                     if (GrayInitialImage != null)
                     {
                         GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
@@ -981,7 +981,7 @@ namespace ImageProcessingFramework.ViewModel
                 double a = response[0];
                 if (0 < a && a < 1)
                 {
-                    int[] lookUpTable = Tools.IncreaseBrightnessKeepWhite(a);
+                    int[] lookUpTable = PunctualOperators.IncreaseBrightnessKeepWhite(a);
                     if (GrayInitialImage != null)
                     {
                         GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
@@ -1039,7 +1039,7 @@ namespace ImageProcessingFramework.ViewModel
                 int b = (int)response[0];
                 if (b >= 0 && b <= 255)
                 {
-                    int[] lookUpTable = Tools.DecreaseBrightnessMinus(b);
+                    int[] lookUpTable = PunctualOperators.DecreaseBrightnessMinus(b);
                     if (GrayInitialImage != null)
                     {
                         GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
@@ -1093,7 +1093,7 @@ namespace ImageProcessingFramework.ViewModel
                 double a = response[0];
                 if (0 < a && a < 1)
                 {
-                    int[] lookUpTable = Tools.DecreaseBrightnessKeepBlack(a);
+                    int[] lookUpTable = PunctualOperators.DecreaseBrightnessKeepBlack(a);
                     if (GrayInitialImage != null)
                     {
                         GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
@@ -1147,7 +1147,7 @@ namespace ImageProcessingFramework.ViewModel
                 double a = response[0];
                 if (a > 1)
                 {
-                    int[] lookUpTable = Tools.DecreaseBrightnessKeepWhite(a);
+                    int[] lookUpTable = PunctualOperators.DecreaseBrightnessKeepWhite(a);
                     if (GrayInitialImage != null)
                     {
                         GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
@@ -1190,7 +1190,7 @@ namespace ImageProcessingFramework.ViewModel
 
             ResetProcessedCanvas(parameter);
 
-            int[] lookUpTable = Tools.LogarithmicOperator();
+            int[] lookUpTable = PunctualOperators.LogarithmicOperator();
             if (GrayInitialImage != null)
             {
                 GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
@@ -1226,7 +1226,7 @@ namespace ImageProcessingFramework.ViewModel
 
             ResetProcessedCanvas(parameter);
 
-            int[] lookUpTable = Tools.ExponentialOperator();
+            int[] lookUpTable = PunctualOperators.ExponentialOperator();
             if (GrayInitialImage != null)
             {
                 GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
@@ -1277,7 +1277,7 @@ namespace ImageProcessingFramework.ViewModel
                 double gamma = response[0];
                 if (gamma > 0)
                 {
-                    int[] lookUpTable = Tools.GammaCorrection(gamma);
+                    int[] lookUpTable = PunctualOperators.GammaCorrection(gamma);
                     if (GrayInitialImage != null)
                     {
                         GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
@@ -1339,7 +1339,7 @@ namespace ImageProcessingFramework.ViewModel
                 if (0 <= r1 && r1 <= r2 && r2 <= 255 &&
                     0 <= s1 && s1 <= s2 && s2 <= 255)
                 {
-                    int[] lookUpTable = Tools.PiecewiseLinearContrast(r1, s1, r2, s2);
+                    int[] lookUpTable = PunctualOperators.PiecewiseLinearContrast(r1, s1, r2, s2);
                     if (GrayInitialImage != null)
                     {
                         GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
@@ -1382,7 +1382,7 @@ namespace ImageProcessingFramework.ViewModel
 
             ResetProcessedCanvas(parameter);
 
-            int[] lookUpTable = Tools.SinusoidalOperator();
+            int[] lookUpTable = PunctualOperators.SinusoidalOperator();
             if (GrayInitialImage != null)
             {
                 GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
@@ -1418,7 +1418,7 @@ namespace ImageProcessingFramework.ViewModel
 
             ResetProcessedCanvas(parameter);
 
-            int[] lookUpTable = Tools.PolynomialOperator();
+            int[] lookUpTable = PunctualOperators.PolynomialOperator();
             if (GrayInitialImage != null)
             {
                 GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
@@ -1471,7 +1471,7 @@ namespace ImageProcessingFramework.ViewModel
                 double E = response[1];
                 if (m != 0 && E != 0)
                 {
-                    int[] lookUpTable = Tools.EmOperator(m, E);
+                    int[] lookUpTable = PunctualOperators.EmOperator(m, E);
                     if (GrayInitialImage != null)
                     {
                         GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
@@ -1545,7 +1545,7 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                int[] lookUpTable = Tools.HistogramEqualization(GrayInitialImage);
+                int[] lookUpTable = PunctualOperators.HistogramEqualization(GrayInitialImage);
                 GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
@@ -1554,7 +1554,7 @@ namespace ImageProcessingFramework.ViewModel
             {
                 GrayProcessedImage = Tools.Convert(ColorInitialImage);
 
-                int[] lookUpTable = Tools.HistogramEqualization(GrayProcessedImage);
+                int[] lookUpTable = PunctualOperators.HistogramEqualization(GrayProcessedImage);
                 GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayProcessedImage, lookUpTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
@@ -1583,7 +1583,7 @@ namespace ImageProcessingFramework.ViewModel
 
             ResetProcessedCanvas(parameter);
 
-            ColorProcessedImage = Tools.ColorHistogramEqualization(ColorInitialImage);
+            ColorProcessedImage = PunctualOperators.ColorHistogramEqualization(ColorInitialImage);
             ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
         }
         #endregion
@@ -1623,7 +1623,7 @@ namespace ImageProcessingFramework.ViewModel
                     int threshold = (int)response[0];
                     if (threshold != 0)
                     {
-                        GrayProcessedImage = Tools.Thresholding(GrayInitialImage, threshold);
+                        GrayProcessedImage = ThresholdOperators.Thresholding(GrayInitialImage, threshold);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                     }
                     else MessageBox.Show("Please add a threshold value first.");
@@ -1664,8 +1664,8 @@ namespace ImageProcessingFramework.ViewModel
                     double percent = response[0];
                     if (0 <= percent && percent <= 1)
                     {
-                        int threshold = Tools.QuantileThreshold(GrayInitialImage, percent);
-                        GrayProcessedImage = Tools.Thresholding(GrayInitialImage, threshold);
+                        int threshold = ThresholdOperators.QuantileThreshold(GrayInitialImage, percent);
+                        GrayProcessedImage = ThresholdOperators.Thresholding(GrayInitialImage, threshold);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                     }
                     else MessageBox.Show("Please add a threshold value first.");
@@ -1691,8 +1691,8 @@ namespace ImageProcessingFramework.ViewModel
         {
             if (GrayInitialImage != null)
             {
-                int threshold = Tools.MedianThreshold(GrayInitialImage);
-                GrayProcessedImage = Tools.Thresholding(GrayInitialImage, threshold);
+                int threshold = ThresholdOperators.MedianThreshold(GrayInitialImage);
+                GrayProcessedImage = ThresholdOperators.Thresholding(GrayInitialImage, threshold);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
             else MessageBox.Show("No grayscale image!");
@@ -1715,8 +1715,8 @@ namespace ImageProcessingFramework.ViewModel
         {
             if (GrayInitialImage != null)
             {
-                int threshold = Tools.IntermeansThreshold(GrayInitialImage);
-                GrayProcessedImage = Tools.Thresholding(GrayInitialImage, threshold);
+                int threshold = ThresholdOperators.IntermeansThreshold(GrayInitialImage);
+                GrayProcessedImage = ThresholdOperators.Thresholding(GrayInitialImage, threshold);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
             else MessageBox.Show("No grayscale image!");
@@ -1747,13 +1747,13 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                GrayProcessedImage = Tools.OtsuTwoThreshold(GrayInitialImage);
+                GrayProcessedImage = ThresholdOperators.OtsuTwoThreshold(GrayInitialImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
             else if (ColorInitialImage != null)
             {
                 GrayProcessedImage = Tools.Convert(ColorInitialImage);
-                GrayProcessedImage = Tools.OtsuTwoThreshold(GrayProcessedImage);
+                GrayProcessedImage = ThresholdOperators.OtsuTwoThreshold(GrayProcessedImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
         }
@@ -2457,7 +2457,7 @@ namespace ImageProcessingFramework.ViewModel
                 int maskSize = (int)response[0];
                 if (maskSize > 0 && maskSize % 2 == 1)
                 {
-                    GrayProcessedImage = Tools.Dilation(GrayInitialImage, maskSize);
+                    GrayProcessedImage = Morphology.Dilation(GrayInitialImage, maskSize);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
                 else MessageBox.Show("The mask size is not valid!");
@@ -2512,7 +2512,7 @@ namespace ImageProcessingFramework.ViewModel
                 int maskSize = (int)response[0];
                 if (maskSize > 0 && maskSize % 2 == 1)
                 {
-                    GrayProcessedImage = Tools.Erosion(GrayInitialImage, maskSize);
+                    GrayProcessedImage = Morphology.Erosion(GrayInitialImage, maskSize);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
                 else MessageBox.Show("The mask size is not valid!");
@@ -2567,7 +2567,7 @@ namespace ImageProcessingFramework.ViewModel
                 int maskSize = (int)response[0];
                 if (maskSize > 0 && maskSize % 2 == 1)
                 {
-                    GrayProcessedImage = Tools.Opening(GrayInitialImage, maskSize);
+                    GrayProcessedImage = Morphology.Opening(GrayInitialImage, maskSize);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
                 else MessageBox.Show("The mask size is not valid!");
@@ -2622,7 +2622,7 @@ namespace ImageProcessingFramework.ViewModel
                 int maskSize = (int)response[0];
                 if (maskSize > 0 && maskSize % 2 == 1)
                 {
-                    GrayProcessedImage = Tools.Closing(GrayInitialImage, maskSize);
+                    GrayProcessedImage = Morphology.Closing(GrayInitialImage, maskSize);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
                 else MessageBox.Show("The mask size is not valid!");
@@ -2660,7 +2660,7 @@ namespace ImageProcessingFramework.ViewModel
                     return;
                 }
 
-                ColorProcessedImage = Tools.ConnectedComponents(GrayInitialImage);
+                ColorProcessedImage = Morphology.ConnectedComponents(GrayInitialImage);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
             }
             else MessageBox.Show("No grayscale image!");
