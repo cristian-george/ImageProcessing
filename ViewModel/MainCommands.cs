@@ -212,45 +212,23 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
-            if (GrayInitialImage != null)
+            ResetInitialCanvas(parameter);
+
+            if (GrayProcessedImage != null)
             {
-                if (GrayProcessedImage != null)
-                {
-                    GrayInitialImage = GrayProcessedImage;
-                    InitialImage = ImageConverter.Convert(GrayInitialImage);
+                GrayInitialImage = GrayProcessedImage;
+                InitialImage = ImageConverter.Convert(GrayInitialImage);
 
-                    GrayProcessedImage = null;
-                    ProcessedImage = null;
-                }
-                else if (ColorProcessedImage != null)
-                {
-                    ColorInitialImage = ColorProcessedImage;
-                    InitialImage = ImageConverter.Convert(ColorInitialImage);
-
-                    GrayInitialImage = null;
-                    ColorProcessedImage = null;
-                    ProcessedImage = null;
-                }
+                GrayProcessedImage = null;
+                ProcessedImage = null;
             }
-            else if (ColorInitialImage != null)
+            else if (ColorProcessedImage != null)
             {
-                if (GrayProcessedImage != null)
-                {
-                    GrayInitialImage = GrayProcessedImage;
-                    InitialImage = ImageConverter.Convert(GrayInitialImage);
+                ColorInitialImage = ColorProcessedImage;
+                InitialImage = ImageConverter.Convert(ColorInitialImage);
 
-                    ColorInitialImage = null;
-                    GrayProcessedImage = null;
-                    ProcessedImage = null;
-                }
-                else if (ColorProcessedImage != null)
-                {
-                    ColorInitialImage = ColorProcessedImage;
-                    InitialImage = ImageConverter.Convert(ColorInitialImage);
-
-                    ColorProcessedImage = null;
-                    ProcessedImage = null;
-                }
+                ColorProcessedImage = null;
+                ProcessedImage = null;
             }
         }
         #endregion
@@ -2440,7 +2418,11 @@ namespace ImageProcessingFramework.ViewModel
                     return;
                 }
             }
-            else MessageBox.Show("No grayscale image!");
+            else
+            {
+                MessageBox.Show("No grayscale image!");
+                return;
+            }
 
             DialogBox dialogBox = new DialogBox();
             System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
@@ -2495,7 +2477,11 @@ namespace ImageProcessingFramework.ViewModel
                     return;
                 }
             }
-            else MessageBox.Show("No grayscale image!");
+            else
+            {
+                MessageBox.Show("No grayscale image!");
+                return;
+            }
 
             DialogBox dialogBox = new DialogBox();
             System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
@@ -2550,7 +2536,11 @@ namespace ImageProcessingFramework.ViewModel
                     return;
                 }
             }
-            else MessageBox.Show("No grayscale image!");
+            else
+            {
+                MessageBox.Show("No grayscale image!");
+                return;
+            }
 
             DialogBox dialogBox = new DialogBox();
             System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
@@ -2605,7 +2595,11 @@ namespace ImageProcessingFramework.ViewModel
                     return;
                 }
             }
-            else MessageBox.Show("No grayscale image!");
+            else
+            {
+                MessageBox.Show("No grayscale image!");
+                return;
+            }
 
             DialogBox dialogBox = new DialogBox();
             System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
@@ -2665,6 +2659,156 @@ namespace ImageProcessingFramework.ViewModel
             }
             else MessageBox.Show("No grayscale image!");
         }
+        #endregion
+
+        #endregion
+
+        #region Geometric transformations
+
+        #region Projective transformation
+        private ICommand m_projTransform;
+        public ICommand ProjTransform
+        {
+            get
+            {
+                if (m_projTransform == null)
+                    m_projTransform = new RelayCommand(ProjectiveTransformation);
+                return m_projTransform;
+            }
+        }
+
+        public void ProjectiveTransformation(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            if (VectorOfMousePosition.Count < 4)
+            {
+                MessageBox.Show("Please select an area first.");
+                return;
+            }
+
+            System.Windows.Point sourceP1 = VectorOfMousePosition[VectorOfMousePosition.Count - 4];
+            System.Windows.Point sourceP2 = VectorOfMousePosition[VectorOfMousePosition.Count - 3];
+            System.Windows.Point sourceP3 = VectorOfMousePosition[VectorOfMousePosition.Count - 2];
+            System.Windows.Point sourceP4 = VectorOfMousePosition[VectorOfMousePosition.Count - 1];
+
+            RemoveAllDrawnElements(parameter);
+            ResetProcessedCanvas(parameter);
+
+            VectorOfLines.Add(DrawHelper.DrawLine(InitialCanvas, sourceP1.X, sourceP1.Y, sourceP2.X, sourceP2.Y, 1, Brushes.Red));
+            VectorOfLines.Add(DrawHelper.DrawLine(InitialCanvas, sourceP2.X, sourceP2.Y, sourceP3.X, sourceP3.Y, 1, Brushes.Red));
+            VectorOfLines.Add(DrawHelper.DrawLine(InitialCanvas, sourceP3.X, sourceP3.Y, sourceP4.X, sourceP4.Y, 1, Brushes.Red));
+            VectorOfLines.Add(DrawHelper.DrawLine(InitialCanvas, sourceP4.X, sourceP4.Y, sourceP1.X, sourceP1.Y, 1, Brushes.Red));
+
+            if (SliderZoom.Value == SliderZoom.Minimum)
+            {
+                SliderZoom.Value += 0.01;
+                SliderZoom.Value -= 0.01;
+            }
+            else
+            {
+                SliderZoom.Value -= 0.01;
+                SliderZoom.Value += 0.01;
+            }
+
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = GeometricTransformations.ProjectiveTransformation(GrayInitialImage,
+                    sourceP1.X, sourceP1.Y, sourceP2.X, sourceP2.Y, sourceP3.X, sourceP3.Y, sourceP4.X, sourceP4.Y);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+            }
+            else if (ColorInitialImage != null)
+            {
+                ColorProcessedImage = GeometricTransformations.ProjectiveTransformation(ColorInitialImage,
+                    sourceP1.X, sourceP1.Y, sourceP2.X, sourceP2.Y, sourceP3.X, sourceP3.Y, sourceP4.X, sourceP4.Y);
+                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+            }
+        }
+        #endregion
+
+        #endregion
+
+        #region Segmentation
+
+        #region Detecting lines
+
+        #region Hough transformation (3 quadrants)
+        private ICommand m_houghThreeQuadrants;
+        public ICommand HoughTransformThreeQuadrants
+        {
+            get
+            {
+                if (m_houghThreeQuadrants == null)
+                    m_houghThreeQuadrants = new RelayCommand(HoughThreeQuadrants);
+                return m_houghThreeQuadrants;
+            }
+        }
+
+        public void HoughThreeQuadrants(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+
+            if (GrayInitialImage != null)
+            {
+                if (!Helper.IsBinaryImage(GrayInitialImage))
+                {
+                    MessageBox.Show("Please add a binary image.");
+                    return;
+                }
+
+                GrayProcessedImage = Segmentation.HoughTransformThreeQuadrants(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+            }
+        }
+        #endregion
+
+        #region Hough transformation (2 quadrants)
+        private ICommand m_houghTwoQuadrants;
+        public ICommand HoughTransformTwoQuadrants
+        {
+            get
+            {
+                if (m_houghTwoQuadrants == null)
+                    m_houghTwoQuadrants = new RelayCommand(HoughTwoQuadrants);
+                return m_houghTwoQuadrants;
+            }
+        }
+
+        public void HoughTwoQuadrants(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            if (GrayInitialImage != null)
+            {
+                if (!Helper.IsBinaryImage(GrayInitialImage))
+                {
+                    MessageBox.Show("Please add a binary image.");
+                    return;
+                }
+
+                GrayProcessedImage = Segmentation.HoughTransformTwoQuadrants(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+            }
+        }
+        #endregion
+
         #endregion
 
         #endregion
