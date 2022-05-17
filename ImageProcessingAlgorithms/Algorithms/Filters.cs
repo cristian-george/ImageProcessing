@@ -448,11 +448,11 @@ namespace ImageProcessingAlgorithms.Algorithms
             {
                 for (int x = 1; x < inputImage.Width - 1; ++x)
                 {
-                    int fx = inputImage.Data[y + 1, x - 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y + 1, x, 0] -
-                               2 * inputImage.Data[y - 1, x, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y - 1, x + 1, 0];
+                    int fx = inputImage.Data[y - 1, x + 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y, x + 1, 0] -
+                             2 * inputImage.Data[y, x - 1, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y + 1, x - 1, 0];
 
-                    int fy = inputImage.Data[y - 1, x + 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y, x + 1, 0] -
-                               2 * inputImage.Data[y, x - 1, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y + 1, x - 1, 0];
+                    int fy = inputImage.Data[y + 1, x - 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y + 1, x, 0] -
+                             2 * inputImage.Data[y - 1, x, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y - 1, x + 1, 0];
 
                     gradient[y, x] = System.Math.Sqrt((fx * fx) + (fy * fy));
                 }
@@ -469,11 +469,11 @@ namespace ImageProcessingAlgorithms.Algorithms
             {
                 for (int x = 1; x < inputImage.Width - 1; ++x)
                 {
-                    int fx = inputImage.Data[y + 1, x - 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y + 1, x, 0] -
-                               2 * inputImage.Data[y - 1, x, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y - 1, x + 1, 0];
-
-                    int fy = inputImage.Data[y - 1, x + 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y, x + 1, 0] -
+                    int fx = inputImage.Data[y - 1, x + 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y, x + 1, 0] -
                                2 * inputImage.Data[y, x - 1, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y + 1, x - 1, 0];
+
+                    int fy = inputImage.Data[y + 1, x - 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y + 1, x, 0] -
+                               2 * inputImage.Data[y - 1, x, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y - 1, x + 1, 0];
 
                     if (fx == 0)
                     {
@@ -759,29 +759,29 @@ namespace ImageProcessingAlgorithms.Algorithms
                     if (cannyDirection[y, x] == 0)
                     {
                         result.Data[y, x, 0] = 0;
-                        result.Data[y, x, 1] = 0;
-                        result.Data[y, x, 2] = 255;
+                        result.Data[y, x, 1] = 255;
+                        result.Data[y, x, 2] = 0;
                     }
 
                     if (cannyDirection[y, x] == 1)
                     {
-                        result.Data[y, x, 0] = 255;
-                        result.Data[y, x, 1] = 0;
-                        result.Data[y, x, 2] = 0;
+                        result.Data[y, x, 0] = 0;
+                        result.Data[y, x, 1] = 255;
+                        result.Data[y, x, 2] = 255;
                     }
 
                     if (cannyDirection[y, x] == 2)
                     {
                         result.Data[y, x, 0] = 0;
-                        result.Data[y, x, 1] = 255;
-                        result.Data[y, x, 2] = 0;
+                        result.Data[y, x, 1] = 0;
+                        result.Data[y, x, 2] = 255;
                     }
 
                     if (cannyDirection[y, x] == 3)
                     {
-                        result.Data[y, x, 0] = 0;
-                        result.Data[y, x, 1] = 255;
-                        result.Data[y, x, 2] = 255;
+                        result.Data[y, x, 0] = 255;
+                        result.Data[y, x, 1] = 0;
+                        result.Data[y, x, 2] = 0;
                     }
                 }
             }
@@ -844,29 +844,29 @@ namespace ImageProcessingAlgorithms.Algorithms
                     if (cannyDirection[y, x] == 0)
                     {
                         result.Data[y, x, 0] = 0;
-                        result.Data[y, x, 1] = 0;
-                        result.Data[y, x, 2] = 255;
+                        result.Data[y, x, 1] = 255;
+                        result.Data[y, x, 2] = 0;
                     }
 
                     if (cannyDirection[y, x] == 1)
                     {
-                        result.Data[y, x, 0] = 255;
-                        result.Data[y, x, 1] = 0;
-                        result.Data[y, x, 2] = 0;
+                        result.Data[y, x, 0] = 0;
+                        result.Data[y, x, 1] = 255;
+                        result.Data[y, x, 2] = 255;
                     }
 
                     if (cannyDirection[y, x] == 2)
                     {
                         result.Data[y, x, 0] = 0;
-                        result.Data[y, x, 1] = 255;
-                        result.Data[y, x, 2] = 0;
+                        result.Data[y, x, 1] = 0;
+                        result.Data[y, x, 2] = 255;
                     }
 
                     if (cannyDirection[y, x] == 3)
                     {
-                        result.Data[y, x, 0] = 0;
-                        result.Data[y, x, 1] = 255;
-                        result.Data[y, x, 2] = 255;
+                        result.Data[y, x, 0] = 255;
+                        result.Data[y, x, 1] = 0;
+                        result.Data[y, x, 2] = 0;
                     }
                 }
             }
@@ -884,39 +884,44 @@ namespace ImageProcessingAlgorithms.Algorithms
         {
             var cannyGradient = CannyGradient(smoothImage, lowThreshold);
             var cannyDirection = CannyGradientDirection(smoothImage, lowThreshold);
+            var nonmaxSuppression = new double[smoothImage.Height, smoothImage.Width];
 
-            for (int y = 2; y < smoothImage.Height - 2; ++y)
+            for (int y = 1; y < smoothImage.Height - 1; ++y)
             {
-                for (int x = 2; x < smoothImage.Width - 2; ++x)
-                {
-                    if (cannyDirection[y, x] == 0)
+                for (int x = 1; x < smoothImage.Width - 1; ++x)
+                    if (cannyDirection[y, x] != -1)
                     {
-                        if (cannyGradient[y, x] <= cannyGradient[y - 2, x] || cannyGradient[y, x] <= cannyGradient[y + 2, x] ||
-                            cannyGradient[y, x] <= cannyGradient[y - 1, x] || cannyGradient[y, x] <= cannyGradient[y + 1, x])
+                        double prev = 255, next = 255;
+                        if (cannyDirection[y, x] == 0)
+                        {
+                            prev = cannyGradient[y, x - 1];
+                            next = cannyGradient[y, x + 1];
+                        }
+                        else if (cannyDirection[y, x] == 1)
+                        {
+                            prev = cannyGradient[y - 1, x + 1];
+                            next = cannyGradient[y + 1, x - 1];
+                        }
+                        else if (cannyDirection[y, x] == 2)
+                        {
+                            prev = cannyGradient[y - 1, x];
+                            next = cannyGradient[y + 1, x];
+                        }
+                        else if (cannyDirection[y, x] == 3)
+                        {
+                            prev = cannyGradient[y - 1, x - 1];
+                            next = cannyGradient[y + 1, x + 1];
+                        }
+
+                        if (cannyGradient[y, x] == next)
                             cannyGradient[y, x] = 0;
+
+                        if (cannyGradient[y, x] >= prev && cannyGradient[y, x] > next)
+                            nonmaxSuppression[y, x] = cannyGradient[y, x];
                     }
-                    else if (cannyDirection[y, x] == 1)
-                    {
-                        if (cannyGradient[y, x] <= cannyGradient[y + 2, x - 2] || cannyGradient[y, x] <= cannyGradient[y - 2, x + 2] ||
-                            cannyGradient[y, x] <= cannyGradient[y + 1, x - 1] || cannyGradient[y, x] <= cannyGradient[y - 1, x + 1])
-                            cannyGradient[y, x] = 0;
-                    }
-                    else if (cannyDirection[y, x] == 2)
-                    {
-                        if (cannyGradient[y, x] <= cannyGradient[y, x - 2] || cannyGradient[y, x] <= cannyGradient[y, x + 2] ||
-                            cannyGradient[y, x] <= cannyGradient[y, x - 1] || cannyGradient[y, x] <= cannyGradient[y, x + 1])
-                            cannyGradient[y, x] = 0;
-                    }
-                    else if (cannyDirection[y, x] == 3)
-                    {
-                        if (cannyGradient[y, x] <= cannyGradient[y - 2, x - 2] || cannyGradient[y, x] <= cannyGradient[y + 2, x + 2] ||
-                            cannyGradient[y, x] <= cannyGradient[y - 1, x - 1] || cannyGradient[y, x] <= cannyGradient[y + 1, x + 1])
-                            cannyGradient[y, x] = 0;
-                    }
-                }
             }
 
-            return cannyGradient;
+            return nonmaxSuppression;
         }
 
         public static Image<Gray, byte> CannyNonmaxSuppressionImage(Image<Gray, byte> inputImage, int lowThreshold)
@@ -946,39 +951,44 @@ namespace ImageProcessingAlgorithms.Algorithms
         {
             var cannyGradient = CannyGradient(smoothImage, lowThreshold);
             var cannyDirection = CannyGradientDirection(smoothImage, lowThreshold);
+            var nonmaxSuppression = new double[smoothImage.Height, smoothImage.Width];
 
-            for (int y = 2; y < smoothImage.Height - 2; ++y)
+            for (int y = 1; y < smoothImage.Height - 1; ++y)
             {
-                for (int x = 2; x < smoothImage.Width - 2; ++x)
-                {
-                    if (cannyDirection[y, x] == 0)
+                for (int x = 1; x < smoothImage.Width - 1; ++x)
+                    if (cannyDirection[y, x] != -1)
                     {
-                        if (cannyGradient[y, x] <= cannyGradient[y - 2, x] || cannyGradient[y, x] <= cannyGradient[y + 2, x] ||
-                            cannyGradient[y, x] <= cannyGradient[y - 1, x] || cannyGradient[y, x] <= cannyGradient[y + 1, x])
+                        double prev = 255, next = 255;
+                        if (cannyDirection[y, x] == 0)
+                        {
+                            prev = cannyGradient[y, x - 1];
+                            next = cannyGradient[y, x + 1];
+                        }
+                        else if (cannyDirection[y, x] == 1)
+                        {
+                            prev = cannyGradient[y - 1, x + 1];
+                            next = cannyGradient[y + 1, x - 1];
+                        }
+                        else if (cannyDirection[y, x] == 2)
+                        {
+                            prev = cannyGradient[y - 1, x];
+                            next = cannyGradient[y + 1, x];
+                        }
+                        else if (cannyDirection[y, x] == 3)
+                        {
+                            prev = cannyGradient[y - 1, x - 1];
+                            next = cannyGradient[y + 1, x + 1];
+                        }
+
+                        if (cannyGradient[y, x] == next)
                             cannyGradient[y, x] = 0;
+
+                        if (cannyGradient[y, x] >= prev && cannyGradient[y, x] > next)
+                            nonmaxSuppression[y, x] = cannyGradient[y, x];
                     }
-                    else if (cannyDirection[y, x] == 1)
-                    {
-                        if (cannyGradient[y, x] <= cannyGradient[y + 2, x - 2] || cannyGradient[y, x] <= cannyGradient[y - 2, x + 2] ||
-                            cannyGradient[y, x] <= cannyGradient[y + 1, x - 1] || cannyGradient[y, x] <= cannyGradient[y - 1, x + 1])
-                            cannyGradient[y, x] = 0;
-                    }
-                    else if (cannyDirection[y, x] == 2)
-                    {
-                        if (cannyGradient[y, x] <= cannyGradient[y, x - 2] || cannyGradient[y, x] <= cannyGradient[y, x + 2] ||
-                            cannyGradient[y, x] <= cannyGradient[y, x - 1] || cannyGradient[y, x] <= cannyGradient[y, x + 1])
-                            cannyGradient[y, x] = 0;
-                    }
-                    else if (cannyDirection[y, x] == 3)
-                    {
-                        if (cannyGradient[y, x] <= cannyGradient[y - 2, x - 2] || cannyGradient[y, x] <= cannyGradient[y + 2, x + 2] ||
-                            cannyGradient[y, x] <= cannyGradient[y - 1, x - 1] || cannyGradient[y, x] <= cannyGradient[y + 1, x + 1])
-                            cannyGradient[y, x] = 0;
-                    }
-                }
             }
 
-            return cannyGradient;
+            return nonmaxSuppression;
         }
 
         public static Image<Gray, byte> CannyNonmaxSuppressionImage(Image<Bgr, byte> inputImage, int lowThreshold)
