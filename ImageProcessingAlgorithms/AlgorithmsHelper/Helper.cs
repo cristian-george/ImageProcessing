@@ -404,24 +404,24 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
             {
                 for (int x = 1; x < inputImage.Width - 1; ++x)
                 {
-                    int dxB = inputImage.Data[y + 1, x - 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y + 1, x, 0] -
-                               2 * inputImage.Data[y - 1, x, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y - 1, x + 1, 0];
-
-                    int dxG = inputImage.Data[y + 1, x - 1, 1] - inputImage.Data[y - 1, x - 1, 1] + 2 * inputImage.Data[y + 1, x, 1] -
-                               2 * inputImage.Data[y - 1, x, 1] + inputImage.Data[y + 1, x + 1, 1] - inputImage.Data[y - 1, x + 1, 1];
-
-                    int dxR = inputImage.Data[y + 1, x - 1, 2] - inputImage.Data[y - 1, x - 1, 2] + 2 * inputImage.Data[y + 1, x, 2] -
-                               2 * inputImage.Data[y - 1, x, 2] + inputImage.Data[y + 1, x + 1, 2] - inputImage.Data[y - 1, x + 1, 2];
-
-
-                    int dyB = inputImage.Data[y - 1, x + 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y, x + 1, 0] -
+                    int dxB = inputImage.Data[y - 1, x + 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y, x + 1, 0] -
                                2 * inputImage.Data[y, x - 1, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y + 1, x - 1, 0];
 
-                    int dyG = inputImage.Data[y - 1, x + 1, 1] - inputImage.Data[y - 1, x - 1, 1] + 2 * inputImage.Data[y, x + 1, 1] -
+                    int dxG = inputImage.Data[y - 1, x + 1, 1] - inputImage.Data[y - 1, x - 1, 1] + 2 * inputImage.Data[y, x + 1, 1] -
                                2 * inputImage.Data[y, x - 1, 1] + inputImage.Data[y + 1, x + 1, 1] - inputImage.Data[y + 1, x - 1, 1];
 
-                    int dyR = inputImage.Data[y - 1, x + 1, 2] - inputImage.Data[y - 1, x - 1, 2] + 2 * inputImage.Data[y, x + 1, 2] -
+                    int dxR = inputImage.Data[y - 1, x + 1, 2] - inputImage.Data[y - 1, x - 1, 2] + 2 * inputImage.Data[y, x + 1, 2] -
                                2 * inputImage.Data[y, x - 1, 2] + inputImage.Data[y + 1, x + 1, 2] - inputImage.Data[y + 1, x - 1, 2];
+
+
+                    int dyB = inputImage.Data[y + 1, x - 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y + 1, x, 0] -
+                               2 * inputImage.Data[y - 1, x, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y - 1, x + 1, 0];
+
+                    int dyG = inputImage.Data[y + 1, x - 1, 1] - inputImage.Data[y - 1, x - 1, 1] + 2 * inputImage.Data[y + 1, x, 1] -
+                               2 * inputImage.Data[y - 1, x, 1] + inputImage.Data[y + 1, x + 1, 1] - inputImage.Data[y - 1, x + 1, 1];
+
+                    int dyR = inputImage.Data[y + 1, x - 1, 2] - inputImage.Data[y - 1, x - 1, 2] + 2 * inputImage.Data[y + 1, x, 2] -
+                               2 * inputImage.Data[y - 1, x, 2] + inputImage.Data[y + 1, x + 1, 2] - inputImage.Data[y - 1, x + 1, 2];
 
                     double[,] maxVariance = new double[2, 2];
                     maxVariance[0, 0] = System.Math.Pow(dxR, 2) + System.Math.Pow(dxG, 2) + System.Math.Pow(dxB, 2);
@@ -450,24 +450,24 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
             {
                 for (int x = 1; x < inputImage.Width - 1; ++x)
                 {
-                    int dxB = inputImage.Data[y + 1, x - 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y + 1, x, 0] -
-                               2 * inputImage.Data[y - 1, x, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y - 1, x + 1, 0];
-
-                    int dxG = inputImage.Data[y + 1, x - 1, 1] - inputImage.Data[y - 1, x - 1, 1] + 2 * inputImage.Data[y + 1, x, 1] -
-                               2 * inputImage.Data[y - 1, x, 1] + inputImage.Data[y + 1, x + 1, 1] - inputImage.Data[y - 1, x + 1, 1];
-
-                    int dxR = inputImage.Data[y + 1, x - 1, 2] - inputImage.Data[y - 1, x - 1, 2] + 2 * inputImage.Data[y + 1, x, 2] -
-                               2 * inputImage.Data[y - 1, x, 2] + inputImage.Data[y + 1, x + 1, 2] - inputImage.Data[y - 1, x + 1, 2];
-
-
-                    int dyB = inputImage.Data[y - 1, x + 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y, x + 1, 0] -
+                    int dxB = inputImage.Data[y - 1, x + 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y, x + 1, 0] -
                                2 * inputImage.Data[y, x - 1, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y + 1, x - 1, 0];
 
-                    int dyG = inputImage.Data[y - 1, x + 1, 1] - inputImage.Data[y - 1, x - 1, 1] + 2 * inputImage.Data[y, x + 1, 1] -
+                    int dxG = inputImage.Data[y - 1, x + 1, 1] - inputImage.Data[y - 1, x - 1, 1] + 2 * inputImage.Data[y, x + 1, 1] -
                                2 * inputImage.Data[y, x - 1, 1] + inputImage.Data[y + 1, x + 1, 1] - inputImage.Data[y + 1, x - 1, 1];
 
-                    int dyR = inputImage.Data[y - 1, x + 1, 2] - inputImage.Data[y - 1, x - 1, 2] + 2 * inputImage.Data[y, x + 1, 2] -
+                    int dxR = inputImage.Data[y - 1, x + 1, 2] - inputImage.Data[y - 1, x - 1, 2] + 2 * inputImage.Data[y, x + 1, 2] -
                                2 * inputImage.Data[y, x - 1, 2] + inputImage.Data[y + 1, x + 1, 2] - inputImage.Data[y + 1, x - 1, 2];
+
+
+                    int dyB = inputImage.Data[y + 1, x - 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y + 1, x, 0] -
+                               2 * inputImage.Data[y - 1, x, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y - 1, x + 1, 0];
+
+                    int dyG = inputImage.Data[y + 1, x - 1, 1] - inputImage.Data[y - 1, x - 1, 1] + 2 * inputImage.Data[y + 1, x, 1] -
+                               2 * inputImage.Data[y - 1, x, 1] + inputImage.Data[y + 1, x + 1, 1] - inputImage.Data[y - 1, x + 1, 1];
+
+                    int dyR = inputImage.Data[y + 1, x - 1, 2] - inputImage.Data[y - 1, x - 1, 2] + 2 * inputImage.Data[y + 1, x, 2] -
+                               2 * inputImage.Data[y - 1, x, 2] + inputImage.Data[y + 1, x + 1, 2] - inputImage.Data[y - 1, x + 1, 2];
 
                     double[,] maxVariance = new double[2, 2];
                     maxVariance[0, 0] = System.Math.Pow(dxR, 2) + System.Math.Pow(dxG, 2) + System.Math.Pow(dxB, 2);
@@ -491,6 +491,34 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
             return angle;
         }
 
+        #endregion
+
+        #region Matrix multiplication
+        public static double[,] Multiply(double[,] matrix1, double[,] matrix2)
+        {
+            var matrix1Rows = matrix1.GetLength(0);
+            var matrix1Cols = matrix1.GetLength(1);
+            var matrix2Rows = matrix2.GetLength(0);
+            var matrix2Cols = matrix2.GetLength(1);
+
+            if (matrix1Cols != matrix2Rows)
+                throw new System.InvalidOperationException("Product is undefined !");
+
+            double[,] product = new double[matrix1Rows, matrix2Cols];
+
+            for (int i = 0; i < matrix1Rows; ++i)
+            {
+                for (int j = 0; j < matrix2Cols; ++j)
+                {
+                    for (int k = 0; k < matrix1Cols; ++k)
+                    {
+                        product[i, j] += matrix1[i, k] * matrix2[k, j];
+                    }
+                }
+            }
+
+            return product;
+        }
         #endregion
     }
 }
