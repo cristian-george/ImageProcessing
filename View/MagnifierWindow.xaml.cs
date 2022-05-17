@@ -52,6 +52,8 @@ namespace ImageProcessingFramework.View
                 DisplayGray();
                 DisplayColor();
 
+                Focus();
+
                 LastPoint = LastPosition;
             }
         }
