@@ -25,7 +25,7 @@ namespace ImageProcessingFramework.Model
             imageSource.Source = ImageConverter.Convert(inputImage);
         }
 
-        public static Line DrawLine(Canvas canvas, int startX, int startY, int endX, int endY, int thickness, Brush color)
+        public static Line DrawLine(Canvas canvas, double startX, double startY, double endX, double endY, int thickness, Brush color)
         {
             var line = new Line
             {

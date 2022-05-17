@@ -94,6 +94,7 @@ namespace ImageProcessingFramework.Model
             get;
             set;
         }
+
         public static Collection<Line> VectorOfLines
         {
             get;
