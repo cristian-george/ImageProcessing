@@ -237,21 +237,34 @@
             <MenuItem Header="Morphology"
                       Background="Transparent"
                       Foreground="AliceBlue">
-                <MenuItem Header="Dilation"
-                          Foreground="#1E1E1E"
-                          Command="{Binding Path=DilationOp}"/>
-                <MenuItem Header="Erosion"
-                          Foreground="#1E1E1E"
-                          Command="{Binding Path=ErosionOp}"/>
-                <MenuItem Header="Opening"
-                          Foreground="#1E1E1E"
-                          Command="{Binding Path=OpeningOp}"/>
-                <MenuItem Header="Closing"
-                          Foreground="#1E1E1E"
-                          Command="{Binding Path=ClosingOp}"/>
-                <MenuItem Header="Connected components"
-                          Foreground="#1E1E1E"
-                          Command="{Binding Path=ConnectedComp}"/>
+                <MenuItem Header="On binary images"
+                          Foreground="#1E1E1E">
+                    <MenuItem Header="Dilation"
+                              Command="{Binding Path=DilationOp}"/>
+                    <MenuItem Header="Erosion"
+                              Command="{Binding Path=ErosionOp}"/>
+                    <MenuItem Header="Opening"
+                              Command="{Binding Path=OpeningOp}"/>
+                    <MenuItem Header="Closing"
+                              Command="{Binding Path=ClosingOp}"/>
+                    <MenuItem Header="Connected components"
+                              Command="{Binding Path=ConnectedComp}"/>
+                </MenuItem>
+                <MenuItem Header="On grayscale images"
+                          Foreground="#1E1E1E">
+                    <MenuItem Header="Dilation"
+                              Command="{Binding Path=DilationGrayOp}"/>
+                    <MenuItem Header="Erosion"
+                              Command="{Binding Path=ErosionGrayOp}"/>
+                    <MenuItem Header="Opening"
+                              Command="{Binding Path=OpeningGrayOp}"/>
+                    <MenuItem Header="Closing"
+                              Command="{Binding Path=ClosingGrayOp}"/>
+                    <MenuItem Header="Smoothing"
+                              Command="{Binding Path=MorfologicSmooth}"/>
+                    <MenuItem Header="Gradient"
+                              Command="{Binding Path=MorfologicGrad}"/>
+                </MenuItem>
             </MenuItem>
 
             <MenuItem Header="Geometric transformations"

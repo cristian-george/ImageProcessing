@@ -8,7 +8,7 @@ namespace ImageProcessingAlgorithms.Algorithms
     public class Morphology
     {
         #region Dilation
-        public static Image<Gray, byte> Dilation(Image<Gray, byte> inputImage, int maskDim)
+        public static Image<Gray, byte> DilationOnBinary(Image<Gray, byte> inputImage, int maskDim)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
 
@@ -42,10 +42,43 @@ namespace ImageProcessingAlgorithms.Algorithms
 
             return result;
         }
+
+        public static Image<Gray, byte> DilationOnGrayscale(Image<Gray, byte> inputImage, int maskDim)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+
+            int maskRad = maskDim / 2;
+
+            for (int y = maskRad; y < inputImage.Height - maskRad; y++)
+            {
+                for (int x = maskRad; x < inputImage.Width - maskRad; x++)
+                {
+                    List<byte> neighPixels = new List<byte>();
+                    for (int i = y - maskRad; i <= y + maskRad; ++i)
+                    {
+                        for (int j = x - maskRad; j <= x + maskRad; ++j)
+                        {
+                            neighPixels.Add(inputImage.Data[i, j, 0]);
+                        }
+                    }
+
+                    byte maxNeigh = 0;
+                    foreach (var neighPixel in neighPixels)
+                    {
+                        if (maxNeigh < neighPixel)
+                            maxNeigh = neighPixel;
+                    }
+
+                    result.Data[y, x, 0] = maxNeigh;
+                }
+            }
+
+            return result;
+        }
         #endregion
 
         #region Erosion
-        public static Image<Gray, byte> Erosion(Image<Gray, byte> inputImage, int maskDim)
+        public static Image<Gray, byte> ErosionOnBinary(Image<Gray, byte> inputImage, int maskDim)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
 
@@ -79,21 +112,66 @@ namespace ImageProcessingAlgorithms.Algorithms
 
             return result;
         }
+
+        public static Image<Gray, byte> ErosionOnGrayscale(Image<Gray, byte> inputImage, int maskDim)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+
+            int maskRad = maskDim / 2;
+
+            for (int y = maskRad; y < inputImage.Height - maskRad; y++)
+            {
+                for (int x = maskRad; x < inputImage.Width - maskRad; x++)
+                {
+                    List<byte> neighPixels = new List<byte>();
+                    for (int i = y - maskRad; i <= y + maskRad; ++i)
+                    {
+                        for (int j = x - maskRad; j <= x + maskRad; ++j)
+                        {
+                            neighPixels.Add(inputImage.Data[i, j, 0]);
+                        }
+                    }
+
+                    byte minNeigh = 255;
+                    foreach (var neighPixel in neighPixels)
+                    {
+                        if (minNeigh > neighPixel)
+                            minNeigh = neighPixel;
+                    }
+
+                    result.Data[y, x, 0] = minNeigh;
+                }
+            }
+
+            return result;
+        }
         #endregion
 
         #region Opening
-        public static Image<Gray, byte> Opening(Image<Gray, byte> inputImage, int maskDim)
+        public static Image<Gray, byte> OpeningOnBinary(Image<Gray, byte> inputImage, int maskDim)
         {
-            Image<Gray, byte> erosion = Erosion(inputImage, maskDim);
-            return Dilation(erosion, maskDim);
+            Image<Gray, byte> erosion = ErosionOnBinary(inputImage, maskDim);
+            return DilationOnBinary(erosion, maskDim);
+        }
+
+        public static Image<Gray, byte> OpeningOnGrayscale(Image<Gray, byte> inputImage, int maskDim)
+        {
+            Image<Gray, byte> erosion = ErosionOnGrayscale(inputImage, maskDim);
+            return DilationOnGrayscale(erosion, maskDim);
         }
         #endregion
 
         #region Closing
-        public static Image<Gray, byte> Closing(Image<Gray, byte> inputImage, int maskDim)
+        public static Image<Gray, byte> ClosingOnBinary(Image<Gray, byte> inputImage, int maskDim)
         {
-            Image<Gray, byte> dilation = Dilation(inputImage, maskDim);
-            return Erosion(dilation, maskDim);
+            Image<Gray, byte> dilation = DilationOnBinary(inputImage, maskDim);
+            return ErosionOnBinary(dilation, maskDim);
+        }
+
+        public static Image<Gray, byte> ClosingOnGrayscale(Image<Gray, byte> inputImage, int maskDim)
+        {
+            Image<Gray, byte> dilation = DilationOnGrayscale(inputImage, maskDim);
+            return ErosionOnGrayscale(dilation, maskDim);
         }
         #endregion
 
@@ -194,6 +272,33 @@ namespace ImageProcessingAlgorithms.Algorithms
                         result.Data[y, x, 1] = colors[currentLabel].Item2;
                         result.Data[y, x, 2] = colors[currentLabel].Item3;
                     }
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region Smoothing
+        public static Image<Gray, byte> MorfologicSmoothing(Image<Gray, byte> inputImage, int maskDim)
+        {
+            Image<Gray, byte> opening = OpeningOnGrayscale(inputImage, maskDim);
+            return ClosingOnGrayscale(opening, maskDim);
+        }
+        #endregion
+
+        #region Gradient
+        public static Image<Gray, byte> MorfologicGradient(Image<Gray, byte> inputImage, int maskDim)
+        {
+            Image<Gray, byte> dilaton = DilationOnGrayscale(inputImage, maskDim);
+            Image<Gray, byte> erosion = ErosionOnGrayscale(inputImage, maskDim);
+
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+            for (int y = 0; y < inputImage.Height; ++y)
+            {
+                for (int x = 0; x < inputImage.Width; ++x)
+                {
+                    result.Data[y, x, 0] = (byte)(dilaton.Data[y, x, 0] - erosion.Data[y, x, 0]);
                 }
             }
 

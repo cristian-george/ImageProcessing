@@ -2388,6 +2388,8 @@ namespace ImageProcessingFramework.ViewModel
 
         #region Morphology operators
 
+        #region On binary images
+
         #region Dilation
         private ICommand m_dilationOp;
         public ICommand DilationOp
@@ -2439,7 +2441,7 @@ namespace ImageProcessingFramework.ViewModel
                 int maskSize = (int)response[0];
                 if (maskSize > 0 && maskSize % 2 == 1)
                 {
-                    GrayProcessedImage = Morphology.Dilation(GrayInitialImage, maskSize);
+                    GrayProcessedImage = Morphology.DilationOnBinary(GrayInitialImage, maskSize);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
                 else MessageBox.Show("The mask size is not valid!");
@@ -2498,7 +2500,7 @@ namespace ImageProcessingFramework.ViewModel
                 int maskSize = (int)response[0];
                 if (maskSize > 0 && maskSize % 2 == 1)
                 {
-                    GrayProcessedImage = Morphology.Erosion(GrayInitialImage, maskSize);
+                    GrayProcessedImage = Morphology.ErosionOnBinary(GrayInitialImage, maskSize);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
                 else MessageBox.Show("The mask size is not valid!");
@@ -2557,7 +2559,7 @@ namespace ImageProcessingFramework.ViewModel
                 int maskSize = (int)response[0];
                 if (maskSize > 0 && maskSize % 2 == 1)
                 {
-                    GrayProcessedImage = Morphology.Opening(GrayInitialImage, maskSize);
+                    GrayProcessedImage = Morphology.OpeningOnBinary(GrayInitialImage, maskSize);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
                 else MessageBox.Show("The mask size is not valid!");
@@ -2616,7 +2618,7 @@ namespace ImageProcessingFramework.ViewModel
                 int maskSize = (int)response[0];
                 if (maskSize > 0 && maskSize % 2 == 1)
                 {
-                    GrayProcessedImage = Morphology.Closing(GrayInitialImage, maskSize);
+                    GrayProcessedImage = Morphology.ClosingOnBinary(GrayInitialImage, maskSize);
                     ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
                 else MessageBox.Show("The mask size is not valid!");
@@ -2659,6 +2661,282 @@ namespace ImageProcessingFramework.ViewModel
             }
             else MessageBox.Show("No grayscale image!");
         }
+        #endregion
+
+        #endregion
+
+        #region On grayscale images
+
+        #region Dilation
+        private ICommand m_dilationGrayOp;
+        public ICommand DilationGrayOp
+        {
+            get
+            {
+                if (m_dilationGrayOp == null)
+                    m_dilationGrayOp = new RelayCommand(DilationOnGrayscale);
+                return m_dilationGrayOp;
+            }
+        }
+
+        public void DilationOnGrayscale(object parameter)
+        {
+            if (GrayInitialImage == null)
+            {
+                MessageBox.Show("No grayscale image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Dilation mask size: "
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int maskSize = (int)response[0];
+                if (maskSize > 0 && maskSize % 2 == 1)
+                {
+                    GrayProcessedImage = Morphology.DilationOnGrayscale(GrayInitialImage, maskSize);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                }
+                else MessageBox.Show("The mask size is not valid!");
+            }
+        }
+        #endregion
+
+        #region Erosion
+        private ICommand m_erosionGrayOp;
+        public ICommand ErosionGrayOp
+        {
+            get
+            {
+                if (m_erosionGrayOp == null)
+                    m_erosionGrayOp = new RelayCommand(ErosionOnGrayscale);
+                return m_erosionGrayOp;
+            }
+        }
+
+        public void ErosionOnGrayscale(object parameter)
+        {
+            if (GrayInitialImage == null)
+            {
+                MessageBox.Show("No grayscale image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Dilation mask size: "
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int maskSize = (int)response[0];
+                if (maskSize > 0 && maskSize % 2 == 1)
+                {
+                    GrayProcessedImage = Morphology.ErosionOnGrayscale(GrayInitialImage, maskSize);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                }
+                else MessageBox.Show("The mask size is not valid!");
+            }
+        }
+        #endregion
+
+        #region Opening
+        private ICommand m_openingGrayOp;
+        public ICommand OpeningGrayOp
+        {
+            get
+            {
+                if (m_openingGrayOp == null)
+                    m_openingGrayOp = new RelayCommand(OpeningOnGrayscale);
+                return m_openingGrayOp;
+            }
+        }
+
+        public void OpeningOnGrayscale(object parameter)
+        {
+            if (GrayInitialImage == null)
+            {
+                MessageBox.Show("No grayscale image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Dilation mask size: "
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int maskSize = (int)response[0];
+                if (maskSize > 0 && maskSize % 2 == 1)
+                {
+                    GrayProcessedImage = Morphology.OpeningOnGrayscale(GrayInitialImage, maskSize);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                }
+                else MessageBox.Show("The mask size is not valid!");
+            }
+        }
+        #endregion
+
+        #region Closing
+        private ICommand m_closingGrayOp;
+        public ICommand ClosingGrayOp
+        {
+            get
+            {
+                if (m_closingGrayOp == null)
+                    m_closingGrayOp = new RelayCommand(ClosingOnGrayscale);
+                return m_closingGrayOp;
+            }
+        }
+
+        public void ClosingOnGrayscale(object parameter)
+        {
+            if (GrayInitialImage == null)
+            {
+                MessageBox.Show("No grayscale image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Dilation mask size: "
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int maskSize = (int)response[0];
+                if (maskSize > 0 && maskSize % 2 == 1)
+                {
+                    GrayProcessedImage = Morphology.ClosingOnGrayscale(GrayInitialImage, maskSize);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                }
+                else MessageBox.Show("The mask size is not valid!");
+            }
+        }
+        #endregion
+
+        #region Smoothing
+        private ICommand m_morfologicSmooth;
+        public ICommand MorfologicSmooth
+        {
+            get
+            {
+                if (m_morfologicSmooth == null)
+                    m_morfologicSmooth = new RelayCommand(MorfologicSmoothing);
+                return m_morfologicSmooth;
+            }
+        }
+
+        public void MorfologicSmoothing(object parameter)
+        {
+            if (GrayInitialImage == null)
+            {
+                MessageBox.Show("No grayscale image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Dilation mask size: "
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int maskSize = (int)response[0];
+                if (maskSize > 0 && maskSize % 2 == 1)
+                {
+                    GrayProcessedImage = Morphology.MorfologicSmoothing(GrayInitialImage, maskSize);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                }
+                else MessageBox.Show("The mask size is not valid!");
+            }
+        }
+        #endregion
+
+        #region Gradient
+        private ICommand m_morfologicGradient;
+        public ICommand MorfologicGrad
+        {
+            get
+            {
+                if (m_morfologicGradient == null)
+                    m_morfologicGradient = new RelayCommand(MorfologicGradient);
+                return m_morfologicGradient;
+            }
+        }
+
+        public void MorfologicGradient(object parameter)
+        {
+            if (GrayInitialImage == null)
+            {
+                MessageBox.Show("No grayscale image!");
+                return;
+            }
+
+            ResetProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                {
+                    "Dilation mask size: "
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int maskSize = (int)response[0];
+                if (maskSize > 0 && maskSize % 2 == 1)
+                {
+                    GrayProcessedImage = Morphology.MorfologicGradient(GrayInitialImage, maskSize);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                }
+                else MessageBox.Show("The mask size is not valid!");
+            }
+        }
+        #endregion
+
         #endregion
 
         #endregion
