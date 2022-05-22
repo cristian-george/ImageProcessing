@@ -8,7 +8,9 @@
         mc:Ignorable="d"
         Title="GraphWindow" 
         Height="400" 
-        Width="400">
+        Width="400"
+        Icon="../Images/Icon.png">
+
     <Grid Background="#1E1E1E">
         <Label Grid.Row="1"
                Grid.Column="0">

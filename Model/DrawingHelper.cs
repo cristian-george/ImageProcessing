@@ -9,7 +9,7 @@ using PointCollection = System.Windows.Media.PointCollection;
 
 namespace ImageProcessingFramework.Model
 {
-    public class DrawHelper
+    public class DrawingHelper
     {
         public static void SetPixelGray(Image imageSource, Image<Gray, byte> inputImage, int x, int y, int gray)
         {
@@ -61,7 +61,7 @@ namespace ImageProcessingFramework.Model
             return rectangle;
         }
 
-        public static Ellipse DrawElipse(Canvas canvas, int centerX, int centerY, int width, int height, int thickness, Brush color)
+        public static Ellipse DrawEllipse(Canvas canvas, double centerX, double centerY, double width, double height, int thickness, Brush color)
         {
             var ellipse = new Ellipse
             {

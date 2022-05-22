@@ -68,11 +68,11 @@
     <Compile Include="AlgorithmsHelper\Helper.cs" />
     <Compile Include="Algorithms\Filters.cs" />
     <Compile Include="Algorithms\GeometricTransformations.cs" />
-    <Compile Include="Algorithms\Morphology.cs" />
+    <Compile Include="Algorithms\MorphologicalOperations.cs" />
     <Compile Include="Algorithms\Segmentation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Algorithms\PunctualOperators.cs" />
-    <Compile Include="Algorithms\ThresholdOperators.cs" />
+    <Compile Include="Algorithms\PointwiseOperations.cs" />
+    <Compile Include="Algorithms\Thresholding.cs" />
     <Compile Include="Tools\Tools.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -11,19 +11,13 @@ namespace ImageProcessingFramework.Model
 {
     class DataProvider
     {
-        public static Point MousePosition
-        {
-            get;
-            set;
-        }
-
-        public static Point LastPosition
-        {
-            get;
-            set;
-        }
-
         public static Image<Gray, byte> GrayInitialImage
+        {
+            get;
+            set;
+        }
+
+        public static Image<Gray, byte> GrayProcessedImage
         {
             get;
             set;
@@ -41,37 +35,13 @@ namespace ImageProcessingFramework.Model
             set;
         }
 
-        public static Image<Gray, byte> GrayProcessedImage
+        public static Point MousePosition
         {
             get;
             set;
         }
 
-        public static bool MagnifierOn
-        {
-            get;
-            set;
-        }
-
-        public static bool GLevelsRowOn
-        {
-            get;
-            set;
-        }
-
-        public static bool GLevelsColumnOn
-        {
-            get;
-            set;
-        }
-
-        public static bool HermiteSplineOn
-        {
-            get;
-            set;
-        }
-
-        public static bool CannyWindowOn
+        public static Point LastPosition
         {
             get;
             set;
@@ -120,6 +90,42 @@ namespace ImageProcessingFramework.Model
         }
 
         public static Slider SliderZoom
+        {
+            get;
+            set;
+        }
+
+        public static bool MagnifierOn
+        {
+            get;
+            set;
+        }
+
+        public static bool RowLevelsOn
+        {
+            get;
+            set;
+        }
+
+        public static bool ColumnLevelsOn
+        {
+            get;
+            set;
+        }
+
+        public static bool SliderOn
+        {
+            get;
+            set;
+        }
+
+        public static bool HermiteSplineOn
+        {
+            get;
+            set;
+        }
+
+        public static bool CannyWindowOn
         {
             get;
             set;

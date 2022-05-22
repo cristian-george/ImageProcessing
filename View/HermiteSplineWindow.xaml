@@ -17,7 +17,7 @@
         Icon="../Images/Icon2.png">
 
     <Window.DataContext>
-        <local:SplineCommands/>
+        <local:HermiteSplineVM/>
     </Window.DataContext>
 
     <Grid Background="#1E1E1E">

@@ -9,10 +9,11 @@
         x:Name="dialogBoxWindow"
         Height="auto"
         Width="300"
-        Icon="../Images/Icon2.png"
         Left="200"
         Top="200"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        Icon="../Images/Icon.png">
+
     <Grid x:Name="mainGrid" 
           Background="#1E1E1E">
         <Grid.RowDefinitions>

@@ -49,12 +49,12 @@ namespace ImageProcessingFramework
             }
 
             if (MagnifierOn == false)
-                RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialRectangle, ProcessedRectangle);
+                RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialSquare, ProcessedSquare);
 
-            if (GLevelsRowOn == false)
+            if (RowLevelsOn == false)
                 RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialRowLine, ProcessedRowLine);
 
-            if (GLevelsColumnOn == false)
+            if (ColumnLevelsOn == false)
                 RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialColumnLine, ProcessedColumnLine);
         }
 
@@ -91,50 +91,64 @@ namespace ImageProcessingFramework
         {
             RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialPolygon, ProcessedPolygon);
             RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialEllipse, ProcessedEllipse);
-            RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialRectangle, ProcessedRectangle);
+            RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialSquare, ProcessedSquare);
             RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialRowLine, ProcessedRowLine);
             RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialColumnLine, ProcessedColumnLine);
+            RemoveAllDrawnShapes();
 
             VectorOfMousePosition.Clear();
         }
 
-        private void DrawRowLine(object sender, MouseButtonEventArgs e)
+        private void DrawUiElements_MouseLeftPressed(object sender, MouseButtonEventArgs e)
         {
-            if (GLevelsRowOn == false) return;
+            DrawUiElements();
+        }
 
+        private void DrawUiElements()
+        {
+            if (MagnifierOn == true)
+            {
+                DrawSquare();
+                DrawRowLine();
+                DrawColumnLine();
+            }
+
+            if (RowLevelsOn == true)
+                DrawRowLine();
+
+            if (ColumnLevelsOn == true)
+                DrawColumnLine();
+        }
+
+        private void DrawRowLine()
+        {
             RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialRowLine, ProcessedRowLine);
             InitialRowLine = GetRowLine(canvasOriginalImage, initialImage, sliderZoom.Value);
             if (ColorProcessedImage == null && GrayProcessedImage == null) return;
             ProcessedRowLine = GetRowLine(canvasProcessedImage, processedImage, sliderZoom.Value);
         }
 
-        private void DrawColumnLine(object sender, MouseButtonEventArgs e)
+        private void DrawColumnLine()
         {
-            if (GLevelsColumnOn == false) return;
-
             RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialColumnLine, ProcessedColumnLine);
             InitialColumnLine = GetColumnLine(canvasOriginalImage, initialImage, sliderZoom.Value);
             if (ColorProcessedImage == null && GrayProcessedImage == null) return;
             ProcessedColumnLine = GetColumnLine(canvasProcessedImage, processedImage, sliderZoom.Value);
         }
 
-        private void DrawRectangle(object sender, MouseButtonEventArgs e)
+        private void DrawSquare()
         {
-            if (MagnifierOn == false) return;
-
-            RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialRectangle, ProcessedRectangle);
-            InitialRectangle = GetRectangle(canvasOriginalImage, LastPosition.X, LastPosition.Y,
+            RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialSquare, ProcessedSquare);
+            InitialSquare = GetSquare(canvasOriginalImage, LastPosition.X, LastPosition.Y,
                 sliderZoom.Value);
             if (ColorProcessedImage == null && GrayProcessedImage == null) return;
-            ProcessedRectangle = GetRectangle(canvasProcessedImage, LastPosition.X, LastPosition.Y,
+            ProcessedSquare = GetSquare(canvasProcessedImage, LastPosition.X, LastPosition.Y,
                 sliderZoom.Value);
         }
 
         private void WindowMouseMove(object sender, MouseEventArgs e)
         {
-            DrawRectangle(sender, e as MouseButtonEventArgs);
-            DrawRowLine(sender, e as MouseButtonEventArgs);
-            DrawColumnLine(sender, e as MouseButtonEventArgs);
+            DrawUiElements();
 
             ResizeCanvas(canvasOriginalImage, sliderZoom.Value);
             ResizeCanvas(canvasProcessedImage, sliderZoom.Value, false);

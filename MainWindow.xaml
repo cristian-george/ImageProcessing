@@ -11,7 +11,7 @@
         Width="1124"
         Left="125" 
         Top="0"
-        Icon="Images\Icon2.png">
+        Icon="Images\Icon.png">
 
     <Window.DataContext>
         <local:MainCommands/>
@@ -44,16 +44,16 @@
                       Foreground="AliceBlue">
                 <MenuItem Header="Load grayscale image"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=AddGrayImage}"
+                          Command="{Binding Path=LoadGrayImage}"
                           CommandParameter="{Binding ElementName=sliderZoom}"/>
                 <MenuItem Header="Load color image" 
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=AddColorImage}"
+                          Command="{Binding Path=LoadColorImage}"
                           CommandParameter="{Binding ElementName=sliderZoom}"/>
                 <Separator/>
                 <MenuItem Header="Save processed image" 
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=Save}"/>
+                          Command="{Binding Path=SaveImage}"/>
                 <Separator/>
                 <MenuItem Header="Exit" 
                           Foreground="#1E1E1E"
@@ -65,14 +65,14 @@
                       Foreground="AliceBlue">
                 <MenuItem Header="Reset initial canvas"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=ResetInitial}"/>
+                          Command="{Binding Path=ResetInitialCanvas}"/>
                 <MenuItem Header="Reset processed canvas"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=ResetProcessed}"/>
+                          Command="{Binding Path=ResetProcessedCanvas}"/>
                 <Separator/>
                 <MenuItem Header="Remove drawn elements"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=RemoveAllElements}"/>
+                          Command="{Binding Path=RemoveDrawnShapes}"/>
                 <MenuItem Header="Clear all elements"
                           Foreground="#1E1E1E"
                           Command="{Binding Path=Clear}"/>
@@ -124,7 +124,7 @@
                           Command="{Binding Path=ReplicatePadding}"/>
             </MenuItem>
 
-            <MenuItem Header="Adjust brightness and contrast"
+            <MenuItem Header="Pointwise operations"
                       Background="Transparent"
                       Foreground="AliceBlue">
                 <MenuItem Header="Based on linear operators"
@@ -234,7 +234,7 @@
                 </MenuItem>
             </MenuItem>
 
-            <MenuItem Header="Morphology"
+            <MenuItem Header="Morphological operations"
                       Background="Transparent"
                       Foreground="AliceBlue">
                 <MenuItem Header="On binary images"
@@ -313,8 +313,7 @@
                         VerticalAlignment="Center"
                         Width="{Binding ElementName=lbl, Path=ActualWidth}"
                         Height="{Binding ElementName=lbl, Path=ActualHeight}"
-                        MouseLeftButtonUp="DrawRectangle"
-                        MouseLeftButtonDown="DrawRowLine">
+                        MouseLeftButtonDown="DrawUiElements_MouseLeftPressed">
                     <Image x:Name="initialImage"
                            Mouse.MouseMove="ImageMouseMove"
                            MouseLeftButtonDown="MouseLeftPressed"
@@ -347,7 +346,7 @@
                         VerticalAlignment="Center"
                         Width="{Binding ElementName=lbl, Path=ActualWidth}"
                         Height="{Binding ElementName=lbl, Path=ActualHeight}"
-                        MouseLeftButtonUp="DrawRectangle">
+                        MouseLeftButtonDown="DrawUiElements_MouseLeftPressed">
                     <Image x:Name="processedImage"
                            Mouse.MouseMove="ImageMouseMove"
                            MouseLeftButtonDown="MouseLeftPressed"

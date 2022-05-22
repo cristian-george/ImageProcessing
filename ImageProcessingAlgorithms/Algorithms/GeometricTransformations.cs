@@ -105,6 +105,8 @@ namespace ImageProcessingAlgorithms.Algorithms
         public static Image<Gray, byte> ProjectiveTransformation(Image<Gray, byte> inputImage,
             double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
         {
+            Image<Gray, byte> borderedImage = Tools.Tools.BorderReplicate(inputImage, 2);
+
             int height = (int)Math.Max(
                 Math.Sqrt(Math.Pow(x1 - x4, 2) + Math.Pow(y1 - y4, 2)),
                 Math.Sqrt(Math.Pow(x2 - x3, 2) + Math.Pow(y2 - y3, 2))
@@ -140,7 +142,7 @@ namespace ImageProcessingAlgorithms.Algorithms
                     if (Y >= 0 && X >= 0 && Y < inputImage.Height && X < inputImage.Width)
                     {
                         result.Data[y, x, 0] =
-                            (byte)Math.Min(255, BilinearInterpolation(inputImage, X, Y));
+                            (byte)Math.Min(255, BilinearInterpolation(borderedImage, X, Y) + 0.5);
                     }
                 }
             }
@@ -151,6 +153,8 @@ namespace ImageProcessingAlgorithms.Algorithms
         public static Image<Bgr, byte> ProjectiveTransformation(Image<Bgr, byte> inputImage,
             double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
         {
+            Image<Bgr, byte> borderedImage = Tools.Tools.BorderReplicate(inputImage, 2);
+
             int height = (int)Math.Max(
                 Math.Sqrt(Math.Pow(x1 - x4, 2) + Math.Pow(y1 - y4, 2)),
                 Math.Sqrt(Math.Pow(x2 - x3, 2) + Math.Pow(y2 - y3, 2))
@@ -186,11 +190,11 @@ namespace ImageProcessingAlgorithms.Algorithms
                     if (Y >= 0 && X >= 0 && Y < inputImage.Height && X < inputImage.Width)
                     {
                         result.Data[y, x, 0] =
-                            (byte)Math.Min(255, BilinearInterpolation(inputImage, X, Y, 0));
+                            (byte)Math.Min(255, BilinearInterpolation(borderedImage, X, Y, 0) + 0.5);
                         result.Data[y, x, 1] =
-                            (byte)Math.Min(255, BilinearInterpolation(inputImage, X, Y, 1));
+                            (byte)Math.Min(255, BilinearInterpolation(borderedImage, X, Y, 1) + 0.5);
                         result.Data[y, x, 2] =
-                            (byte)Math.Min(255, BilinearInterpolation(inputImage, X, Y, 2));
+                            (byte)Math.Min(255, BilinearInterpolation(borderedImage, X, Y, 2) + 0.5);
                     }
                 }
             }

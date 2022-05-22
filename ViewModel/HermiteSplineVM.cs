@@ -8,7 +8,7 @@ using LineSeries = OxyPlot.Series.LineSeries;
 
 namespace ImageProcessingFramework.ViewModel
 {
-    internal class SplineCommands
+    internal class HermiteSplineVM
     {
         private PlotModel Plot { get; set; }
         public DataPoint LastPoint { get; private set; }

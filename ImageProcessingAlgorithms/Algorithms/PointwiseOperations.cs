@@ -4,7 +4,7 @@ using static ImageProcessingAlgorithms.AlgorithmsHelper.Helper;
 
 namespace ImageProcessingAlgorithms.Algorithms
 {
-    public class PunctualOperators
+    public class PointwiseOperations
     {
         #region Operator +
         public static int[] IncreaseBrightnessPlus(int b)

@@ -104,18 +104,18 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\DataProvider.cs" />
-    <Compile Include="Model\DrawHelper.cs" />
+    <Compile Include="Model\DrawingHelper.cs" />
     <Compile Include="Model\ImageConverter.cs" />
     <Compile Include="Model\UiHelper.cs" />
-    <Compile Include="ViewModel\ColumnDisplayCommands.cs" />
-    <Compile Include="ViewModel\NotifyPropertyChanged.cs" />
-    <Compile Include="ViewModel\SplineCommands.cs" />
-    <Compile Include="ViewModel\MagnifierCommands.cs" />
+    <Compile Include="ViewModel\ColumnLevelsVM.cs" />
+    <Compile Include="ViewModel\BaseVM.cs" />
+    <Compile Include="ViewModel\HermiteSplineVM.cs" />
+    <Compile Include="ViewModel\MagnifierVM.cs" />
     <Compile Include="View\CannyThresholdsWindow.xaml.cs">
       <DependentUpon>CannyThresholdsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ColumnDisplayWindow.xaml.cs">
-      <DependentUpon>ColumnDisplayWindow.xaml</DependentUpon>
+    <Compile Include="View\ColumnLevelsWindow.xaml.cs">
+      <DependentUpon>ColumnLevelsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\DialogBox.xaml.cs">
       <DependentUpon>DialogBox.xaml</DependentUpon>
@@ -123,18 +123,18 @@
     <Compile Include="View\GraphWindow.xaml.cs">
       <DependentUpon>GraphWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\SplineWindow.xaml.cs">
-      <DependentUpon>SplineWindow.xaml</DependentUpon>
+    <Compile Include="View\HermiteSplineWindow.xaml.cs">
+      <DependentUpon>HermiteSplineWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MagnifierWindow.xaml.cs">
       <DependentUpon>MagnifierWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\RowDisplayWindow.xaml.cs">
-      <DependentUpon>RowDisplayWindow.xaml</DependentUpon>
+    <Compile Include="View\RowLevelsWindow.xaml.cs">
+      <DependentUpon>RowLevelsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel\MainCommands.cs" />
-    <Compile Include="ViewModel\RelayCommand.cs" />
-    <Compile Include="ViewModel\RowDisplayCommands.cs" />
+    <Compile Include="Commands\MainCommands.cs" />
+    <Compile Include="Commands\RelayCommand.cs" />
+    <Compile Include="ViewModel\RowLevelsVM.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -151,7 +151,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\ColumnDisplayWindow.xaml">
+    <Page Include="View\ColumnLevelsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -163,7 +163,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\SplineWindow.xaml">
+    <Page Include="View\HermiteSplineWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -171,7 +171,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\RowDisplayWindow.xaml">
+    <Page Include="View\RowLevelsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -208,14 +208,6 @@
     <Resource Include="License-LGPL.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\imageTest.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\bigImage.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\Icon.png" />
   </ItemGroup>
   <ItemGroup>
@@ -223,9 +215,6 @@
       <Project>{abe2e6c4-c85d-4405-9773-49da48fdb174}</Project>
       <Name>ImageProcessingAlgorithms</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\Icon2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

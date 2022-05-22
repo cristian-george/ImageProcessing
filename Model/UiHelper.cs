@@ -1,19 +1,19 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
-using System.Windows.Media;
+using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Shapes;
 using static ImageProcessingFramework.Model.DataProvider;
-using System.Windows;
 using Ellipse = System.Windows.Shapes.Ellipse;
-using System.Collections.ObjectModel;
 
 namespace ImageProcessingFramework.Model
 {
     class UiHelper
     {
-        public static Rectangle InitialRectangle { get; set; }
-        public static Rectangle ProcessedRectangle { get; set; }
+        public static Rectangle InitialSquare { get; set; }
+        public static Rectangle ProcessedSquare { get; set; }
 
         public static Line InitialRowLine { get; set; }
         public static Line ProcessedRowLine { get; set; }
@@ -82,15 +82,15 @@ namespace ImageProcessingFramework.Model
                 "R: " + colorImage.Data[y, x, 2] : "R: 0";
         }
 
-        public static Rectangle GetRectangle(Canvas canvas, double x, double y, double scaleValue)
+        public static Rectangle GetSquare(Canvas canvas, double x, double y, double scaleValue)
         {
             var rectangle = new Rectangle
             {
                 Stroke = Brushes.Red,
-                StrokeThickness = 2
+                StrokeThickness = 2,
+                Width = 9 * scaleValue,
+                Height = 9 * scaleValue
             };
-            rectangle.Width = 9 * scaleValue;
-            rectangle.Height = 9 * scaleValue;
 
             Canvas.SetLeft(rectangle, (x - 4) * scaleValue);
             Canvas.SetTop(rectangle, (y - 4) * scaleValue);
@@ -182,6 +182,23 @@ namespace ImageProcessingFramework.Model
                 initialCanvas.Children.Remove(polygon);
                 processedCanvas.Children.Remove(polygon);
             }
+        }
+
+        public static void RemoveAllUiElements()
+        {
+            RemoveUiElements(InitialCanvas, ProcessedCanvas, InitialSquare, ProcessedSquare);
+            RemoveUiElements(InitialCanvas, ProcessedCanvas, InitialRowLine, ProcessedRowLine);
+            RemoveUiElements(InitialCanvas, ProcessedCanvas, InitialColumnLine, ProcessedColumnLine);
+            RemoveUiElements(InitialCanvas, ProcessedCanvas, InitialEllipse, ProcessedEllipse);
+            RemoveUiElements(InitialCanvas, ProcessedCanvas, InitialPolygon, ProcessedPolygon);
+        }
+
+        public static void RemoveAllDrawnShapes()
+        {
+            RemoveAllDrawnLines(InitialCanvas, ProcessedCanvas, VectorOfLines);
+            RemoveAllDrawnRectangles(InitialCanvas, ProcessedCanvas, VectorOfRectangles);
+            RemoveAllDrawnEllipses(InitialCanvas, ProcessedCanvas, VectorOfEllipses);
+            RemoveAllDrawnPolygons(InitialCanvas, ProcessedCanvas, VectorOfPolygons);
         }
     }
 }

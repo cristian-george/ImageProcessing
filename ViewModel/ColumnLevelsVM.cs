@@ -9,7 +9,7 @@ using LineSeries = OxyPlot.Series.LineSeries;
 
 namespace ImageProcessingFramework.ViewModel
 {
-    class ColumnDisplayCommands
+    class ColumnLevelsVM
     {
         public PlotModel PlotImage { get; private set; }
 

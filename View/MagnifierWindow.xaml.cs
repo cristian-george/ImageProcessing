@@ -6,13 +6,13 @@ namespace ImageProcessingFramework.View
 {
     public partial class MagnifierWindow : Window
     {
-        private readonly MagnifierCommands MagnifierCommands;
+        private readonly MagnifierVM magnifierVM;
         private Point LastPoint { get; set; }
 
         public MagnifierWindow()
         {
             InitializeComponent();
-            MagnifierCommands = new MagnifierCommands();
+            magnifierVM = new MagnifierVM();
 
             DisplayGray();
             DisplayColor();
@@ -23,21 +23,21 @@ namespace ImageProcessingFramework.View
         private void DisplayColor()
         {
             if (ColorInitialImage != null)
-                imageBoxOriginal.Source = MagnifierCommands.GetImage(ColorInitialImage, (int)imageBoxOriginal.Width, (int)imageBoxOriginal.Height);
+                imageBoxOriginal.Source = magnifierVM.GetImage(ColorInitialImage, (int)imageBoxOriginal.Width, (int)imageBoxOriginal.Height);
             if (ColorProcessedImage != null)
-                imageBoxProcessed.Source = MagnifierCommands.GetImage(ColorProcessedImage, (int)imageBoxOriginal.Width, (int)imageBoxOriginal.Height);
+                imageBoxProcessed.Source = magnifierVM.GetImage(ColorProcessedImage, (int)imageBoxOriginal.Width, (int)imageBoxOriginal.Height);
             if (GrayProcessedImage != null)
-                imageBoxProcessed.Source = MagnifierCommands.GetImageGray(GrayProcessedImage, (int)imageBoxOriginal.Width, (int)imageBoxOriginal.Height);
+                imageBoxProcessed.Source = magnifierVM.GetImage(GrayProcessedImage, (int)imageBoxOriginal.Width, (int)imageBoxOriginal.Height);
         }
 
         private void DisplayGray()
         {
             if (GrayInitialImage != null)
-                imageBoxOriginal.Source = MagnifierCommands.GetImageGray(GrayInitialImage, (int)imageBoxOriginal.Width, (int)imageBoxOriginal.Height);
+                imageBoxOriginal.Source = magnifierVM.GetImage(GrayInitialImage, (int)imageBoxOriginal.Width, (int)imageBoxOriginal.Height);
             if (ColorProcessedImage != null)
-                imageBoxProcessed.Source = MagnifierCommands.GetImage(ColorProcessedImage, (int)imageBoxOriginal.Width, (int)imageBoxOriginal.Height);
+                imageBoxProcessed.Source = magnifierVM.GetImage(ColorProcessedImage, (int)imageBoxOriginal.Width, (int)imageBoxOriginal.Height);
             if (GrayProcessedImage != null)
-                imageBoxProcessed.Source = MagnifierCommands.GetImageGray(GrayProcessedImage, (int)imageBoxOriginal.Width, (int)imageBoxOriginal.Height);
+                imageBoxProcessed.Source = magnifierVM.GetImage(GrayProcessedImage, (int)imageBoxOriginal.Width, (int)imageBoxOriginal.Height);
         }
 
         private void MagnifierClosing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -51,8 +51,6 @@ namespace ImageProcessingFramework.View
             {
                 DisplayGray();
                 DisplayColor();
-
-                Focus();
 
                 LastPoint = LastPosition;
             }

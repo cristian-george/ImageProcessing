@@ -4,10 +4,10 @@ using static ImageProcessingAlgorithms.AlgorithmsHelper.Helper;
 
 namespace ImageProcessingAlgorithms.Algorithms
 {
-    public class ThresholdOperators
+    public class Thresholding
     {
         #region Thresholding
-        public static Image<Gray, byte> Thresholding(Image<Gray, byte> inputImage, int threshold)
+        public static Image<Gray, byte> BasicThresholding(Image<Gray, byte> inputImage, int threshold)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
             for (int y = 0; y < inputImage.Height; y++)

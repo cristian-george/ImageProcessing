@@ -13,10 +13,12 @@
         Left="125" 
         Top="50"
         ResizeMode="NoResize"
-        Icon="../Images/Icon2.png">
+        Topmost="True"
+        Icon="../Images/Icon.png">
     <Window.DataContext>
-        <local:MagnifierCommands/>
+        <local:MagnifierVM/>
     </Window.DataContext>
+
     <Grid Background="#1E1E1E">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>

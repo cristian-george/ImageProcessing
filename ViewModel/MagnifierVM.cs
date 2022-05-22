@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace ImageProcessingFramework.ViewModel
 {
-    class MagnifierCommands
+    class MagnifierVM
     {
         public System.Windows.Media.ImageSource GetImage(Image<Bgr, byte> image, int width, int height)
         {
@@ -58,7 +58,7 @@ namespace ImageProcessingFramework.ViewModel
             return GetBitmap(flag);
         }
 
-        public System.Windows.Media.ImageSource GetImageGray(Image<Gray, byte> image, int width, int height)
+        public System.Windows.Media.ImageSource GetImage(Image<Gray, byte> image, int width, int height)
         {
             Bitmap flag = new Bitmap(width, height);
             Graphics flagGraphics = Graphics.FromImage(flag);

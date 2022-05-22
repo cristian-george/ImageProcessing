@@ -10,17 +10,17 @@ namespace ImageProcessingFramework.View
 {
     public partial class SplineWindow : Window
     {
-        private SplineCommands GraphViewCommands;
-        private SplineCommands HermiteSplineCommands;
+        private HermiteSplineVM GraphViewCommands;
+        private HermiteSplineVM HermiteSplineCommands;
 
-        private MainCommands Commands;
+        private readonly MainCommands mainCommands;
         public SplineWindow(object dataContext)
         {
             InitializeComponent();
-            GraphViewCommands = new SplineCommands();
+            GraphViewCommands = new HermiteSplineVM();
             graphView.Model = GraphViewCommands.InteractivePlot(0, 0, 255, 255);
 
-            Commands = dataContext as MainCommands;
+            mainCommands = dataContext as MainCommands;
         }
 
         private void WindowUpdate(object sender, System.Windows.Input.MouseEventArgs e)
@@ -36,7 +36,7 @@ namespace ImageProcessingFramework.View
 
         private void AddHermiteSpline(object sender, RoutedEventArgs e)
         {
-            HermiteSplineCommands = new SplineCommands();
+            HermiteSplineCommands = new HermiteSplineVM();
             splineView.Model = HermiteSplineCommands.CubicSplines(GraphViewCommands.Points);
         }
 
@@ -57,7 +57,7 @@ namespace ImageProcessingFramework.View
             checkBox.IsChecked = false;
             RemoveHermiteSpline(sender, e);
 
-            GraphViewCommands = new SplineCommands();
+            GraphViewCommands = new HermiteSplineVM();
             graphView.Model = GraphViewCommands.InteractivePlot(0, 0, 255, 255);
         }
 
@@ -68,12 +68,12 @@ namespace ImageProcessingFramework.View
                 if (GrayInitialImage != null)
                 {
                     GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
-                    Commands.ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                    mainCommands.ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
                 else if (ColorInitialImage != null)
                 {
                     ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
-                    Commands.ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                    mainCommands.ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                 }
             }
         }

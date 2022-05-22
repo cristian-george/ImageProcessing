@@ -3,26 +3,27 @@ using ImageProcessingFramework.ViewModel;
 using OxyPlot;
 using static ImageProcessingFramework.Model.DataProvider;
 
-namespace ImageProcessingFramework
+namespace ImageProcessingFramework.View
 {
-    public partial class RowDisplayWindow : Window
+    public partial class ColumnLevelsWindow : Window
     {
-        private readonly RowDisplayCommands RowDisplayCommands;
+        private readonly ColumnLevelsVM columnLevelsVM;
 
         private Point LastPoint { get; set; }
 
-        public RowDisplayWindow()
+        public ColumnLevelsWindow()
         {
             InitializeComponent();
-            RowDisplayCommands = new RowDisplayCommands();
+            columnLevelsVM = new ColumnLevelsVM();
 
             DisplayGray();
-            DisplayColor();
+            if (ColorInitialImage != null || ColorProcessedImage != null)
+                DisplayColor();
 
             LastPoint = LastPosition;
         }
 
-        private void RowDisplayUpdate(object sender, System.Windows.Input.MouseEventArgs e)
+        private void ColumnDisplayUpdate(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (LastPoint != LastPosition)
             {
@@ -30,11 +31,14 @@ namespace ImageProcessingFramework
                 yPos.Text = "Y: " + ((int)LastPosition.Y).ToString();
 
                 DisplayGray();
-                DisplayColor();
+                if (ColorInitialImage != null || ColorProcessedImage != null)
+                {
+                    DisplayColor();
 
-                checkBoxBlue.IsChecked = true;
-                checkBoxGreen.IsChecked = true;
-                checkBoxRed.IsChecked = true;
+                    checkBoxBlue.IsChecked = true;
+                    checkBoxGreen.IsChecked = true;
+                    checkBoxRed.IsChecked = true;
+                }
 
                 LastPoint = LastPosition;
             }
@@ -43,17 +47,17 @@ namespace ImageProcessingFramework
         private void DisplayGray()
         {
             if (GrayInitialImage != null)
-                originalImageView.Model = RowDisplayCommands.PlotGrayImage(GrayInitialImage);
+                originalImageView.Model = columnLevelsVM.PlotGrayImage(GrayInitialImage);
             if (GrayProcessedImage != null)
-                processedImageView.Model = RowDisplayCommands.PlotGrayImage(GrayProcessedImage);
+                processedImageView.Model = columnLevelsVM.PlotGrayImage(GrayProcessedImage);
         }
 
         private void DisplayColor()
         {
             if (ColorInitialImage != null)
-                originalImageView.Model = RowDisplayCommands.PlotColorImage(ColorInitialImage);
+                originalImageView.Model = columnLevelsVM.PlotColorImage(ColorInitialImage);
             if (ColorProcessedImage != null)
-                processedImageView.Model = RowDisplayCommands.PlotColorImage(ColorProcessedImage);
+                processedImageView.Model = columnLevelsVM.PlotColorImage(ColorProcessedImage);
 
             checkBoxBlue.Visibility = Visibility.Visible;
             checkBoxGreen.Visibility = Visibility.Visible;
@@ -117,9 +121,9 @@ namespace ImageProcessingFramework
             }
         }
 
-        private void RowDisplayClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void ColumnDisplayClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            GLevelsRowOn = false;
+            ColumnLevelsOn = false;
         }
     }
 }

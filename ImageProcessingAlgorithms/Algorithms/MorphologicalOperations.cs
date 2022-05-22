@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace ImageProcessingAlgorithms.Algorithms
 {
-    public class Morphology
+    public class MorphologicalOperations
     {
         #region Dilation
         public static Image<Gray, byte> DilationOnBinary(Image<Gray, byte> inputImage, int maskDim)
