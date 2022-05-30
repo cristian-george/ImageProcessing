@@ -1,11 +1,11 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
-using ImageProcessingFramework.Model;
 using OxyPlot;
 using OxyPlot.Axes;
 using System.Collections.Generic;
 using LinearAxis = OxyPlot.Axes.LinearAxis;
 using LineSeries = OxyPlot.Series.LineSeries;
+using static ImageProcessingFramework.Model.DataProvider;
 
 namespace ImageProcessingFramework.ViewModel
 {
@@ -17,7 +17,7 @@ namespace ImageProcessingFramework.ViewModel
         {
             get
             {
-                return "X: " + ((int)DataProvider.LastPosition.X).ToString();
+                return "X: " + ((int)LastPosition.X).ToString();
             }
         }
 
@@ -25,7 +25,7 @@ namespace ImageProcessingFramework.ViewModel
         {
             get
             {
-                return "Y: " + ((int)DataProvider.LastPosition.Y).ToString();
+                return "Y: " + ((int)LastPosition.Y).ToString();
             }
         }
 
@@ -34,7 +34,8 @@ namespace ImageProcessingFramework.ViewModel
             List<int> channelValues = new List<int>();
 
             for (int y = 0; y < colorImage.Height; y++)
-                channelValues.Add(colorImage.Data[y, (int)DataProvider.LastPosition.X, channel]);
+                if (LastPosition.X < colorImage.Width)
+                    channelValues.Add(colorImage.Data[y, (int)LastPosition.X, channel]);
 
             if (color.Equals("Blue"))
             {
@@ -95,7 +96,8 @@ namespace ImageProcessingFramework.ViewModel
             List<int> channelValues = new List<int>();
 
             for (int y = 0; y < grayImage.Height; y++)
-                channelValues.Add(grayImage.Data[y, (int)DataProvider.LastPosition.X, channel]);
+                if (LastPosition.X < grayImage.Width)
+                    channelValues.Add(grayImage.Data[y, (int)LastPosition.X, channel]);
 
             if (color.Equals("Gray"))
             {

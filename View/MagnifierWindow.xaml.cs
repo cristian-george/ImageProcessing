@@ -26,16 +26,12 @@ namespace ImageProcessingFramework.View
                 imageBoxOriginal.Source = magnifierVM.GetImage(ColorInitialImage, (int)imageBoxOriginal.Width, (int)imageBoxOriginal.Height);
             if (ColorProcessedImage != null)
                 imageBoxProcessed.Source = magnifierVM.GetImage(ColorProcessedImage, (int)imageBoxOriginal.Width, (int)imageBoxOriginal.Height);
-            if (GrayProcessedImage != null)
-                imageBoxProcessed.Source = magnifierVM.GetImage(GrayProcessedImage, (int)imageBoxOriginal.Width, (int)imageBoxOriginal.Height);
         }
 
         private void DisplayGray()
         {
             if (GrayInitialImage != null)
                 imageBoxOriginal.Source = magnifierVM.GetImage(GrayInitialImage, (int)imageBoxOriginal.Width, (int)imageBoxOriginal.Height);
-            if (ColorProcessedImage != null)
-                imageBoxProcessed.Source = magnifierVM.GetImage(ColorProcessedImage, (int)imageBoxOriginal.Width, (int)imageBoxOriginal.Height);
             if (GrayProcessedImage != null)
                 imageBoxProcessed.Source = magnifierVM.GetImage(GrayProcessedImage, (int)imageBoxOriginal.Width, (int)imageBoxOriginal.Height);
         }

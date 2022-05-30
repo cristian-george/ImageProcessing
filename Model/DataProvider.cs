@@ -89,12 +89,6 @@ namespace ImageProcessingFramework.Model
             set;
         }
 
-        public static Slider SliderZoom
-        {
-            get;
-            set;
-        }
-
         public static bool MagnifierOn
         {
             get;

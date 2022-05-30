@@ -13,6 +13,7 @@ using ImageConverter = ImageProcessingFramework.Model.ImageConverter;
 using static ImageProcessingFramework.Model.DataProvider;
 using ImageProcessingFramework.View;
 using ImageProcessingFramework.Model;
+using System.Collections.Generic;
 
 namespace ImageProcessingFramework.ViewModel
 {
@@ -62,7 +63,23 @@ namespace ImageProcessingFramework.ViewModel
         {
             if (parameter is Slider slider)
                 slider.Value = 1;
-            NotifyPropertyChanged("buttonResetZoom");
+        }
+
+        public void UpdateZoom(object parameter)
+        {
+            if (parameter is Slider slider)
+            {
+                if (slider.Value == slider.Minimum)
+                {
+                    slider.Value += 0.01;
+                    slider.Value -= 0.01;
+                }
+                else
+                {
+                    slider.Value -= 0.01;
+                    slider.Value += 0.01;
+                }
+            }
         }
         #endregion
 
@@ -582,17 +599,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             VectorOfRectangles.Add(DrawingHelper.DrawRectangle(InitialCanvas, leftTopX, leftTopY, rightBottomX, rightBottomY, 1, Brushes.Red));
-
-            if (SliderZoom.Value == SliderZoom.Minimum)
-            {
-                SliderZoom.Value += 0.01;
-                SliderZoom.Value -= 0.01;
-            }
-            else
-            {
-                SliderZoom.Value -= 0.01;
-                SliderZoom.Value += 0.01;
-            }
+            UpdateZoom(parameter);
 
             if (GrayInitialImage != null)
             {
@@ -788,7 +795,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
             {
                 "Thickness value"
             };
@@ -796,7 +803,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 int thickness = (int)response[0];
@@ -849,7 +856,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "b value"
                 };
@@ -857,7 +864,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 int b = (int)response[0];
@@ -903,7 +910,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "a value (a > 1):"
                 };
@@ -911,7 +918,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 double a = response[0];
@@ -957,7 +964,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "a value (0 < a < 1):"
                 };
@@ -965,7 +972,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 double a = response[0];
@@ -1015,7 +1022,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "b value"
                 };
@@ -1023,7 +1030,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 int b = (int)response[0];
@@ -1069,7 +1076,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "a value (0 < a < 1):"
                 };
@@ -1077,7 +1084,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 double a = response[0];
@@ -1123,7 +1130,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "a value (a > 1):"
                 };
@@ -1131,7 +1138,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 double a = response[0];
@@ -1253,7 +1260,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "Gamma value:"
                 };
@@ -1261,7 +1268,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 double gamma = response[0];
@@ -1307,7 +1314,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "r1:",
                     "s1:",
@@ -1318,7 +1325,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 int r1 = (int)response[0];
@@ -1445,7 +1452,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "m value:",
                     "E value:"
@@ -1454,7 +1461,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 double m = response[0];
@@ -1583,43 +1590,39 @@ namespace ImageProcessingFramework.ViewModel
         #region Thresholding
 
         #region Threshold is given as input
-        private ICommand m_thresholding;
-        public ICommand Thresholding
+        private ICommand m_inputThresholding;
+        public ICommand InputThresholding
         {
             get
             {
-                if (m_thresholding == null)
-                    m_thresholding = new RelayCommand(ThresholdingImage);
-                return m_thresholding;
+                if (m_inputThresholding == null)
+                    m_inputThresholding = new RelayCommand(ThresholdingImage);
+                return m_inputThresholding;
             }
         }
 
         public void ThresholdingImage(object parameter)
         {
+            if (SliderOn == true) return;
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            SliderWindow sliderWindow = new SliderWindow(this, "Threshold value: ");
             if (GrayInitialImage != null)
             {
-                DialogBox dialogBox = new DialogBox();
-                System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
-                {
-                    "Threshold value"
-                };
-
-                dialogBox.CreateDialogBox(prop);
-                dialogBox.ShowDialog();
-
-                System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
-                if (response != null)
-                {
-                    int threshold = (int)response[0];
-                    if (threshold != 0)
-                    {
-                        GrayProcessedImage = ThresholdOperators.Thresholding(GrayInitialImage, threshold);
-                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    }
-                    else MessageBox.Show("Please add a threshold value first.");
-                }
+                sliderWindow.SetAlgorithmToApply(Thresholding.ThresholdingForGray);
             }
-            else MessageBox.Show("No grayscale image!");
+            else if (ColorInitialImage != null)
+            {
+                sliderWindow.SetAlgorithmToApply(Thresholding.ThresholdingForColor);
+            }
+
+            sliderWindow.ConfigureSlider();
+            sliderWindow.Show();
+            SliderOn = true;
         }
         #endregion
 
@@ -1640,7 +1643,7 @@ namespace ImageProcessingFramework.ViewModel
             if (GrayInitialImage != null)
             {
                 DialogBox dialogBox = new DialogBox();
-                System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+                List<string> prop = new List<string>
                 {
                     "Background pixels percent (0 <= p <= 1):"
                 };
@@ -1648,14 +1651,14 @@ namespace ImageProcessingFramework.ViewModel
                 dialogBox.CreateDialogBox(prop);
                 dialogBox.ShowDialog();
 
-                System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+                List<double> response = dialogBox.GetResponseTexts();
                 if (response != null)
                 {
                     double percent = response[0];
                     if (0 <= percent && percent <= 1)
                     {
-                        int threshold = ThresholdOperators.QuantileThreshold(GrayInitialImage, percent);
-                        GrayProcessedImage = ThresholdOperators.Thresholding(GrayInitialImage, threshold);
+                        int threshold = Thresholding.QuantileThreshold(GrayInitialImage, percent);
+                        GrayProcessedImage = Thresholding.ThresholdingForGray(GrayInitialImage, threshold);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                     }
                     else MessageBox.Show("Please add a threshold value first.");
@@ -1681,8 +1684,8 @@ namespace ImageProcessingFramework.ViewModel
         {
             if (GrayInitialImage != null)
             {
-                int threshold = ThresholdOperators.MedianThreshold(GrayInitialImage);
-                GrayProcessedImage = ThresholdOperators.Thresholding(GrayInitialImage, threshold);
+                int threshold = Thresholding.MedianThreshold(GrayInitialImage);
+                GrayProcessedImage = Thresholding.ThresholdingForGray(GrayInitialImage, threshold);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
             else MessageBox.Show("No grayscale image!");
@@ -1705,8 +1708,8 @@ namespace ImageProcessingFramework.ViewModel
         {
             if (GrayInitialImage != null)
             {
-                int threshold = ThresholdOperators.IntermeansThreshold(GrayInitialImage);
-                GrayProcessedImage = ThresholdOperators.Thresholding(GrayInitialImage, threshold);
+                int threshold = Thresholding.IntermeansThreshold(GrayInitialImage);
+                GrayProcessedImage = Thresholding.ThresholdingForGray(GrayInitialImage, threshold);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
             else MessageBox.Show("No grayscale image!");
@@ -1737,13 +1740,13 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                GrayProcessedImage = ThresholdOperators.OtsuTwoThreshold(GrayInitialImage);
+                GrayProcessedImage = Thresholding.OtsuTwoThreshold(GrayInitialImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
             else if (ColorInitialImage != null)
             {
                 GrayProcessedImage = Tools.Convert(ColorInitialImage);
-                GrayProcessedImage = ThresholdOperators.OtsuTwoThreshold(GrayProcessedImage);
+                GrayProcessedImage = Thresholding.OtsuTwoThreshold(GrayProcessedImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
         }
@@ -1768,43 +1771,28 @@ namespace ImageProcessingFramework.ViewModel
 
         public void MedianFiltering(object parameter)
         {
+            if (SliderOn == true) return;
             if (GrayInitialImage == null && ColorInitialImage == null)
             {
-                MessageBox.Show("Please add an image.");
+                MessageBox.Show("Please add an image!");
                 return;
             }
 
-            ClearProcessedCanvas(parameter);
-
-            DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
-                {
-                    "Mask dimension"
-                };
-
-            dialogBox.CreateDialogBox(prop);
-            dialogBox.ShowDialog();
-
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
+            if (ColorInitialImage != null)
             {
-                int maskSize = (int)response[0];
-                if (maskSize > 0 && maskSize % 2 == 1)
-                {
-                    if (ColorInitialImage != null)
-                    {
-                        GrayProcessedImage = Tools.Convert(ColorInitialImage);
-                        GrayProcessedImage = Filters.MedianFiltering(GrayProcessedImage, maskSize);
-                    }
-                    else if (GrayInitialImage != null)
-                    {
-                        GrayProcessedImage = Filters.MedianFiltering(GrayInitialImage, maskSize);
-                    }
-
-                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                }
-                else MessageBox.Show("Please add a valid dimension first.");
+                MessageBox.Show("Please add a gray image!");
+                return;
             }
+
+            SliderWindow sliderWindow = new SliderWindow(this, "Mask size: ");
+            if (GrayInitialImage != null)
+            {
+                sliderWindow.SetAlgorithmToApply(Filters.MedianFiltering);
+            }
+
+            sliderWindow.ConfigureSlider(1, 101, 1, 2);
+            sliderWindow.Show();
+            SliderOn = true;
         }
         #endregion
 
@@ -1822,43 +1810,28 @@ namespace ImageProcessingFramework.ViewModel
 
         public void FastMedianFiltering(object parameter)
         {
+            if (SliderOn == true) return;
             if (GrayInitialImage == null && ColorInitialImage == null)
             {
-                MessageBox.Show("Please add an image.");
+                MessageBox.Show("Please add an image!");
                 return;
             }
 
-            ClearProcessedCanvas(parameter);
-
-            DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
-                {
-                    "Mask dimension"
-                };
-
-            dialogBox.CreateDialogBox(prop);
-            dialogBox.ShowDialog();
-
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
+            if (ColorInitialImage != null)
             {
-                int maskSize = (int)response[0];
-                if (maskSize > 0 && maskSize % 2 == 1)
-                {
-                    if (ColorInitialImage != null)
-                    {
-                        GrayProcessedImage = Tools.Convert(ColorInitialImage);
-                        GrayProcessedImage = Filters.FastMedianFiltering(GrayProcessedImage, maskSize);
-                    }
-                    else if (GrayInitialImage != null)
-                    {
-                        GrayProcessedImage = Filters.FastMedianFiltering(GrayInitialImage, maskSize);
-                    }
-
-                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                }
-                else MessageBox.Show("Please add a valid dimension first.");
+                MessageBox.Show("Please add a gray image!");
+                return;
             }
+
+            SliderWindow sliderWindow = new SliderWindow(this, "Mask size: ");
+            if (GrayInitialImage != null)
+            {
+                sliderWindow.SetAlgorithmToApply(Filters.FastMedianFiltering);
+            }
+
+            sliderWindow.ConfigureSlider(1, 101, 1, 2);
+            sliderWindow.Show();
+            SliderOn = true;
         }
         #endregion
 
@@ -1876,34 +1849,28 @@ namespace ImageProcessingFramework.ViewModel
 
         public void VectorMedianFiltering(object parameter)
         {
-            if (ColorInitialImage == null)
+            if (SliderOn == true) return;
+            if (GrayInitialImage == null && ColorInitialImage == null)
             {
-                MessageBox.Show("Please add a color image.");
+                MessageBox.Show("Please add an image!");
                 return;
             }
 
-            ClearProcessedCanvas(parameter);
-
-            DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
-                {
-                    "Mask dimension"
-                };
-
-            dialogBox.CreateDialogBox(prop);
-            dialogBox.ShowDialog();
-
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
+            if (GrayInitialImage != null)
             {
-                int maskSize = (int)response[0];
-                if (maskSize > 0 && maskSize % 2 == 1)
-                {
-                    ColorProcessedImage = Filters.VectorMedianFiltering(ColorInitialImage, maskSize);
-                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                }
-                else MessageBox.Show("Please add a valid dimension first.");
+                MessageBox.Show("Please add a color image!");
+                return;
             }
+
+            SliderWindow sliderWindow = new SliderWindow(this, "Mask size: ");
+            if (ColorInitialImage != null)
+            {
+                sliderWindow.SetAlgorithmToApply(Filters.VectorMedianFiltering);
+            }
+
+            sliderWindow.ConfigureSlider(1, 7, 1, 2);
+            sliderWindow.Show();
+            SliderOn = true;
         }
         #endregion
 
@@ -1930,7 +1897,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "Variance value:",
                 };
@@ -1938,7 +1905,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 double variance = response[0];
@@ -1984,7 +1951,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "Variance d",
                     "Variance r"
@@ -1993,7 +1960,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 double variance_d = response[0];
@@ -2036,33 +2003,26 @@ namespace ImageProcessingFramework.ViewModel
 
         public void Prewitt(object parameter)
         {
+            if (SliderOn == true) return;
             if (GrayInitialImage == null && ColorInitialImage == null)
             {
-                MessageBox.Show("Please add an image.");
+                MessageBox.Show("Please add an image!");
                 return;
             }
 
-            ClearProcessedCanvas(parameter);
-
-            DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
-                {
-                    "Threshold value:"
-                };
-
-            dialogBox.CreateDialogBox(prop);
-            dialogBox.ShowDialog();
-
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
+            SliderWindow sliderWindow = new SliderWindow(this, "Threshold value: ");
+            if (GrayInitialImage != null)
             {
-                int threshold = (int)response[0];
-                if (GrayInitialImage != null)
-                {
-                    GrayProcessedImage = Filters.Prewitt(GrayInitialImage, threshold);
-                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                }
+                sliderWindow.SetAlgorithmToApply(Filters.PrewittForGray);
             }
+            else if (ColorInitialImage != null)
+            {
+                sliderWindow.SetAlgorithmToApply(Filters.PrewittForColor);
+            }
+
+            sliderWindow.ConfigureSlider();
+            sliderWindow.Show();
+            SliderOn = true;
         }
         #endregion
 
@@ -2080,38 +2040,26 @@ namespace ImageProcessingFramework.ViewModel
 
         public void Sobel(object parameter)
         {
+            if (SliderOn == true) return;
             if (GrayInitialImage == null && ColorInitialImage == null)
             {
-                MessageBox.Show("Please add an image.");
+                MessageBox.Show("Please add an image!");
                 return;
             }
 
-            ClearProcessedCanvas(parameter);
-
-            DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
-                {
-                    "Threshold value:"
-                };
-
-            dialogBox.CreateDialogBox(prop);
-            dialogBox.ShowDialog();
-
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
+            SliderWindow sliderWindow = new SliderWindow(this, "Threshold value: ");
+            if (GrayInitialImage != null)
             {
-                int threshold = (int)response[0];
-                if (GrayInitialImage != null)
-                {
-                    GrayProcessedImage = Filters.Sobel(GrayInitialImage, threshold);
-                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                }
-                else if (ColorInitialImage != null)
-                {
-                    GrayProcessedImage = Filters.Sobel(ColorInitialImage, threshold);
-                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                }
+                sliderWindow.SetAlgorithmToApply(Filters.SobelForGray);
             }
+            else if (ColorInitialImage != null)
+            {
+                sliderWindow.SetAlgorithmToApply(Filters.SobelForColor);
+            }
+
+            sliderWindow.ConfigureSlider();
+            sliderWindow.Show();
+            SliderOn = true;
         }
         #endregion
 
@@ -2129,33 +2077,26 @@ namespace ImageProcessingFramework.ViewModel
 
         public void Roberts(object parameter)
         {
+            if (SliderOn == true) return;
             if (GrayInitialImage == null && ColorInitialImage == null)
             {
-                MessageBox.Show("Please add an image.");
+                MessageBox.Show("Please add an image!");
                 return;
             }
 
-            ClearProcessedCanvas(parameter);
-
-            DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
-                {
-                    "Threshold value:"
-                };
-
-            dialogBox.CreateDialogBox(prop);
-            dialogBox.ShowDialog();
-
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
+            SliderWindow sliderWindow = new SliderWindow(this, "Threshold value: ");
+            if (GrayInitialImage != null)
             {
-                int threshold = (int)response[0];
-                if (GrayInitialImage != null)
-                {
-                    GrayProcessedImage = Filters.Roberts(GrayInitialImage, threshold);
-                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                }
+                sliderWindow.SetAlgorithmToApply(Filters.RobertsForGray);
             }
+            else if (ColorInitialImage != null)
+            {
+                sliderWindow.SetAlgorithmToApply(Filters.RobertsForColor);
+            }
+
+            sliderWindow.ConfigureSlider();
+            sliderWindow.Show();
+            SliderOn = true;
         }
         #endregion
 
@@ -2175,39 +2116,26 @@ namespace ImageProcessingFramework.ViewModel
 
         public void CannyGradientImage(object parameter)
         {
+            if (SliderOn == true) return;
             if (GrayInitialImage == null && ColorInitialImage == null)
             {
-                MessageBox.Show("Please add an image.");
+                MessageBox.Show("Please add an image!");
                 return;
             }
 
-            ClearProcessedCanvas(parameter);
-
-            DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
-                {
-                    "Low threshold: "
-                };
-
-            dialogBox.CreateDialogBox(prop);
-            dialogBox.ShowDialog();
-
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
+            SliderWindow sliderWindow = new SliderWindow(this, "Low threshold value: ");
+            if (GrayInitialImage != null)
             {
-                int lowThreshold = (int)response[0];
-
-                if (GrayInitialImage != null)
-                {
-                    GrayProcessedImage = Filters.CannyGradientImage(GrayInitialImage, lowThreshold);
-                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                }
-                else if (ColorInitialImage != null)
-                {
-                    GrayProcessedImage = Filters.CannyGradientImage(ColorInitialImage, lowThreshold);
-                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                }
+                sliderWindow.SetAlgorithmToApply(Filters.CannyGradientForGray);
             }
+            else if (ColorInitialImage != null)
+            {
+                sliderWindow.SetAlgorithmToApply(Filters.CannyGradientForColor);
+            }
+
+            sliderWindow.ConfigureSlider();
+            sliderWindow.Show();
+            SliderOn = true;
         }
         #endregion
 
@@ -2225,40 +2153,26 @@ namespace ImageProcessingFramework.ViewModel
 
         public void CannyAngleImage(object parameter)
         {
+            if (SliderOn == true) return;
             if (GrayInitialImage == null && ColorInitialImage == null)
             {
-                MessageBox.Show("Please add an image.");
+                MessageBox.Show("Please add an image!");
                 return;
             }
 
-            ClearProcessedCanvas(parameter);
-
-            DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
-                {
-                    "Low threshold: "
-                };
-
-            dialogBox.CreateDialogBox(prop);
-            dialogBox.ShowDialog();
-
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
+            SliderWindow sliderWindow = new SliderWindow(this, "Low threshold value: ");
+            if (GrayInitialImage != null)
             {
-                int lowThreshold = (int)response[0];
-
-                if (GrayInitialImage != null)
-                {
-                    ColorProcessedImage = Filters.CannyGradientDirectionImage(GrayInitialImage, lowThreshold);
-                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                }
-                else if (ColorInitialImage != null)
-                {
-                    ColorProcessedImage = Filters.CannyGradientDirectionImage(ColorInitialImage, lowThreshold);
-                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                }
-
+                sliderWindow.SetAlgorithmToApply(Filters.CannyGradientDirectionForGray);
             }
+            else if (ColorInitialImage != null)
+            {
+                sliderWindow.SetAlgorithmToApply(Filters.CannyGradientDirectionForColor);
+            }
+
+            sliderWindow.ConfigureSlider();
+            sliderWindow.Show();
+            SliderOn = true;
         }
         #endregion
 
@@ -2276,39 +2190,26 @@ namespace ImageProcessingFramework.ViewModel
 
         public void CannyNonmaximaSuppression(object parameter)
         {
+            if (SliderOn == true) return;
             if (GrayInitialImage == null && ColorInitialImage == null)
             {
-                MessageBox.Show("Please add an image.");
+                MessageBox.Show("Please add an image!");
                 return;
             }
 
-            ClearProcessedCanvas(parameter);
-
-            DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
-                {
-                    "Low threshold: "
-                };
-
-            dialogBox.CreateDialogBox(prop);
-            dialogBox.ShowDialog();
-
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
+            SliderWindow sliderWindow = new SliderWindow(this, "Low threshold value: ");
+            if (GrayInitialImage != null)
             {
-                int lowThreshold = (int)response[0];
-
-                if (GrayInitialImage != null)
-                {
-                    GrayProcessedImage = Filters.CannyNonmaxSuppressionImage(GrayInitialImage, lowThreshold);
-                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                }
-                else if (ColorInitialImage != null)
-                {
-                    GrayProcessedImage = Filters.CannyNonmaxSuppressionImage(ColorInitialImage, lowThreshold);
-                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                }
+                sliderWindow.SetAlgorithmToApply(Filters.CannyNonmaxSuppressionForGray);
             }
+            else if (ColorInitialImage != null)
+            {
+                sliderWindow.SetAlgorithmToApply(Filters.CannyNonmaxSuppressionForColor);
+            }
+
+            sliderWindow.ConfigureSlider();
+            sliderWindow.Show();
+            SliderOn = true;
         }
         #endregion
 
@@ -2335,7 +2236,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "Low threshold: ",
                     "High threshold: "
@@ -2344,7 +2245,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 int lowThreshold = (int)response[0];
@@ -2439,7 +2340,7 @@ namespace ImageProcessingFramework.ViewModel
             }
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "Dilation mask size: "
                 };
@@ -2447,7 +2348,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 int maskSize = (int)response[0];
@@ -2498,7 +2399,7 @@ namespace ImageProcessingFramework.ViewModel
             }
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "Erosion mask size: "
                 };
@@ -2506,7 +2407,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 int maskSize = (int)response[0];
@@ -2557,7 +2458,7 @@ namespace ImageProcessingFramework.ViewModel
             }
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "Opening mask size: "
                 };
@@ -2565,7 +2466,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 int maskSize = (int)response[0];
@@ -2616,7 +2517,7 @@ namespace ImageProcessingFramework.ViewModel
             }
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "Closing mask size: "
                 };
@@ -2624,7 +2525,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 int maskSize = (int)response[0];
@@ -2702,7 +2603,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "Dilation mask size: "
                 };
@@ -2710,7 +2611,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 int maskSize = (int)response[0];
@@ -2747,7 +2648,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "Erosion mask size: "
                 };
@@ -2755,7 +2656,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 int maskSize = (int)response[0];
@@ -2792,7 +2693,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "Opening mask size: "
                 };
@@ -2800,7 +2701,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 int maskSize = (int)response[0];
@@ -2837,7 +2738,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "Closing mask size: "
                 };
@@ -2845,7 +2746,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 int maskSize = (int)response[0];
@@ -2882,7 +2783,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "Mask size: "
                 };
@@ -2890,7 +2791,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 int maskSize = (int)response[0];
@@ -2927,7 +2828,7 @@ namespace ImageProcessingFramework.ViewModel
             ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
-            System.Collections.Generic.List<string> prop = new System.Collections.Generic.List<string>
+            List<string> prop = new List<string>
                 {
                     "Mask size: "
                 };
@@ -2935,7 +2836,7 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
-            System.Collections.Generic.List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
             if (response != null)
             {
                 int maskSize = (int)response[0];
@@ -2954,6 +2855,95 @@ namespace ImageProcessingFramework.ViewModel
         #endregion
 
         #region Geometric transformations
+
+        #region Scale transformation
+        private ICommand m_scaleTransform;
+        public ICommand ScaleTransform
+        {
+            get
+            {
+                if (m_scaleTransform == null)
+                    m_scaleTransform = new RelayCommand(Scale);
+                return m_scaleTransform;
+            }
+        }
+
+        public void Scale(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ClearProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            List<string> prop = new List<string>
+            {
+                "Sy:",
+                "Sx:"
+            };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            List<double> response = dialogBox.GetResponseTexts();
+
+            double Sy = response[0];
+            double Sx = response[1];
+
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = GeometricTransformations.Scale(GrayInitialImage, Sy, Sx);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+            }
+            else if (ColorInitialImage != null)
+            {
+                ColorProcessedImage = GeometricTransformations.Scale(ColorInitialImage, Sy, Sx);
+                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+            }
+        }
+        #endregion
+
+        #region Twirl transformation
+        private ICommand m_twirlTransform;
+        public ICommand TwirlTransform
+        {
+            get
+            {
+                if (m_twirlTransform == null)
+                    m_twirlTransform = new RelayCommand(TwirlTransformation);
+                return m_twirlTransform;
+            }
+        }
+
+        public void TwirlTransformation(object parameter)
+        {
+            if (GrayInitialImage != null)
+            {
+                DialogBox dialogBox = new DialogBox();
+                List<string> prop = new List<string>
+                {
+                    "Rotation angle",
+                    "Maximum radius"
+                };
+
+                dialogBox.CreateDialogBox(prop);
+                dialogBox.ShowDialog();
+
+                List<double> response = dialogBox.GetResponseTexts();
+
+                double rotationAngle = response[0];
+                double maximumRadius = response[1];
+
+                GrayProcessedImage = GeometricTransformations.
+                    TwirlTransformation(GrayInitialImage, rotationAngle, maximumRadius);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+            }
+            else MessageBox.Show("No grayscale image!");
+        }
+        #endregion
 
         #region Projective transformation
         private ICommand m_projTransform;
@@ -2993,17 +2983,7 @@ namespace ImageProcessingFramework.ViewModel
             VectorOfLines.Add(DrawingHelper.DrawLine(InitialCanvas, sourceP2.X, sourceP2.Y, sourceP3.X, sourceP3.Y, 1, Brushes.Red));
             VectorOfLines.Add(DrawingHelper.DrawLine(InitialCanvas, sourceP3.X, sourceP3.Y, sourceP4.X, sourceP4.Y, 1, Brushes.Red));
             VectorOfLines.Add(DrawingHelper.DrawLine(InitialCanvas, sourceP4.X, sourceP4.Y, sourceP1.X, sourceP1.Y, 1, Brushes.Red));
-
-            if (SliderZoom.Value == SliderZoom.Minimum)
-            {
-                SliderZoom.Value += 0.01;
-                SliderZoom.Value -= 0.01;
-            }
-            else
-            {
-                SliderZoom.Value -= 0.01;
-                SliderZoom.Value += 0.01;
-            }
+            UpdateZoom(parameter);
 
             if (GrayInitialImage != null)
             {

@@ -7,15 +7,31 @@ namespace ImageProcessingAlgorithms.Algorithms
     public class Thresholding
     {
         #region Thresholding
-        public static Image<Gray, byte> BasicThresholding(Image<Gray, byte> inputImage, int threshold)
+        public static Image<Gray, byte> ThresholdingForGray(Image<Gray, byte> inputImage, int threshold)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
             for (int y = 0; y < inputImage.Height; y++)
             {
                 for (int x = 0; x < inputImage.Width; x++)
                 {
-                    if (threshold <= inputImage.Data[y, x, 0])
+                    if (inputImage.Data[y, x, 0] >= threshold)
                         result.Data[y, x, 0] = 255;
+                }
+            }
+            return result;
+        }
+
+        public static Image<Gray, byte> ThresholdingForColor(Image<Bgr, byte> inputImage, int threshold)
+        {
+            Image<Gray, byte> result = inputImage.Convert<Gray, byte>();
+            for (int y = 0; y < inputImage.Height; y++)
+            {
+                for (int x = 0; x < inputImage.Width; x++)
+                {
+                    if (result.Data[y, x, 0] >= threshold)
+                        result.Data[y, x, 0] = 255;
+                    else
+                        result.Data[y, x, 0] = 0;
                 }
             }
             return result;

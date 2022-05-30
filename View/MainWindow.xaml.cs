@@ -10,7 +10,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Media;
 
-namespace ImageProcessingFramework
+namespace ImageProcessingFramework.View
 {
     public partial class MainWindow : Window
     {
@@ -28,8 +28,6 @@ namespace ImageProcessingFramework
             VectorOfRectangles = new Collection<Rectangle>();
             VectorOfEllipses = new Collection<Ellipse>();
             VectorOfPolygons = new Collection<Polygon>();
-
-            SliderZoom = sliderZoom;
         }
 
         private void ImageMouseMove(object sender, MouseEventArgs e)
@@ -139,10 +137,10 @@ namespace ImageProcessingFramework
         private void DrawSquare()
         {
             RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialSquare, ProcessedSquare);
-            InitialSquare = GetSquare(canvasOriginalImage, LastPosition.X, LastPosition.Y,
+            InitialSquare = GetSquare(canvasOriginalImage, LastPosition.X - 0.5, LastPosition.Y - 0.5,
                 sliderZoom.Value);
             if (ColorProcessedImage == null && GrayProcessedImage == null) return;
-            ProcessedSquare = GetSquare(canvasProcessedImage, LastPosition.X, LastPosition.Y,
+            ProcessedSquare = GetSquare(canvasProcessedImage, LastPosition.X - 0.5, LastPosition.Y - 0.5,
                 sliderZoom.Value);
         }
 

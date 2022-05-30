@@ -14,7 +14,7 @@
         Left="125" 
         Top="50"
         ResizeMode="NoResize"
-        Icon="../Images/Icon2.png">
+        Icon="../Images/Icon.png">
 
     <Window.DataContext>
         <local:HermiteSplineVM/>

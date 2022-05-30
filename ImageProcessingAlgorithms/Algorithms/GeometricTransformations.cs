@@ -37,6 +37,101 @@ namespace ImageProcessingAlgorithms.Algorithms
         }
         #endregion
 
+        #region Scale
+        public static Image<Gray, byte> Scale(Image<Gray, byte> inputImage, double sy, double sx)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>((int)(sx * inputImage.Width), (int)(sy * inputImage.Height));
+
+            for (int y = 0; y < result.Height; ++y)
+            {
+                for (int x = 0; x < result.Width; ++x)
+                {
+                    double Y = y / sy;
+                    double X = x / sx;
+
+                    if (Y > 0 && Y < inputImage.Height - 1 && X > 0 && X < inputImage.Width - 1)
+                    {
+                        result.Data[y, x, 0] = (byte)BilinearInterpolation(inputImage, X, Y);
+                    }
+                    else
+                    {
+                        result.Data[y, x, 0] = inputImage.Data[(int)Y, (int)X, 0];
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public static Image<Bgr, byte> Scale(Image<Bgr, byte> inputImage, double sy, double sx)
+        {
+            Image<Bgr, byte> result = new Image<Bgr, byte>((int)(sx * inputImage.Width), (int)(sy * inputImage.Height));
+
+            for (int y = 0; y < result.Height; ++y)
+            {
+                for (int x = 0; x < result.Width; ++x)
+                {
+                    double Y = y / sy;
+                    double X = x / sx;
+
+                    if (Y > 0 && Y < inputImage.Height - 1 && X > 0 && X < inputImage.Width - 1)
+                    {
+                        result.Data[y, x, 0] = (byte)BilinearInterpolation(inputImage, X, Y, 0);
+                        result.Data[y, x, 1] = (byte)BilinearInterpolation(inputImage, X, Y, 1);
+                        result.Data[y, x, 2] = (byte)BilinearInterpolation(inputImage, X, Y, 2);
+                    }
+                    else
+                    {
+                        result.Data[y, x, 0] = inputImage.Data[(int)Y, (int)X, 0];
+                        result.Data[y, x, 1] = inputImage.Data[(int)Y, (int)X, 1];
+                        result.Data[y, x, 2] = inputImage.Data[(int)Y, (int)X, 2];
+                    }
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region Twirl transformation
+        public static Image<Gray, byte> TwirlTransformation(Image<Gray, byte> inputImage,
+            double rotationAngle, double maxRadius)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+
+            int y0 = inputImage.Height / 2;
+            int x0 = inputImage.Width / 2;
+
+            double rotAnglRadians = rotationAngle * Math.PI / 180;
+
+            for (int y = 0; y < result.Height; ++y)
+            {
+                for (int x = 0; x < result.Width; ++x)
+                {
+                    int dy = y - y0;
+                    int dx = x - x0;
+                    double radius = Math.Sqrt(dy * dy + dx * dx);
+                    double angle = Math.Atan2(dx, dy) + rotAnglRadians * ((maxRadius - radius) / maxRadius);
+
+                    if (radius <= maxRadius)
+                    {
+                        double Y = y0 + radius * Math.Cos(angle);
+                        double X = x0 + radius * Math.Sin(angle);
+
+                        if (Y >= 0 && Y < inputImage.Height && X >= 0 && X < inputImage.Width)
+                            result.Data[y, x, 0] = inputImage.Data[(int)Y, (int)X, 0];
+                    }
+                    else
+                    {
+                        result.Data[y, x, 0] = inputImage.Data[y, x, 0];
+                    }
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
         #region Projective transformation
 
         private static double[,] ProjectiveTransformationMatrix(

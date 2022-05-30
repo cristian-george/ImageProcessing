@@ -405,11 +405,11 @@ namespace ImageProcessingAlgorithms.Algorithms
             {
                 for (int x = 1; x < borderedImage.Width - 1; ++x)
                 {
-                    int fx = borderedImage.Data[y + 1, x - 1, 0] - borderedImage.Data[y - 1, x - 1, 0] + borderedImage.Data[y + 1, x, 0] -
-                             borderedImage.Data[y - 1, x, 0] + borderedImage.Data[y + 1, x + 1, 0] - borderedImage.Data[y - 1, x + 1, 0];
-
-                    int fy = borderedImage.Data[y - 1, x + 1, 0] - borderedImage.Data[y - 1, x - 1, 0] + borderedImage.Data[y, x + 1, 0] -
+                    int fx = borderedImage.Data[y - 1, x + 1, 0] - borderedImage.Data[y - 1, x - 1, 0] + borderedImage.Data[y, x + 1, 0] -
                              borderedImage.Data[y, x - 1, 0] + borderedImage.Data[y + 1, x + 1, 0] - borderedImage.Data[y + 1, x - 1, 0];
+
+                    int fy = borderedImage.Data[y + 1, x - 1, 0] - borderedImage.Data[y - 1, x - 1, 0] + borderedImage.Data[y + 1, x, 0] -
+                             borderedImage.Data[y - 1, x, 0] + borderedImage.Data[y + 1, x + 1, 0] - borderedImage.Data[y - 1, x + 1, 0];
 
                     double grad = System.Math.Sqrt((fx * fx) + (fy * fy));
                     gradient[y - 1, x - 1] = grad;
@@ -419,10 +419,29 @@ namespace ImageProcessingAlgorithms.Algorithms
             return gradient;
         }
 
-        public static Image<Gray, byte> Prewitt(Image<Gray, byte> inputImage, int threshold)
+        public static Image<Gray, byte> PrewittForGray(Image<Gray, byte> inputImage, int threshold)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
             double[,] gradient = PrewittGradient(inputImage);
+
+            for (int y = 0; y < inputImage.Height; ++y)
+            {
+                for (int x = 0; x < inputImage.Width; ++x)
+                {
+                    double grad = gradient[y, x];
+                    grad = grad < threshold ? 0 : 255;
+
+                    result.Data[y, x, 0] = (byte)grad;
+                }
+            }
+
+            return result;
+        }
+
+        public static Image<Gray, byte> PrewittForColor(Image<Bgr, byte> inputImage, int threshold)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+            double[,] gradient = PrewittGradient(inputImage.Convert<Gray, byte>());
 
             for (int y = 0; y < inputImage.Height; ++y)
             {
@@ -488,7 +507,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return angle;
         }
 
-        public static Image<Gray, byte> Sobel(Image<Gray, byte> inputImage, int threshold)
+        public static Image<Gray, byte> SobelForGray(Image<Gray, byte> inputImage, int threshold)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
             double[,] gradient = SobelGradient(inputImage);
@@ -510,7 +529,6 @@ namespace ImageProcessingAlgorithms.Algorithms
         #endregion
 
         #region Sobel on color using Euclidean distance
-
         private static double EuclideanDistance(byte red1, byte green1, byte blue1, byte red2, byte green2, byte blue2)
         {
             return System.Math.Sqrt(
@@ -555,7 +573,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return gradient;
         }
 
-        public static Image<Gray, byte> Sobel(Image<Bgr, byte> inputImage, int threshold)
+        public static Image<Gray, byte> SobelForColor(Image<Bgr, byte> inputImage, int threshold)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
             double[,] gradient = SobelGradient(inputImage);
@@ -599,10 +617,29 @@ namespace ImageProcessingAlgorithms.Algorithms
             return gradient;
         }
 
-        public static Image<Gray, byte> Roberts(Image<Gray, byte> inputImage, int threshold)
+        public static Image<Gray, byte> RobertsForGray(Image<Gray, byte> inputImage, int threshold)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
             double[,] gradient = RobertsGradient(inputImage);
+
+            for (int y = 0; y < inputImage.Height; ++y)
+            {
+                for (int x = 0; x < inputImage.Width; ++x)
+                {
+                    double grad = gradient[y, x];
+                    grad = grad < threshold ? 0 : 255;
+
+                    result.Data[y, x, 0] = (byte)grad;
+                }
+            }
+
+            return result;
+        }
+
+        public static Image<Gray, byte> RobertsForColor(Image<Bgr, byte> inputImage, int threshold)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+            double[,] gradient = RobertsGradient(inputImage.Convert<Gray, byte>());
 
             for (int y = 0; y < inputImage.Height; ++y)
             {
@@ -640,7 +677,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return gradient;
         }
 
-        public static Image<Gray, byte> CannyGradientImage(Image<Gray, byte> inputImage, int lowThreshold)
+        public static Image<Gray, byte> CannyGradientForGray(Image<Gray, byte> inputImage, int lowThreshold)
         {
             var smoothImage = GaussianFiltering(inputImage, 1);
             var cannyGradient = CannyGradient(smoothImage, lowThreshold);
@@ -679,7 +716,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return gradient;
         }
 
-        public static Image<Gray, byte> CannyGradientImage(Image<Bgr, byte> inputImage, int threshold)
+        public static Image<Gray, byte> CannyGradientForColor(Image<Bgr, byte> inputImage, int threshold)
         {
             var smoothImage = GaussianFiltering(inputImage, 1);
             var cannyGradient = CannyGradient(smoothImage, threshold);
@@ -745,7 +782,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return cannyDirection;
         }
 
-        public static Image<Bgr, byte> CannyGradientDirectionImage(Image<Gray, byte> inputImage, int lowThreshold)
+        public static Image<Bgr, byte> CannyGradientDirectionForGray(Image<Gray, byte> inputImage, int lowThreshold)
         {
             var smoothImage = GaussianFiltering(inputImage, 1);
             var cannyDirection = CannyGradientDirection(smoothImage, lowThreshold);
@@ -830,7 +867,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return cannyDirection;
         }
 
-        public static Image<Bgr, byte> CannyGradientDirectionImage(Image<Bgr, byte> inputImage, int lowThreshold)
+        public static Image<Bgr, byte> CannyGradientDirectionForColor(Image<Bgr, byte> inputImage, int lowThreshold)
         {
             var smoothImage = GaussianFiltering(inputImage, 1);
             var cannyDirection = CannyGradientDirection(smoothImage, lowThreshold);
@@ -924,7 +961,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return nonmaxSuppression;
         }
 
-        public static Image<Gray, byte> CannyNonmaxSuppressionImage(Image<Gray, byte> inputImage, int lowThreshold)
+        public static Image<Gray, byte> CannyNonmaxSuppressionForGray(Image<Gray, byte> inputImage, int lowThreshold)
         {
             var smoothImage = GaussianFiltering(inputImage, 1);
             var cannyNonmaxSuppresion = CannyNonmaxSuppression(smoothImage, lowThreshold);
@@ -991,7 +1028,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return nonmaxSuppression;
         }
 
-        public static Image<Gray, byte> CannyNonmaxSuppressionImage(Image<Bgr, byte> inputImage, int lowThreshold)
+        public static Image<Gray, byte> CannyNonmaxSuppressionForColor(Image<Bgr, byte> inputImage, int lowThreshold)
         {
             var smoothImage = GaussianFiltering(inputImage, 1);
             var cannyNonmaxSuppresion = CannyNonmaxSuppression(smoothImage, lowThreshold);

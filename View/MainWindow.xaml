@@ -1,4 +1,4 @@
-﻿<Window x:Class="ImageProcessingFramework.MainWindow"
+﻿<Window x:Class="ImageProcessingFramework.View.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -11,7 +11,7 @@
         Width="1124"
         Left="125" 
         Top="0"
-        Icon="Images\Icon.png">
+        Icon="../Images/Icon.png">
 
     <Window.DataContext>
         <local:MainCommands/>
@@ -103,7 +103,8 @@
                 <Separator/>
                 <MenuItem Header="Crop image"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=Crop}" />
+                          Command="{Binding Path=Crop}"
+                          CommandParameter="{Binding ElementName=sliderZoom}"/>
                 <MenuItem Header="Mirror image"
                           Foreground="#1E1E1E">
                     <MenuItem Header="Vertically"
@@ -180,7 +181,7 @@
                       Foreground="AliceBlue">
                 <MenuItem Header="With a given value"
                           Foreground="#1E1E1E"
-                              Command="{Binding Path=Thresholding}"/>
+                              Command="{Binding Path=InputThresholding}"/>
                 <MenuItem Header="Quantile threshold"
                           Foreground="#1E1E1E"
                               Command="{Binding Path=QuantileThreshold}"/>
@@ -270,9 +271,16 @@
             <MenuItem Header="Geometric transformations"
                       Background="Transparent"
                       Foreground="AliceBlue">
+                <MenuItem Header="Scale"
+                          Foreground="#1E1E1E"
+                          Command="{Binding Path=ScaleTransform}"/>
+                <MenuItem Header="Twirl transformation"
+                          Foreground="#1E1E1E"
+                          Command="{Binding Path=TwirlTransform}"/>
                 <MenuItem Header="Projective transformation"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=ProjTransform}"/>
+                          Command="{Binding Path=ProjTransform}"
+                          CommandParameter="{Binding ElementName=sliderZoom}"/>
             </MenuItem>
 
             <MenuItem Header="Segmentation"

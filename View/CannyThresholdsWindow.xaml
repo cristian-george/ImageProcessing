@@ -10,7 +10,7 @@
         Height="200" 
         Width="750"
         ResizeMode="CanMinimize"
-        Icon="../Images\Icon2.png">
+        Icon="../Images/Icon.png">
 
     <Grid Background="#1E1E1E">
         <Grid.RowDefinitions>
