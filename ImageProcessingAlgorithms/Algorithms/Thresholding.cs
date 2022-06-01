@@ -80,7 +80,41 @@ namespace ImageProcessingAlgorithms.Algorithms
         #region Intermeans threshold
         public static int IntermeansThreshold(Image<Gray, byte> inputImage)
         {
-            return 0;
+            int[] histogram = Histogram(inputImage);
+
+            int lowLevel = 255, highLevel = 0;
+            for (int pixel = 0; pixel < 255 && lowLevel == 255; ++pixel)
+                if (histogram[pixel] != 0)
+                    lowLevel = pixel;
+
+            for (int pixel = 255; pixel >= 0 && highLevel == 0; --pixel)
+                if (histogram[pixel] != 0)
+                    highLevel = pixel;
+
+            int currentThreshold = (int)(lowLevel + highLevel) / 2;
+            int threshold;
+
+            double[] relativeHistogram = RelativeHistogram(inputImage);
+            do
+            {
+                threshold = currentThreshold;
+
+                double P1 = GetHistogramProbability(0, currentThreshold, relativeHistogram);
+                double mu1 = GetHistogramSum(0, currentThreshold, relativeHistogram);
+                if (P1 != 0)
+                    mu1 /= P1;
+
+                double P2 = GetHistogramProbability(currentThreshold + 1, 255, relativeHistogram);
+                double mu2 = GetHistogramSum(currentThreshold + 1, 255, relativeHistogram);
+                if (P2 != 0)
+                    mu2 /= P2;
+
+                currentThreshold = (int)(mu1 + mu2) / 2;
+
+            }
+            while (threshold != currentThreshold);
+
+            return threshold;
         }
         #endregion
 
