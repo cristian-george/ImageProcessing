@@ -163,17 +163,17 @@ namespace ImageProcessingAlgorithms.Algorithms
             // result P4
             double[,] resP4 = new double[3, 1]
                 {
-                    {height - 1},
                     {0},
+                    {height - 1},
                     {1}
                 };
 
             // inverse of P
             double[,] resP_inverse = new double[3, 3]
                 {
-                    {0, -1f / (width - 1), 1},
-                    {-1f / (height - 1), 1f / (width - 1), 0},
-                    {1f / (height - 1), 0, 0}
+                    {-1f / (width - 1), 0, 1},
+                    {1f / (width - 1), -1f / (height - 1), 0},
+                    {0, 1f / (height - 1), 0}
                 };
 
             // calculate b'
@@ -223,21 +223,21 @@ namespace ImageProcessingAlgorithms.Algorithms
                 {
                     var currentPoint = new double[3, 1]
                         {
-                            {y},
                             {x},
+                            {y},
                             {1}
                         };
 
                     var projectedPoint = Helper.Multiply(transformationMatrix, currentPoint);
 
                     double h = projectedPoint[2, 0];
-                    int Y = (int)(projectedPoint[1, 0] / h + 0.5);
-                    int X = (int)(projectedPoint[0, 0] / h + 0.5);
+                    double Y = projectedPoint[1, 0] / h + 0.5;
+                    double X = projectedPoint[0, 0] / h + 0.5;
 
                     if (Y >= 0 && X >= 0 && Y < inputImage.Height && X < inputImage.Width)
                     {
                         result.Data[y, x, 0] =
-                            (byte)Math.Min(255, BilinearInterpolation(borderedImage, X, Y) + 0.5);
+                            (byte)Math.Min(255, BilinearInterpolation(borderedImage, X, Y));
                     }
                 }
             }
@@ -271,25 +271,25 @@ namespace ImageProcessingAlgorithms.Algorithms
                 {
                     var currentPoint = new double[3, 1]
                         {
-                            {y},
                             {x},
+                            {y},
                             {1}
                         };
 
                     var projectedPoint = Helper.Multiply(transformationMatrix, currentPoint);
 
                     double h = projectedPoint[2, 0];
-                    int Y = (int)(projectedPoint[1, 0] / h + 0.5);
-                    int X = (int)(projectedPoint[0, 0] / h + 0.5);
+                    double Y = projectedPoint[1, 0] / h + 0.5;
+                    double X = projectedPoint[0, 0] / h + 0.5;
 
                     if (Y >= 0 && X >= 0 && Y < inputImage.Height && X < inputImage.Width)
                     {
                         result.Data[y, x, 0] =
-                            (byte)Math.Min(255, BilinearInterpolation(borderedImage, X, Y, 0) + 0.5);
+                            (byte)Math.Min(255, BilinearInterpolation(borderedImage, X, Y, 0));
                         result.Data[y, x, 1] =
-                            (byte)Math.Min(255, BilinearInterpolation(borderedImage, X, Y, 1) + 0.5);
+                            (byte)Math.Min(255, BilinearInterpolation(borderedImage, X, Y, 1));
                         result.Data[y, x, 2] =
-                            (byte)Math.Min(255, BilinearInterpolation(borderedImage, X, Y, 2) + 0.5);
+                            (byte)Math.Min(255, BilinearInterpolation(borderedImage, X, Y, 2));
                     }
                 }
             }

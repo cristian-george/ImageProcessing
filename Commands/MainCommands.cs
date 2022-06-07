@@ -2979,10 +2979,12 @@ namespace ImageProcessingFramework.ViewModel
             RemoveAllDrawnShapes(parameter);
             ClearProcessedCanvas(parameter);
 
-            VectorOfLines.Add(DrawingHelper.DrawLine(InitialCanvas, sourceP1.X, sourceP1.Y, sourceP2.X, sourceP2.Y, 1, Brushes.Red));
-            VectorOfLines.Add(DrawingHelper.DrawLine(InitialCanvas, sourceP2.X, sourceP2.Y, sourceP3.X, sourceP3.Y, 1, Brushes.Red));
-            VectorOfLines.Add(DrawingHelper.DrawLine(InitialCanvas, sourceP3.X, sourceP3.Y, sourceP4.X, sourceP4.Y, 1, Brushes.Red));
-            VectorOfLines.Add(DrawingHelper.DrawLine(InitialCanvas, sourceP4.X, sourceP4.Y, sourceP1.X, sourceP1.Y, 1, Brushes.Red));
+            System.Windows.Media.PointCollection pointCollection = new System.Windows.Media.PointCollection()
+            {
+                sourceP1, sourceP2, sourceP3, sourceP4
+            };
+
+            VectorOfPolygons.Add(DrawingHelper.DrawPolygon(InitialCanvas, pointCollection, 1, Brushes.Red));
             UpdateZoom(parameter);
 
             if (GrayInitialImage != null)
