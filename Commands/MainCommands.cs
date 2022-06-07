@@ -1319,7 +1319,7 @@ namespace ImageProcessingFramework.ViewModel
                     "r1:",
                     "s1:",
                     "r2:",
-                    "s2"
+                    "s2:"
                 };
 
             dialogBox.CreateDialogBox(prop);

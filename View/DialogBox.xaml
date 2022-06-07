@@ -17,20 +17,7 @@
     <Grid x:Name="mainGrid" 
           Background="#1E1E1E">
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Button Background="AliceBlue"
-                    BorderThickness="2"
-                    BorderBrush="MediumSlateBlue"
-                    Content="OK" 
-                    Click="OKButton_Click"
-                    Grid.Row="2"
-                    Width="50"
-                    Height="25"/>
-        </Grid>
     </Grid>
 </Window>
