@@ -32,14 +32,13 @@ namespace ImageProcessingFramework.View
 
         private void ImageMouseMove(object sender, MouseEventArgs e)
         {
-            string nameImage = (sender as Image).Name;
-            if (string.Compare(nameImage, initialImage.Name) == 0)
+            if (sender == initialImage)
             {
                 var position = e.GetPosition(initialImage);
                 SetUiValues(xPos, yPos, grayValue, bValue, gValue, rValue, GrayInitialImage, ColorInitialImage,
                     (int)position.X, (int)position.Y);
             }
-            else if (string.Compare(nameImage, processedImage.Name) == 0)
+            else
             {
                 var position = e.GetPosition(processedImage);
                 SetUiValues(xPos, yPos, grayValue, bValue, gValue, rValue, GrayProcessedImage, ColorProcessedImage,
@@ -72,10 +71,9 @@ namespace ImageProcessingFramework.View
 
         private void MouseLeftPressed(object sender, MouseButtonEventArgs e)
         {
-            string nameImage = (sender as Image).Name;
-            if (string.Compare(nameImage, initialImage.Name) == 0)
+            if (sender == initialImage)
                 MousePosition = e.GetPosition(initialImage);
-            if (string.Compare(nameImage, processedImage.Name) == 0)
+            else
                 MousePosition = e.GetPosition(processedImage);
 
             if (LastPosition != MousePosition)
