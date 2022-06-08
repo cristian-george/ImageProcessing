@@ -327,22 +327,22 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
         #endregion
 
         #region Calculate sum of values in a rectangular subset of a grid from the image
-        public static int SumArea(int[,] integralImage, int y0, int x0, int y1, int x1)
+        public static int SumArea(int[,] integralImage, int x0, int y0, int x1, int y1)
         {
             if (x0 == 0 && y0 == 0)
             {
-                return integralImage[y1, x1];
+                return integralImage[x1, y1];
             }
-            else if (y0 == 0)
+            else if (x0 != 0 && y0 == 0)
             {
-                return integralImage[y1, x1] - integralImage[y0 - 1, x1];
+                return integralImage[x1, y1] - integralImage[x0 - 1, y1];
             }
-            else if (x0 == 0)
+            else if (x0 == 0 && y0 != 0)
             {
-                return integralImage[y1, x1] - integralImage[y1, x0 - 1];
+                return integralImage[x1, y1] - integralImage[x1, y0 - 1];
             }
 
-            return integralImage[y1, x1] + integralImage[y0 - 1, x0 - 1] - integralImage[y0 - 1, x1] - integralImage[y1, x0 - 1];
+            return integralImage[x1, y1] + integralImage[x0 - 1, y0 - 1] - integralImage[x0 - 1, y1] - integralImage[x1, y0 - 1];
         }
         #endregion
 

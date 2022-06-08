@@ -1757,6 +1757,39 @@ namespace ImageProcessingFramework.ViewModel
 
         #region Low-pass filters
 
+        #region Mean
+        private ICommand m_mean;
+        public ICommand Mean
+        {
+            get
+            {
+                if (m_mean == null)
+                    m_mean = new RelayCommand(MeanFiltering);
+                return m_mean;
+            }
+        }
+
+        public void MeanFiltering(object parameter)
+        {
+            if (SliderOn == true) return;
+            if (GrayInitialImage == null)
+            {
+                MessageBox.Show("Please add a gray image!");
+                return;
+            }
+
+            SliderWindow sliderWindow = new SliderWindow(this, "Mask size: ");
+            if (GrayInitialImage != null)
+            {
+                sliderWindow.SetAlgorithmToApply(Filters.MeanFiltering);
+            }
+
+            sliderWindow.ConfigureSlider(1, 101, 1, 2);
+            sliderWindow.Show();
+            SliderOn = true;
+        }
+        #endregion
+
         #region Median
         private ICommand m_median;
         public ICommand Median
@@ -2299,7 +2332,7 @@ namespace ImageProcessingFramework.ViewModel
 
         #endregion
 
-        #region Morphology operators
+        #region Morphological operations
 
         #region On binary images
 

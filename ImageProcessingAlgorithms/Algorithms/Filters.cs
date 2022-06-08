@@ -10,6 +10,30 @@ namespace ImageProcessingAlgorithms.Algorithms
     {
         #region Low-pass filters
 
+        #region Mean filtering
+        public static Image<Gray, byte> MeanFiltering(Image<Gray, byte> inputImage, int maskSize)
+        {
+            Image<Gray, byte> borderedImage = BorderReplicate(inputImage, maskSize - 1);
+            Image<Gray, byte> result = new Image<Gray, byte>(borderedImage.Size);
+
+            int[,] integralImage = IntegralImage(borderedImage);
+
+            int maskRadius = maskSize / 2;
+
+            for (int y = maskRadius; y < borderedImage.Height - maskRadius; ++y)
+            {
+                for (int x = maskRadius; x < borderedImage.Width - maskRadius; ++x)
+                {
+                    result.Data[y, x, 0] =
+                        (byte)(SumArea(integralImage, x - maskRadius, y - maskRadius, x + maskRadius, y + maskRadius) / (maskSize * maskSize));
+                }
+            }
+
+            return CropImage(result, maskRadius, maskRadius, inputImage.Width + maskRadius, inputImage.Height + maskRadius);
+        }
+
+        #endregion
+
         #region Median filtering
         public static Image<Gray, byte> MedianFiltering(Image<Gray, byte> inputImage, int maskSize)
         {
@@ -28,7 +52,6 @@ namespace ImageProcessingAlgorithms.Algorithms
 
             return CropImage(result, maskRadius, maskRadius, inputImage.Width + maskRadius, inputImage.Height + maskRadius);
         }
-
         #endregion
 
         #region Fast median filtering

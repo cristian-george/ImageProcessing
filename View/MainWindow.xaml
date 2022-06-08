@@ -201,6 +201,8 @@
                       Foreground="AliceBlue">
                 <MenuItem Header="Low-pass"
                           Foreground="#1E1E1E">
+                    <MenuItem Header="Mean filtering"
+                              Command="{Binding Path=Mean}"/>
                     <MenuItem Header="Slow Median filtering"
                               Command="{Binding Path=Median}"/>
                     <MenuItem Header="Fast Median filtering"

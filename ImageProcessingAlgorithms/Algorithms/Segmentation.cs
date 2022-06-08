@@ -25,8 +25,8 @@ namespace ImageProcessingAlgorithms.Algorithms
                         {
                             double radians = angle * System.Math.PI / 180;
 
-                            double radius = y * System.Math.Cos(radians) +
-                                            x * System.Math.Sin(radians);
+                            double radius = x * System.Math.Cos(radians) +
+                                            y * System.Math.Sin(radians);
 
                             if (radius >= 0)
                             {
@@ -78,10 +78,10 @@ namespace ImageProcessingAlgorithms.Algorithms
                         {
                             double radians = angle * System.Math.PI / 180;
 
-                            double radius = y * System.Math.Cos(radians) +
-                                            x * System.Math.Sin(radians);
+                            double radius = x * System.Math.Cos(radians) +
+                                            y * System.Math.Sin(radians);
 
-                            ++houghMatrix[(int)(radius + diagonalLength) / 2, angle + 90];
+                            ++houghMatrix[(int)(radius + diagonalLength), angle + 90];
                         }
                     }
                 }
