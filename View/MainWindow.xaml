@@ -194,6 +194,9 @@
                 <MenuItem Header="Otsu two-threshold"
                           Foreground="#1E1E1E"
                               Command="{Binding Path=OtsuTwoThreshold}"/>
+                <MenuItem Header="Adaptive threshold"
+                          Foreground="#1E1E1E"
+                              Command="{Binding Path=AdaptiveThreshold}"/>
             </MenuItem>
 
             <MenuItem Header="Filters" 

@@ -1,5 +1,6 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
+using static ImageProcessingAlgorithms.Tools.Tools;
 using static ImageProcessingAlgorithms.AlgorithmsHelper.Helper;
 
 namespace ImageProcessingAlgorithms.Algorithms
@@ -197,6 +198,33 @@ namespace ImageProcessingAlgorithms.Algorithms
 
             return result;
         }
+        #endregion
+
+        #region Adaptive thresholding
+
+        public static Image<Gray, byte> AdaptiveThresholding(Image<Gray, byte> inputImage, int maskSize, double b)
+        {
+            Image<Gray, byte> borderedImage = BorderReplicate(inputImage, maskSize - 1);
+            Image<Gray, byte> result = new Image<Gray, byte>(borderedImage.Size);
+
+            int[,] integralImage = IntegralImage(borderedImage);
+
+            int maskRadius = maskSize / 2;
+
+            for (int y = maskRadius; y < borderedImage.Height - maskRadius; ++y)
+            {
+                for (int x = maskRadius; x < borderedImage.Width - maskRadius; ++x)
+                {
+                    double thresh = b * MeanArea(integralImage, x - maskRadius, y - maskRadius, x + maskRadius, y + maskRadius);
+
+                    if (borderedImage.Data[y, x, 0] > thresh)
+                        result.Data[y, x, 0] = 255;
+                }
+            }
+
+            return CropImage(result, maskRadius, maskRadius, inputImage.Width + maskRadius, inputImage.Height + maskRadius);
+        }
+
         #endregion
     }
 }

@@ -25,7 +25,7 @@ namespace ImageProcessingAlgorithms.Algorithms
                 for (int x = maskRadius; x < borderedImage.Width - maskRadius; ++x)
                 {
                     result.Data[y, x, 0] =
-                        (byte)(SumArea(integralImage, x - maskRadius, y - maskRadius, x + maskRadius, y + maskRadius) / (maskSize * maskSize));
+                        (byte)(MeanArea(integralImage, x - maskRadius, y - maskRadius, x + maskRadius, y + maskRadius));
                 }
             }
 

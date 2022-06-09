@@ -302,21 +302,21 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
             {
                 for (int x = 0; x < inputImage.Width; ++x)
                 {
-                    if (y == 0 && x == 0)
+                    if (x == 0 && y == 0)
                     {
                         integralImage[y, x] = inputImage.Data[0, 0, 0];
+                    }
+                    else if (x == 0 && y != 0)
+                    {
+                        integralImage[y, x] = integralImage[y - 1, 0] + inputImage.Data[y, 0, 0];
                     }
                     else if (y == 0 && x != 0)
                     {
                         integralImage[y, x] = integralImage[0, x - 1] + inputImage.Data[0, x, 0];
                     }
-                    else if (y != 0 && x == 0)
-                    {
-                        integralImage[y, x] = integralImage[y - 1, 0] + inputImage.Data[y, 0, 0];
-                    }
                     else
                     {
-                        integralImage[y, x] = integralImage[y - 1, x] + integralImage[y, x - 1] - integralImage[y - 1, x - 1] + inputImage.Data[y, x, 0];
+                        integralImage[y, x] = integralImage[y, x - 1] + integralImage[y - 1, x] - integralImage[y - 1, x - 1] + inputImage.Data[y, x, 0];
                     }
                 }
             }
@@ -335,22 +335,23 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
             }
             else if (x0 != 0 && y0 == 0)
             {
-                return integralImage[x1, y1] - integralImage[x0 - 1, y1];
+                return integralImage[y1, x1] - integralImage[y1, x0 - 1];
             }
             else if (x0 == 0 && y0 != 0)
             {
-                return integralImage[x1, y1] - integralImage[x1, y0 - 1];
+                return integralImage[y1, x1] - integralImage[y0 - 1, x1];
             }
 
-            return integralImage[x1, y1] + integralImage[x0 - 1, y0 - 1] - integralImage[x0 - 1, y1] - integralImage[x1, y0 - 1];
+            return integralImage[y1, x1] + integralImage[y0 - 1, x0 - 1] - integralImage[y1, x0 - 1] - integralImage[y0 - 1, x1];
         }
         #endregion
 
         #region Calculate mean using integral image
-        public static int MeanArea(int[,] integralImage, int y0, int x0, int y1, int x1)
+        public static double MeanArea(int[,] integralImage, int x0, int y0, int x1, int y1)
         {
-            int resolution = (y1 - y0) * (x1 - x0);
-            int sumArea = SumArea(integralImage, y0, x0, y1, x1);
+            int resolution = (x1 - x0 + 1) * (y1 - y0 + 1);
+            int sumArea = SumArea(integralImage, x0, y0, x1, y1);
+
             return sumArea / resolution;
         }
         #endregion

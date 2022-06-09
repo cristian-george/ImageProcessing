@@ -1753,6 +1753,53 @@ namespace ImageProcessingFramework.ViewModel
 
         #endregion
 
+        #region Mean
+        private ICommand m_adaptiveThreshold;
+        public ICommand AdaptiveThreshold
+        {
+            get
+            {
+                if (m_adaptiveThreshold == null)
+                    m_adaptiveThreshold = new RelayCommand(AdaptiveThresholding);
+                return m_adaptiveThreshold;
+            }
+        }
+
+        public void AdaptiveThresholding(object parameter)
+        {
+            if (GrayInitialImage == null)
+            {
+                MessageBox.Show("Please add a gray image!");
+                return;
+            }
+
+            ClearProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            List<string> prop = new List<string>
+                {
+                    "Mask value:",
+                    "b value:"
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            List<double> response = dialogBox.GetResponseTexts();
+            if (response != null)
+            {
+                int maskSize = (int)response[0];
+                double b = response[1];
+                if (maskSize > 1 && maskSize % 2 == 1 && 0.8 <= b && b <= 0.9)
+                {
+                    GrayProcessedImage = Thresholding.AdaptiveThresholding(GrayInitialImage, maskSize, b);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+                }
+                else MessageBox.Show("Please add valid values first.");
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Low-pass filters
