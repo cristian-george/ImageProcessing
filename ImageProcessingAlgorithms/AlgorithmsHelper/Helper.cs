@@ -294,9 +294,9 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
         #endregion
 
         #region Integral image
-        public static int[,] IntegralImage(Image<Gray, byte> inputImage)
+        public static Image<Gray, int> IntegralImage(Image<Gray, byte> inputImage)
         {
-            int[,] integralImage = new int[inputImage.Height, inputImage.Width];
+            Image<Gray, int> integralImage = new Image<Gray, int>(inputImage.Size);
 
             for (int y = 0; y < inputImage.Height; ++y)
             {
@@ -304,19 +304,20 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
                 {
                     if (x == 0 && y == 0)
                     {
-                        integralImage[y, x] = inputImage.Data[0, 0, 0];
+                        integralImage.Data[y, x, 0] = inputImage.Data[0, 0, 0];
                     }
                     else if (x == 0 && y != 0)
                     {
-                        integralImage[y, x] = integralImage[y - 1, 0] + inputImage.Data[y, 0, 0];
+                        integralImage.Data[y, x, 0] = integralImage.Data[y - 1, 0, 0] + inputImage.Data[y, 0, 0];
                     }
                     else if (y == 0 && x != 0)
                     {
-                        integralImage[y, x] = integralImage[0, x - 1] + inputImage.Data[0, x, 0];
+                        integralImage.Data[y, x, 0] = integralImage.Data[0, x - 1, 0] + inputImage.Data[0, x, 0];
                     }
                     else
                     {
-                        integralImage[y, x] = integralImage[y, x - 1] + integralImage[y - 1, x] - integralImage[y - 1, x - 1] + inputImage.Data[y, x, 0];
+                        integralImage.Data[y, x, 0] = integralImage.Data[y, x - 1, 0] + integralImage.Data[y - 1, x, 0] -
+                                                      integralImage.Data[y - 1, x - 1, 0] + inputImage.Data[y, x, 0];
                     }
                 }
             }
@@ -324,33 +325,101 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
             return integralImage;
         }
 
-        #endregion
-
-        #region Calculate sum of values in a rectangular subset of a grid from the image
-        public static int SumArea(int[,] integralImage, int x0, int y0, int x1, int y1)
+        public static Image<Bgr, int> IntegralImage(Image<Bgr, byte> inputImage)
         {
-            if (x0 == 0 && y0 == 0)
+            Image<Bgr, int> integralImage = new Image<Bgr, int>(inputImage.Size);
+
+            for (int y = 0; y < inputImage.Height; ++y)
             {
-                return integralImage[x1, y1];
-            }
-            else if (x0 != 0 && y0 == 0)
-            {
-                return integralImage[y1, x1] - integralImage[y1, x0 - 1];
-            }
-            else if (x0 == 0 && y0 != 0)
-            {
-                return integralImage[y1, x1] - integralImage[y0 - 1, x1];
+                for (int x = 0; x < inputImage.Width; ++x)
+                {
+                    if (x == 0 && y == 0)
+                    {
+                        integralImage.Data[y, x, 0] = inputImage.Data[0, 0, 0];
+                        integralImage.Data[y, x, 1] = inputImage.Data[0, 0, 1];
+                        integralImage.Data[y, x, 2] = inputImage.Data[0, 0, 2];
+                    }
+                    else if (x == 0 && y != 0)
+                    {
+                        integralImage.Data[y, x, 0] = integralImage.Data[y - 1, 0, 0] + inputImage.Data[y, 0, 0];
+                        integralImage.Data[y, x, 1] = integralImage.Data[y - 1, 0, 1] + inputImage.Data[y, 0, 1];
+                        integralImage.Data[y, x, 2] = integralImage.Data[y - 1, 0, 2] + inputImage.Data[y, 0, 2];
+                    }
+                    else if (y == 0 && x != 0)
+                    {
+                        integralImage.Data[y, x, 0] = integralImage.Data[0, x - 1, 0] + inputImage.Data[0, x, 0];
+                        integralImage.Data[y, x, 1] = integralImage.Data[0, x - 1, 1] + inputImage.Data[0, x, 1];
+                        integralImage.Data[y, x, 2] = integralImage.Data[0, x - 1, 2] + inputImage.Data[0, x, 2];
+                    }
+                    else
+                    {
+                        integralImage.Data[y, x, 0] = integralImage.Data[y, x - 1, 0] + integralImage.Data[y - 1, x, 0] -
+                                                      integralImage.Data[y - 1, x - 1, 0] + inputImage.Data[y, x, 0];
+                        integralImage.Data[y, x, 1] = integralImage.Data[y, x - 1, 1] + integralImage.Data[y - 1, x, 1] -
+                                                      integralImage.Data[y - 1, x - 1, 1] + inputImage.Data[y, x, 1];
+                        integralImage.Data[y, x, 2] = integralImage.Data[y, x - 1, 2] + integralImage.Data[y - 1, x, 2] -
+                                                      integralImage.Data[y - 1, x - 1, 2] + inputImage.Data[y, x, 2];
+                    }
+                }
             }
 
-            return integralImage[y1, x1] + integralImage[y0 - 1, x0 - 1] - integralImage[y1, x0 - 1] - integralImage[y0 - 1, x1];
+            return integralImage;
         }
         #endregion
 
-        #region Calculate mean using integral image
-        public static double MeanArea(int[,] integralImage, int x0, int y0, int x1, int y1)
+        #region Calculate sum of pixels in a rectangular subset of a grid from the image
+        public static int SumArea(Image<Gray, int> integralImage, int x0, int y0, int x1, int y1)
+        {
+            if (x0 == 0 && y0 == 0)
+            {
+                return integralImage.Data[x1, y1, 0];
+            }
+            else if (x0 != 0 && y0 == 0)
+            {
+                return integralImage.Data[y1, x1, 0] - integralImage.Data[y1, x0 - 1, 0];
+            }
+            else if (x0 == 0 && y0 != 0)
+            {
+                return integralImage.Data[y1, x1, 0] - integralImage.Data[y0 - 1, x1, 0];
+            }
+
+            return integralImage.Data[y1, x1, 0] + integralImage.Data[y0 - 1, x0 - 1, 0] -
+                   integralImage.Data[y1, x0 - 1, 0] - integralImage.Data[y0 - 1, x1, 0];
+        }
+
+        public static int SumArea(Image<Bgr, int> integralImage, int x0, int y0, int x1, int y1, int channel)
+        {
+            if (x0 == 0 && y0 == 0)
+            {
+                return integralImage.Data[x1, y1, channel];
+            }
+            else if (x0 != 0 && y0 == 0)
+            {
+                return integralImage.Data[y1, x1, channel] - integralImage.Data[y1, x0 - 1, channel];
+            }
+            else if (x0 == 0 && y0 != 0)
+            {
+                return integralImage.Data[y1, x1, channel] - integralImage.Data[y0 - 1, x1, channel];
+            }
+
+            return integralImage.Data[y1, x1, channel] + integralImage.Data[y0 - 1, x0 - 1, channel] -
+                   integralImage.Data[y1, x0 - 1, channel] - integralImage.Data[y0 - 1, x1, channel];
+        }
+        #endregion
+
+        #region Calculate mean of pixels in a rectangular subset of a grid from the image
+        public static double MeanArea(Image<Gray, int> integralImage, int x0, int y0, int x1, int y1)
         {
             int resolution = (x1 - x0 + 1) * (y1 - y0 + 1);
             int sumArea = SumArea(integralImage, x0, y0, x1, y1);
+
+            return sumArea / resolution;
+        }
+
+        public static double MeanArea(Image<Bgr, int> integralImage, int x0, int y0, int x1, int y1, int channel)
+        {
+            int resolution = (x1 - x0 + 1) * (y1 - y0 + 1);
+            int sumArea = SumArea(integralImage, x0, y0, x1, y1, channel);
 
             return sumArea / resolution;
         }
