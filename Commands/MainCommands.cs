@@ -1610,17 +1610,21 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
+            ClearProcessedCanvas(parameter);
+
             SliderWindow sliderWindow = new SliderWindow(this, "Threshold value: ");
+            sliderWindow.ConfigureSlider();
+
             if (GrayInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(Thresholding.ThresholdingForGray);
+                sliderWindow.SetAlgorithmToApply(GrayInitialImage, Thresholding.ThresholdingForGray);
             }
             else if (ColorInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(Thresholding.ThresholdingForColor);
+                GrayProcessedImage = Tools.Convert(ColorInitialImage);
+                sliderWindow.SetAlgorithmToApply(GrayProcessedImage, Thresholding.ThresholdingForGray);
             }
 
-            sliderWindow.ConfigureSlider();
             sliderWindow.Show();
             SliderOn = true;
         }
@@ -1753,7 +1757,7 @@ namespace ImageProcessingFramework.ViewModel
 
         #endregion
 
-        #region Mean
+        #region Adaptive threshold
         private ICommand m_adaptiveThreshold;
         public ICommand AdaptiveThreshold
         {
@@ -1819,19 +1823,26 @@ namespace ImageProcessingFramework.ViewModel
         public void MeanFiltering(object parameter)
         {
             if (SliderOn == true) return;
-            if (GrayInitialImage == null)
+            if (GrayInitialImage == null && ColorInitialImage == null)
             {
-                MessageBox.Show("Please add a gray image!");
+                MessageBox.Show("Please add an image!");
                 return;
             }
 
+            ClearProcessedCanvas(parameter);
+
             SliderWindow sliderWindow = new SliderWindow(this, "Mask size: ");
+            sliderWindow.ConfigureSlider(1, 101, 1, 2);
+
             if (GrayInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(Filters.MeanFiltering);
+                sliderWindow.SetAlgorithmToApply(GrayInitialImage, Filters.MeanFiltering);
+            }
+            else if (ColorInitialImage != null)
+            {
+                sliderWindow.SetAlgorithmToApply(ColorInitialImage, Filters.MeanFiltering);
             }
 
-            sliderWindow.ConfigureSlider(1, 101, 1, 2);
             sliderWindow.Show();
             SliderOn = true;
         }
@@ -1864,10 +1875,12 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
+            ClearProcessedCanvas(parameter);
+
             SliderWindow sliderWindow = new SliderWindow(this, "Mask size: ");
             if (GrayInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(Filters.MedianFiltering);
+                sliderWindow.SetAlgorithmToApply(GrayInitialImage, Filters.MedianFiltering);
             }
 
             sliderWindow.ConfigureSlider(1, 101, 1, 2);
@@ -1903,10 +1916,12 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
+            ClearProcessedCanvas(parameter);
+
             SliderWindow sliderWindow = new SliderWindow(this, "Mask size: ");
             if (GrayInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(Filters.FastMedianFiltering);
+                sliderWindow.SetAlgorithmToApply(GrayInitialImage, Filters.FastMedianFiltering);
             }
 
             sliderWindow.ConfigureSlider(1, 101, 1, 2);
@@ -1942,10 +1957,12 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
+            ClearProcessedCanvas(parameter);
+
             SliderWindow sliderWindow = new SliderWindow(this, "Mask size: ");
             if (ColorInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(Filters.VectorMedianFiltering);
+                sliderWindow.SetAlgorithmToApply(ColorInitialImage, Filters.VectorMedianFiltering);
             }
 
             sliderWindow.ConfigureSlider(1, 7, 1, 2);
@@ -2070,18 +2087,18 @@ namespace ImageProcessingFramework.ViewModel
         #region High-pass filters
 
         #region Prewitt
-        private ICommand m_prewittOp;
-        public ICommand PrewittOp
+        private ICommand m_prewitt;
+        public ICommand Prewitt
         {
             get
             {
-                if (m_prewittOp == null)
-                    m_prewittOp = new RelayCommand(Prewitt);
-                return m_prewittOp;
+                if (m_prewitt == null)
+                    m_prewitt = new RelayCommand(PrewittOperator);
+                return m_prewitt;
             }
         }
 
-        public void Prewitt(object parameter)
+        public void PrewittOperator(object parameter)
         {
             if (SliderOn == true) return;
             if (GrayInitialImage == null && ColorInitialImage == null)
@@ -2090,14 +2107,17 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
+            ClearProcessedCanvas(parameter);
+
             SliderWindow sliderWindow = new SliderWindow(this, "Threshold value: ");
             if (GrayInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(Filters.PrewittForGray);
+                sliderWindow.SetAlgorithmToApply(GrayInitialImage, Filters.Prewitt);
             }
             else if (ColorInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(Filters.PrewittForColor);
+                GrayProcessedImage = Tools.Convert(ColorInitialImage);
+                sliderWindow.SetAlgorithmToApply(GrayProcessedImage, Filters.Prewitt);
             }
 
             sliderWindow.ConfigureSlider();
@@ -2107,18 +2127,18 @@ namespace ImageProcessingFramework.ViewModel
         #endregion
 
         #region Sobel
-        private ICommand m_sobelOp;
-        public ICommand SobelOp
+        private ICommand m_sobel;
+        public ICommand Sobel
         {
             get
             {
-                if (m_sobelOp == null)
-                    m_sobelOp = new RelayCommand(Sobel);
-                return m_sobelOp;
+                if (m_sobel == null)
+                    m_sobel = new RelayCommand(SobelOperator);
+                return m_sobel;
             }
         }
 
-        public void Sobel(object parameter)
+        public void SobelOperator(object parameter)
         {
             if (SliderOn == true) return;
             if (GrayInitialImage == null && ColorInitialImage == null)
@@ -2127,14 +2147,16 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
+            ClearProcessedCanvas(parameter);
+
             SliderWindow sliderWindow = new SliderWindow(this, "Threshold value: ");
             if (GrayInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(Filters.SobelForGray);
+                sliderWindow.SetAlgorithmToApply(GrayInitialImage, Filters.Sobel);
             }
             else if (ColorInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(Filters.SobelForColor);
+                sliderWindow.SetAlgorithmToApply(ColorInitialImage, Filters.Sobel);
             }
 
             sliderWindow.ConfigureSlider();
@@ -2144,18 +2166,18 @@ namespace ImageProcessingFramework.ViewModel
         #endregion
 
         #region Roberts
-        private ICommand m_robertsOp;
-        public ICommand RobertsOp
+        private ICommand m_roberts;
+        public ICommand Roberts
         {
             get
             {
-                if (m_robertsOp == null)
-                    m_robertsOp = new RelayCommand(Roberts);
-                return m_robertsOp;
+                if (m_roberts == null)
+                    m_roberts = new RelayCommand(RobertsOperator);
+                return m_roberts;
             }
         }
 
-        public void Roberts(object parameter)
+        public void RobertsOperator(object parameter)
         {
             if (SliderOn == true) return;
             if (GrayInitialImage == null && ColorInitialImage == null)
@@ -2164,14 +2186,17 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
+            ClearProcessedCanvas(parameter);
+
             SliderWindow sliderWindow = new SliderWindow(this, "Threshold value: ");
             if (GrayInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(Filters.RobertsForGray);
+                sliderWindow.SetAlgorithmToApply(GrayInitialImage, Filters.Roberts);
             }
             else if (ColorInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(Filters.RobertsForColor);
+                GrayProcessedImage = Tools.Convert(ColorInitialImage);
+                sliderWindow.SetAlgorithmToApply(GrayProcessedImage, Filters.Roberts);
             }
 
             sliderWindow.ConfigureSlider();
@@ -2203,14 +2228,16 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
+            ClearProcessedCanvas(parameter);
+
             SliderWindow sliderWindow = new SliderWindow(this, "Low threshold value: ");
             if (GrayInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(Filters.CannyGradientForGray);
+                sliderWindow.SetAlgorithmToApply(GrayInitialImage, Filters.CannyGradientForGray);
             }
             else if (ColorInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(Filters.CannyGradientForColor);
+                sliderWindow.SetAlgorithmToApply(ColorInitialImage, Filters.CannyGradientForColor);
             }
 
             sliderWindow.ConfigureSlider();
@@ -2220,18 +2247,18 @@ namespace ImageProcessingFramework.ViewModel
         #endregion
 
         #region Gradient direction image
-        private ICommand m_cannyAngle;
-        public ICommand CannyAngle
+        private ICommand m_cannyDirection;
+        public ICommand CannyDirection
         {
             get
             {
-                if (m_cannyAngle == null)
-                    m_cannyAngle = new RelayCommand(CannyAngleImage);
-                return m_cannyAngle;
+                if (m_cannyDirection == null)
+                    m_cannyDirection = new RelayCommand(CannyDirectionImage);
+                return m_cannyDirection;
             }
         }
 
-        public void CannyAngleImage(object parameter)
+        public void CannyDirectionImage(object parameter)
         {
             if (SliderOn == true) return;
             if (GrayInitialImage == null && ColorInitialImage == null)
@@ -2240,14 +2267,16 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
+            ClearProcessedCanvas(parameter);
+
             SliderWindow sliderWindow = new SliderWindow(this, "Low threshold value: ");
             if (GrayInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(Filters.CannyGradientDirectionForGray);
+                sliderWindow.SetAlgorithmToApply(GrayInitialImage, Filters.CannyGradientDirectionForGray);
             }
             else if (ColorInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(Filters.CannyGradientDirectionForColor);
+                sliderWindow.SetAlgorithmToApply(ColorInitialImage, Filters.CannyGradientDirectionForColor);
             }
 
             sliderWindow.ConfigureSlider();
@@ -2277,14 +2306,16 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
+            ClearProcessedCanvas(parameter);
+
             SliderWindow sliderWindow = new SliderWindow(this, "Low threshold value: ");
             if (GrayInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(Filters.CannyNonmaxSuppressionForGray);
+                sliderWindow.SetAlgorithmToApply(GrayInitialImage, Filters.CannyNonmaxSuppressionForGray);
             }
             else if (ColorInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(Filters.CannyNonmaxSuppressionForColor);
+                sliderWindow.SetAlgorithmToApply(ColorInitialImage, Filters.CannyNonmaxSuppressionForColor);
             }
 
             sliderWindow.ConfigureSlider();
@@ -2346,18 +2377,18 @@ namespace ImageProcessingFramework.ViewModel
         #endregion
 
         #region Canny operator
-        private ICommand m_cannyOp;
-        public ICommand CannyOp
+        private ICommand m_canny;
+        public ICommand Canny
         {
             get
             {
-                if (m_cannyOp == null)
-                    m_cannyOp = new RelayCommand(Canny);
-                return m_cannyOp;
+                if (m_canny == null)
+                    m_canny = new RelayCommand(CannyOperator);
+                return m_canny;
             }
         }
 
-        public void Canny(object parameter)
+        public void CannyOperator(object parameter)
         {
             if (CannyWindowOn == true) return;
 

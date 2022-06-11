@@ -24,39 +24,36 @@ namespace ImageProcessingFramework.View
             DataContext = sliderVM;
         }
 
-        public void SetAlgorithmToApply(Func<Image<Gray, byte>, int, Image<Gray, byte>> algorithm)
+        public void SetAlgorithmToApply(Image<Gray, byte> image, Func<Image<Gray, byte>, int, Image<Gray, byte>> algorithm)
         {
+            sliderVM.GrayImage = image;
             sliderVM.GrayToGrayAlgorithm = algorithm;
         }
 
-        public void SetAlgorithmToApply(Func<Image<Gray, byte>, int, Image<Bgr, byte>> algorithm)
+        public void SetAlgorithmToApply(Image<Gray, byte> image, Func<Image<Gray, byte>, int, Image<Bgr, byte>> algorithm)
         {
+            sliderVM.GrayImage = image;
             sliderVM.GrayToColorAlgorithm = algorithm;
         }
 
-        public void SetAlgorithmToApply(Func<Image<Bgr, byte>, int, Image<Gray, byte>> algorithm)
+        public void SetAlgorithmToApply(Image<Bgr, byte> image, Func<Image<Bgr, byte>, int, Image<Gray, byte>> algorithm)
         {
+            sliderVM.ColorImage = image;
             sliderVM.ColorToGrayAlgorithm = algorithm;
         }
 
-        public void SetAlgorithmToApply(Func<Image<Bgr, byte>, int, Image<Bgr, byte>> algorithm)
+        public void SetAlgorithmToApply(Image<Bgr, byte> image, Func<Image<Bgr, byte>, int, Image<Bgr, byte>> algorithm)
         {
+            sliderVM.ColorImage = image;
             sliderVM.ColorToColorAlgorithm = algorithm;
         }
 
-        public void ConfigureSlider(int minimumValue = 0, int maximumValue = 255, int defaultValue = 0, int frequency = 5)
+        public void ConfigureSlider(double minimumValue = 0, double maximumValue = 255, double value = 0, double frequency = 5)
         {
-            slider.Minimum = minimumValue;
-            slider.Maximum = maximumValue;
-            slider.Value = defaultValue;
-            slider.SmallChange = frequency;
-            slider.TickFrequency = frequency;
-        }
-
-        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            int value = (int)slider.Value;
-            sliderVM.ModifyProcessedImage(value);
+            sliderVM.MinimumValue = minimumValue;
+            sliderVM.MaximumValue = maximumValue;
+            sliderVM.Value = value;
+            sliderVM.Frequency = frequency;
         }
 
         private void SliderWindowClosing(object sender, System.ComponentModel.CancelEventArgs e)

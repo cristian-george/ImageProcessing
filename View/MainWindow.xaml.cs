@@ -95,27 +95,6 @@ namespace ImageProcessingFramework.View
             VectorOfMousePosition.Clear();
         }
 
-        private void DrawUiElements_MouseLeftPressed(object sender, MouseButtonEventArgs e)
-        {
-            DrawUiElements();
-        }
-
-        private void DrawUiElements()
-        {
-            if (MagnifierOn == true)
-            {
-                DrawSquare();
-                DrawRowLine();
-                DrawColumnLine();
-            }
-
-            if (RowLevelsOn == true)
-                DrawRowLine();
-
-            if (ColumnLevelsOn == true)
-                DrawColumnLine();
-        }
-
         private void DrawRowLine()
         {
             RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialRowLine, ProcessedRowLine);
@@ -140,6 +119,27 @@ namespace ImageProcessingFramework.View
             if (ColorProcessedImage == null && GrayProcessedImage == null) return;
             ProcessedSquare = GetSquare(canvasProcessedImage, LastPosition.X - 0.5, LastPosition.Y - 0.5,
                 sliderZoom.Value);
+        }
+
+        private void DrawUiElements()
+        {
+            if (MagnifierOn == true)
+            {
+                DrawSquare();
+                DrawRowLine();
+                DrawColumnLine();
+            }
+
+            if (RowLevelsOn == true)
+                DrawRowLine();
+
+            if (ColumnLevelsOn == true)
+                DrawColumnLine();
+        }
+
+        private void DrawUiElements_MouseLeftPressed(object sender, MouseButtonEventArgs e)
+        {
+            DrawUiElements();
         }
 
         private void WindowMouseMove(object sender, MouseEventArgs e)

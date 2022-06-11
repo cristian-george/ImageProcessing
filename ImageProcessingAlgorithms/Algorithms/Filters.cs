@@ -16,7 +16,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             Image<Gray, byte> borderedImage = BorderReplicate(inputImage, maskSize - 1);
             Image<Gray, byte> result = new Image<Gray, byte>(borderedImage.Size);
 
-            int[,] integralImage = IntegralImage(borderedImage);
+            Image<Gray, int> integralImage = IntegralImage(borderedImage);
 
             int maskRadius = maskSize / 2;
 
@@ -25,13 +25,38 @@ namespace ImageProcessingAlgorithms.Algorithms
                 for (int x = maskRadius; x < borderedImage.Width - maskRadius; ++x)
                 {
                     result.Data[y, x, 0] =
-                        (byte)(MeanArea(integralImage, x - maskRadius, y - maskRadius, x + maskRadius, y + maskRadius));
+                        (byte)MeanArea(integralImage, x - maskRadius, y - maskRadius, x + maskRadius, y + maskRadius);
                 }
             }
 
             return CropImage(result, maskRadius, maskRadius, inputImage.Width + maskRadius, inputImage.Height + maskRadius);
         }
 
+
+        public static Image<Bgr, byte> MeanFiltering(Image<Bgr, byte> inputImage, int maskSize)
+        {
+            Image<Bgr, byte> borderedImage = BorderReplicate(inputImage, maskSize - 1);
+            Image<Bgr, byte> result = new Image<Bgr, byte>(borderedImage.Size);
+
+            Image<Bgr, int> integralImage = IntegralImage(borderedImage);
+
+            int maskRadius = maskSize / 2;
+
+            for (int y = maskRadius; y < borderedImage.Height - maskRadius; ++y)
+            {
+                for (int x = maskRadius; x < borderedImage.Width - maskRadius; ++x)
+                {
+                    result.Data[y, x, 0] =
+                        (byte)MeanArea(integralImage, x - maskRadius, y - maskRadius, x + maskRadius, y + maskRadius, 0);
+                    result.Data[y, x, 1] =
+                        (byte)MeanArea(integralImage, x - maskRadius, y - maskRadius, x + maskRadius, y + maskRadius, 1);
+                    result.Data[y, x, 2] =
+                        (byte)MeanArea(integralImage, x - maskRadius, y - maskRadius, x + maskRadius, y + maskRadius, 2);
+                }
+            }
+
+            return CropImage(result, maskRadius, maskRadius, inputImage.Width + maskRadius, inputImage.Height + maskRadius);
+        }
         #endregion
 
         #region Median filtering
@@ -442,7 +467,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return gradient;
         }
 
-        public static Image<Gray, byte> PrewittForGray(Image<Gray, byte> inputImage, int threshold)
+        public static Image<Gray, byte> Prewitt(Image<Gray, byte> inputImage, int threshold)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
             double[,] gradient = PrewittGradient(inputImage);
@@ -451,29 +476,8 @@ namespace ImageProcessingAlgorithms.Algorithms
             {
                 for (int x = 0; x < inputImage.Width; ++x)
                 {
-                    double grad = gradient[y, x];
-                    grad = grad < threshold ? 0 : 255;
-
-                    result.Data[y, x, 0] = (byte)grad;
-                }
-            }
-
-            return result;
-        }
-
-        public static Image<Gray, byte> PrewittForColor(Image<Bgr, byte> inputImage, int threshold)
-        {
-            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
-            double[,] gradient = PrewittGradient(inputImage.Convert<Gray, byte>());
-
-            for (int y = 0; y < inputImage.Height; ++y)
-            {
-                for (int x = 0; x < inputImage.Width; ++x)
-                {
-                    double grad = gradient[y, x];
-                    grad = grad < threshold ? 0 : 255;
-
-                    result.Data[y, x, 0] = (byte)grad;
+                    if (gradient[y, x] > threshold)
+                        result.Data[y, x, 0] = 255;
                 }
             }
 
@@ -530,7 +534,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return angle;
         }
 
-        public static Image<Gray, byte> SobelForGray(Image<Gray, byte> inputImage, int threshold)
+        public static Image<Gray, byte> Sobel(Image<Gray, byte> inputImage, int threshold)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
             double[,] gradient = SobelGradient(inputImage);
@@ -596,7 +600,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return gradient;
         }
 
-        public static Image<Gray, byte> SobelForColor(Image<Bgr, byte> inputImage, int threshold)
+        public static Image<Gray, byte> Sobel(Image<Bgr, byte> inputImage, int threshold)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
             double[,] gradient = SobelGradient(inputImage);
@@ -640,7 +644,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return gradient;
         }
 
-        public static Image<Gray, byte> RobertsForGray(Image<Gray, byte> inputImage, int threshold)
+        public static Image<Gray, byte> Roberts(Image<Gray, byte> inputImage, int threshold)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
             double[,] gradient = RobertsGradient(inputImage);
@@ -649,29 +653,8 @@ namespace ImageProcessingAlgorithms.Algorithms
             {
                 for (int x = 0; x < inputImage.Width; ++x)
                 {
-                    double grad = gradient[y, x];
-                    grad = grad < threshold ? 0 : 255;
-
-                    result.Data[y, x, 0] = (byte)grad;
-                }
-            }
-
-            return result;
-        }
-
-        public static Image<Gray, byte> RobertsForColor(Image<Bgr, byte> inputImage, int threshold)
-        {
-            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
-            double[,] gradient = RobertsGradient(inputImage.Convert<Gray, byte>());
-
-            for (int y = 0; y < inputImage.Height; ++y)
-            {
-                for (int x = 0; x < inputImage.Width; ++x)
-                {
-                    double grad = gradient[y, x];
-                    grad = grad < threshold ? 0 : 255;
-
-                    result.Data[y, x, 0] = (byte)grad;
+                    if (gradient[y, x] > threshold)
+                        result.Data[y, x, 0] = 255;
                 }
             }
 

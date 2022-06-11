@@ -220,11 +220,11 @@
                 <MenuItem Header="High-pass"
                           Foreground="#1E1E1E">
                     <MenuItem Header="Prewitt operator"
-                              Command="{Binding Path=PrewittOp}"/>
+                              Command="{Binding Path=Prewitt}"/>
                     <MenuItem Header="Sobel operator"
-                              Command="{Binding Path=SobelOp}"/>
+                              Command="{Binding Path=Sobel}"/>
                     <MenuItem Header="Roberts operator"
-                              Command="{Binding Path=RobertsOp}"/>
+                              Command="{Binding Path=Roberts}"/>
                     <MenuItem Header="Canny operator">
                         <MenuItem Header="Gradient magnitude image"
                                   Command="{Binding Path=CannyGradient}"/>
@@ -235,7 +235,7 @@
                         <MenuItem Header="Hysteresis thresholding"
                                   Command="{Binding Path=CannyHysteresisThreshold}"/>
                         <MenuItem Header="Canny"
-                                  Command="{Binding Path=CannyOp}"/>
+                                  Command="{Binding Path=Canny}"/>
                     </MenuItem>
                 </MenuItem>
             </MenuItem>
@@ -363,6 +363,7 @@
                     <Image x:Name="processedImage"
                            Mouse.MouseMove="ImageMouseMove"
                            MouseLeftButtonDown="MouseLeftPressed"
+                           MouseRightButtonDown="MouseRightPressed"
                            Source="{Binding ProcessedImage}">
                         <Image.LayoutTransform>
                             <ScaleTransform ScaleX="{Binding ElementName=sliderZoom, Path=Value}" 

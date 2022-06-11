@@ -48,7 +48,11 @@
                     IsSnapToTickEnabled="True"
                     Height="30" 
                     Width="600"
-                    ValueChanged="Slider_ValueChanged"/>
+                    Minimum="{Binding Path=MinimumValue}"
+                    Maximum="{Binding Path=MaximumValue}"
+                    Value="{Binding Path=Value}"
+                    SmallChange="{Binding Path=Frequency}"
+                    TickFrequency="{Binding Path=Frequency}"/>
         </StackPanel>
 
         <TextBlock Text="{Binding Value, ElementName=slider}" 

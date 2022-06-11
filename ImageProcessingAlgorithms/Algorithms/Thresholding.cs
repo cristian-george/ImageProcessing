@@ -207,7 +207,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             Image<Gray, byte> borderedImage = BorderReplicate(inputImage, maskSize - 1);
             Image<Gray, byte> result = new Image<Gray, byte>(borderedImage.Size);
 
-            int[,] integralImage = IntegralImage(borderedImage);
+            Image<Gray, int> integralImage = IntegralImage(borderedImage);
 
             int maskRadius = maskSize / 2;
 
