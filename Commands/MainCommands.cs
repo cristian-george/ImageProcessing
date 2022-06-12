@@ -3075,12 +3075,14 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                GrayProcessedImage = GeometricTransformations.TwirlTransformation(GrayInitialImage, rotationAngle, maximumRadius);
+                GrayProcessedImage = GeometricTransformations.TwirlTransformation(
+                    GrayInitialImage, rotationAngle, maximumRadius);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
             else if (ColorInitialImage != null)
             {
-                ColorProcessedImage = GeometricTransformations.TwirlTransformation(ColorInitialImage, rotationAngle, maximumRadius);
+                ColorProcessedImage = GeometricTransformations.TwirlTransformation(
+                    ColorInitialImage, rotationAngle, maximumRadius);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
             }
         }
@@ -3137,6 +3139,58 @@ namespace ImageProcessingFramework.ViewModel
             {
                 ColorProcessedImage = GeometricTransformations.RippleTransformation(
                     ColorInitialImage, tx, ty, ax, ay);
+                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+            }
+        }
+        #endregion
+
+        #region Spherical deformation
+        private ICommand m_sphericalDeformation;
+        public ICommand SphericalDeform
+        {
+            get
+            {
+                if (m_sphericalDeformation == null)
+                    m_sphericalDeformation = new RelayCommand(SphericalDeformation);
+                return m_sphericalDeformation;
+            }
+        }
+
+        public void SphericalDeformation(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ClearProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            List<string> prop = new List<string>
+                {
+                    "Refractive index: ",
+                    "Lens radius: "
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            List<double> response = dialogBox.GetResponseTexts();
+
+            double refractiveIndex = response[0];
+            double lensRadius = response[1];
+
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = GeometricTransformations.SphericalDeformation(
+                    GrayInitialImage, refractiveIndex, lensRadius);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+            }
+            else if (ColorInitialImage != null)
+            {
+                ColorProcessedImage = GeometricTransformations.SphericalDeformation(
+                    ColorInitialImage, refractiveIndex, lensRadius);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
             }
         }

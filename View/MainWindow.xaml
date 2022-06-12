@@ -288,6 +288,9 @@
                 <MenuItem Header="Ripple transformation"
                           Foreground="#1E1E1E"
                           Command="{Binding Path=RippleTransform}"/>
+                <MenuItem Header="Spherical deformation"
+                          Foreground="#1E1E1E"
+                          Command="{Binding Path=SphericalDeform}"/>
                 <MenuItem Header="Projective transformation"
                           Foreground="#1E1E1E"
                           Command="{Binding Path=ProjTransform}"

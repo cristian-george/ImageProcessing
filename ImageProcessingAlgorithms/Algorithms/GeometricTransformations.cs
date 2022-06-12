@@ -287,6 +287,94 @@ namespace ImageProcessingAlgorithms.Algorithms
         }
         #endregion
 
+        #region Spherical deformation
+        public static Image<Gray, byte> SphericalDeformation(Image<Gray, byte> inputImage,
+            double refractiveIndex, double lensRadius)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+
+            int y0 = inputImage.Height / 2;
+            int x0 = inputImage.Width / 2;
+
+            for (int y = 0; y < result.Height; ++y)
+            {
+                for (int x = 0; x < result.Width; ++x)
+                {
+                    int dy = y - y0;
+                    int dx = x - x0;
+                    double radius = Math.Sqrt(dy * dy + dx * dx);
+
+                    if (radius <= lensRadius)
+                    {
+                        double z = Math.Sqrt(lensRadius * lensRadius - radius * radius);
+
+                        double By = (1 - 1 / refractiveIndex) * Math.Asin(dy / Math.Sqrt(dy * dy + z * z));
+                        double Bx = (1 - 1 / refractiveIndex) * Math.Asin(dx / Math.Sqrt(dx * dx + z * z));
+
+                        double Y = y - z * Math.Tan(By);
+                        double X = x - z * Math.Tan(Bx);
+
+                        if (Y > 0 && Y < inputImage.Height - 1 && X > 0 && X < inputImage.Width - 1)
+                        {
+                            result.Data[y, x, 0] = (byte)BilinearInterpolation(inputImage, X, Y);
+                        }
+                    }
+                    else
+                    {
+                        result.Data[y, x, 0] = inputImage.Data[y, x, 0];
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public static Image<Bgr, byte> SphericalDeformation(Image<Bgr, byte> inputImage,
+            double refractiveIndex, double lensRadius)
+        {
+            Image<Bgr, byte> result = new Image<Bgr, byte>(inputImage.Size);
+
+            int y0 = inputImage.Height / 2;
+            int x0 = inputImage.Width / 2;
+
+            for (int y = 0; y < result.Height; ++y)
+            {
+                for (int x = 0; x < result.Width; ++x)
+                {
+                    int dy = y - y0;
+                    int dx = x - x0;
+                    double radius = Math.Sqrt(dy * dy + dx * dx);
+
+                    if (radius <= lensRadius)
+                    {
+                        double z = Math.Sqrt(lensRadius * lensRadius - radius * radius);
+
+                        double By = (1 - 1 / refractiveIndex) * Math.Asin(dy / Math.Sqrt(dy * dy + z * z));
+                        double Bx = (1 - 1 / refractiveIndex) * Math.Asin(dx / Math.Sqrt(dx * dx + z * z));
+
+                        double Y = y - z * Math.Tan(By);
+                        double X = x - z * Math.Tan(Bx);
+
+                        if (Y > 0 && Y < inputImage.Height - 1 && X > 0 && X < inputImage.Width - 1)
+                        {
+                            result.Data[y, x, 0] = (byte)BilinearInterpolation(inputImage, X, Y, 0);
+                            result.Data[y, x, 1] = (byte)BilinearInterpolation(inputImage, X, Y, 1);
+                            result.Data[y, x, 2] = (byte)BilinearInterpolation(inputImage, X, Y, 2);
+                        }
+                    }
+                    else
+                    {
+                        result.Data[y, x, 0] = inputImage.Data[y, x, 0];
+                        result.Data[y, x, 1] = inputImage.Data[y, x, 1];
+                        result.Data[y, x, 2] = inputImage.Data[y, x, 2];
+                    }
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
         #region Projective transformation
 
         private static double[,] ProjectiveTransformationMatrix(
