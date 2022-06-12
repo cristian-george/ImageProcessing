@@ -94,11 +94,11 @@ namespace ImageProcessingAlgorithms.Algorithms
         #endregion
 
         #region Rotate
-        public static Image<Gray, byte> Rotate(Image<Gray, byte> inputImage, double angle)
+        public static Image<Gray, byte> Rotate(Image<Gray, byte> inputImage, double rotationAngle)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
 
-            double angleRadians = angle * Math.PI / 180;
+            double rotAnglRadians = rotationAngle * Math.PI / 180;
 
             double xCenter = inputImage.Width / 2;
             double yCenter = inputImage.Height / 2;
@@ -107,11 +107,11 @@ namespace ImageProcessingAlgorithms.Algorithms
             {
                 for (int x = 0; x < result.Width; ++x)
                 {
-                    double Y = -(x - xCenter) * Math.Sin(angleRadians) + 
-                                (y - yCenter) * Math.Cos(angleRadians) + yCenter;
+                    double Y = -(x - xCenter) * Math.Sin(rotAnglRadians) +
+                                (y - yCenter) * Math.Cos(rotAnglRadians) + yCenter;
 
-                    double X = (x - xCenter) * Math.Cos(angleRadians) +
-                                (y - yCenter) * Math.Sin(angleRadians) + xCenter;
+                    double X = (x - xCenter) * Math.Cos(rotAnglRadians) +
+                                (y - yCenter) * Math.Sin(rotAnglRadians) + xCenter;
 
                     if (Y > 0 && Y < inputImage.Height - 1 && X > 0 && X < inputImage.Width - 1)
                     {
@@ -123,11 +123,11 @@ namespace ImageProcessingAlgorithms.Algorithms
             return result;
         }
 
-        public static Image<Bgr, byte> Rotate(Image<Bgr, byte> inputImage, double angle)
+        public static Image<Bgr, byte> Rotate(Image<Bgr, byte> inputImage, double rotationAngle)
         {
             Image<Bgr, byte> result = new Image<Bgr, byte>(inputImage.Size);
 
-            double angleRadians = angle * Math.PI / 180;
+            double rotAnglRadians = rotationAngle * Math.PI / 180;
 
             double xCenter = inputImage.Width / 2;
             double yCenter = inputImage.Height / 2;
@@ -136,11 +136,11 @@ namespace ImageProcessingAlgorithms.Algorithms
             {
                 for (int x = 0; x < result.Width; ++x)
                 {
-                    double Y = -(x - xCenter) * Math.Sin(angleRadians) +
-                                (y - yCenter) * Math.Cos(angleRadians) + yCenter;
+                    double Y = -(x - xCenter) * Math.Sin(rotAnglRadians) +
+                                (y - yCenter) * Math.Cos(rotAnglRadians) + yCenter;
 
-                    double X = (x - xCenter) * Math.Cos(angleRadians) +
-                                (y - yCenter) * Math.Sin(angleRadians) + xCenter;
+                    double X = (x - xCenter) * Math.Cos(rotAnglRadians) +
+                                (y - yCenter) * Math.Sin(rotAnglRadians) + xCenter;
 
                     if (Y > 0 && Y < inputImage.Height - 1 && X > 0 && X < inputImage.Width - 1)
                     {
@@ -180,12 +180,57 @@ namespace ImageProcessingAlgorithms.Algorithms
                         double Y = y0 + radius * Math.Cos(angle);
                         double X = x0 + radius * Math.Sin(angle);
 
-                        if (Y >= 0 && Y < inputImage.Height && X >= 0 && X < inputImage.Width)
-                            result.Data[y, x, 0] = inputImage.Data[(int)Y, (int)X, 0];
+                        if (Y > 0 && Y < inputImage.Height - 1 && X > 0 && X < inputImage.Width - 1)
+                        {
+                            result.Data[y, x, 0] = (byte)BilinearInterpolation(inputImage, X, Y);
+                        }
                     }
                     else
                     {
                         result.Data[y, x, 0] = inputImage.Data[y, x, 0];
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public static Image<Bgr, byte> TwirlTransformation(Image<Bgr, byte> inputImage,
+            double rotationAngle, double maxRadius)
+        {
+            Image<Bgr, byte> result = new Image<Bgr, byte>(inputImage.Size);
+
+            int y0 = inputImage.Height / 2;
+            int x0 = inputImage.Width / 2;
+
+            double rotAnglRadians = rotationAngle * Math.PI / 180;
+
+            for (int y = 0; y < result.Height; ++y)
+            {
+                for (int x = 0; x < result.Width; ++x)
+                {
+                    int dy = y - y0;
+                    int dx = x - x0;
+                    double radius = Math.Sqrt(dy * dy + dx * dx);
+                    double angle = Math.Atan2(dx, dy) + rotAnglRadians * ((maxRadius - radius) / maxRadius);
+
+                    if (radius <= maxRadius)
+                    {
+                        double Y = y0 + radius * Math.Cos(angle);
+                        double X = x0 + radius * Math.Sin(angle);
+
+                        if (Y > 0 && Y < inputImage.Height - 1 && X > 0 && X < inputImage.Width - 1)
+                        {
+                            result.Data[y, x, 0] = (byte)BilinearInterpolation(inputImage, X, Y, 0);
+                            result.Data[y, x, 1] = (byte)BilinearInterpolation(inputImage, X, Y, 1);
+                            result.Data[y, x, 2] = (byte)BilinearInterpolation(inputImage, X, Y, 2);
+                        }
+                    }
+                    else
+                    {
+                        result.Data[y, x, 0] = inputImage.Data[y, x, 0];
+                        result.Data[y, x, 1] = inputImage.Data[y, x, 1];
+                        result.Data[y, x, 2] = inputImage.Data[y, x, 2];
                     }
                 }
             }

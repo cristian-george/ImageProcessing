@@ -3036,7 +3036,6 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
-
         #region Twirl transformation
         private ICommand m_twirlTransform;
         public ICommand TwirlTransform
@@ -3051,28 +3050,39 @@ namespace ImageProcessingFramework.ViewModel
 
         public void TwirlTransformation(object parameter)
         {
-            if (GrayInitialImage != null)
+            if (GrayInitialImage == null && ColorInitialImage == null)
             {
-                DialogBox dialogBox = new DialogBox();
-                List<string> prop = new List<string>
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ClearProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            List<string> prop = new List<string>
                 {
-                    "Rotation angle",
-                    "Maximum radius"
+                    "Rotation angle: ",
+                    "Maximum radius: "
                 };
 
-                dialogBox.CreateDialogBox(prop);
-                dialogBox.ShowDialog();
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
 
-                List<double> response = dialogBox.GetResponseTexts();
+            List<double> response = dialogBox.GetResponseTexts();
 
-                double rotationAngle = response[0];
-                double maximumRadius = response[1];
+            double rotationAngle = response[0];
+            double maximumRadius = response[1];
 
-                GrayProcessedImage = GeometricTransformations.
-                    TwirlTransformation(GrayInitialImage, rotationAngle, maximumRadius);
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = GeometricTransformations.TwirlTransformation(GrayInitialImage, rotationAngle, maximumRadius);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
-            else MessageBox.Show("No grayscale image!");
+            else if (ColorInitialImage != null)
+            {
+                ColorProcessedImage = GeometricTransformations.TwirlTransformation(ColorInitialImage, rotationAngle, maximumRadius);
+                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+            }
         }
         #endregion
 
