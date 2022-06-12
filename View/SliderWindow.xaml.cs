@@ -24,25 +24,25 @@ namespace ImageProcessingFramework.View
             DataContext = sliderVM;
         }
 
-        public void SetAlgorithmToApply(Image<Gray, byte> image, Func<Image<Gray, byte>, int, Image<Gray, byte>> algorithm)
+        public void SetAlgorithmToApply(Image<Gray, byte> image, Func<Image<Gray, byte>, double, Image<Gray, byte>> algorithm)
         {
             sliderVM.GrayImage = image;
             sliderVM.GrayToGrayAlgorithm = algorithm;
         }
 
-        public void SetAlgorithmToApply(Image<Gray, byte> image, Func<Image<Gray, byte>, int, Image<Bgr, byte>> algorithm)
+        public void SetAlgorithmToApply(Image<Gray, byte> image, Func<Image<Gray, byte>, double, Image<Bgr, byte>> algorithm)
         {
             sliderVM.GrayImage = image;
             sliderVM.GrayToColorAlgorithm = algorithm;
         }
 
-        public void SetAlgorithmToApply(Image<Bgr, byte> image, Func<Image<Bgr, byte>, int, Image<Gray, byte>> algorithm)
+        public void SetAlgorithmToApply(Image<Bgr, byte> image, Func<Image<Bgr, byte>, double, Image<Gray, byte>> algorithm)
         {
             sliderVM.ColorImage = image;
             sliderVM.ColorToGrayAlgorithm = algorithm;
         }
 
-        public void SetAlgorithmToApply(Image<Bgr, byte> image, Func<Image<Bgr, byte>, int, Image<Bgr, byte>> algorithm)
+        public void SetAlgorithmToApply(Image<Bgr, byte> image, Func<Image<Bgr, byte>, double, Image<Bgr, byte>> algorithm)
         {
             sliderVM.ColorImage = image;
             sliderVM.ColorToColorAlgorithm = algorithm;

@@ -229,7 +229,7 @@
                         <MenuItem Header="Gradient magnitude image"
                                   Command="{Binding Path=CannyGradient}"/>
                         <MenuItem Header="Angle image"
-                                  Command="{Binding Path=CannyAngle}"/>
+                                  Command="{Binding Path=CannyDirection}"/>
                         <MenuItem Header="Nonmaxima suppression"
                                   Command="{Binding Path=CannyNonmaxSup}"/>
                         <MenuItem Header="Hysteresis thresholding"

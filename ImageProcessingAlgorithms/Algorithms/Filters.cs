@@ -11,14 +11,14 @@ namespace ImageProcessingAlgorithms.Algorithms
         #region Low-pass filters
 
         #region Mean filtering
-        public static Image<Gray, byte> MeanFiltering(Image<Gray, byte> inputImage, int maskSize)
+        public static Image<Gray, byte> MeanFiltering(Image<Gray, byte> inputImage, double maskSize)
         {
-            Image<Gray, byte> borderedImage = BorderReplicate(inputImage, maskSize - 1);
+            Image<Gray, byte> borderedImage = BorderReplicate(inputImage, (int)(maskSize - 1));
             Image<Gray, byte> result = new Image<Gray, byte>(borderedImage.Size);
 
             Image<Gray, int> integralImage = IntegralImage(borderedImage);
 
-            int maskRadius = maskSize / 2;
+            int maskRadius = (int)(maskSize / 2);
 
             for (int y = maskRadius; y < borderedImage.Height - maskRadius; ++y)
             {
@@ -33,14 +33,14 @@ namespace ImageProcessingAlgorithms.Algorithms
         }
 
 
-        public static Image<Bgr, byte> MeanFiltering(Image<Bgr, byte> inputImage, int maskSize)
+        public static Image<Bgr, byte> MeanFiltering(Image<Bgr, byte> inputImage, double maskSize)
         {
-            Image<Bgr, byte> borderedImage = BorderReplicate(inputImage, maskSize - 1);
+            Image<Bgr, byte> borderedImage = BorderReplicate(inputImage, (int)(maskSize - 1));
             Image<Bgr, byte> result = new Image<Bgr, byte>(borderedImage.Size);
 
             Image<Bgr, int> integralImage = IntegralImage(borderedImage);
 
-            int maskRadius = maskSize / 2;
+            int maskRadius = (int)(maskSize / 2);
 
             for (int y = maskRadius; y < borderedImage.Height - maskRadius; ++y)
             {
@@ -60,18 +60,18 @@ namespace ImageProcessingAlgorithms.Algorithms
         #endregion
 
         #region Median filtering
-        public static Image<Gray, byte> MedianFiltering(Image<Gray, byte> inputImage, int maskSize)
+        public static Image<Gray, byte> MedianFiltering(Image<Gray, byte> inputImage, double maskSize)
         {
-            Image<Gray, byte> borderedImage = BorderReplicate(inputImage, maskSize - 1);
+            Image<Gray, byte> borderedImage = BorderReplicate(inputImage, (int)(maskSize - 1));
             Image<Gray, byte> result = new Image<Gray, byte>(borderedImage.Size);
 
-            int maskRadius = maskSize / 2;
+            int maskRadius = (int)(maskSize / 2);
 
             for (int y = maskRadius; y < borderedImage.Height - maskRadius; ++y)
             {
                 for (int x = maskRadius; x < borderedImage.Width - maskRadius; ++x)
                 {
-                    result.Data[y, x, 0] = GetMedianValue(borderedImage, maskSize, y, x);
+                    result.Data[y, x, 0] = GetMedianValue(borderedImage, (int)maskSize, y, x);
                 }
             }
 
@@ -80,13 +80,13 @@ namespace ImageProcessingAlgorithms.Algorithms
         #endregion
 
         #region Fast median filtering
-        public static Image<Gray, byte> FastMedianFiltering(Image<Gray, byte> inputImage, int maskSize)
+        public static Image<Gray, byte> FastMedianFiltering(Image<Gray, byte> inputImage, double maskSize)
         {
-            Image<Gray, byte> borderedImage = BorderReplicate(inputImage, maskSize - 1);
+            Image<Gray, byte> borderedImage = BorderReplicate(inputImage, (int)(maskSize - 1));
             Image<Gray, byte> result = new Image<Gray, byte>(borderedImage.Size);
 
-            int maskRadius = maskSize / 2;
-            int middle = (maskSize * maskSize + 1) / 2;
+            int maskRadius = (int)(maskSize / 2);
+            int middle = (int)((maskSize * maskSize + 1) / 2);
             int x;
 
             // Initialize mask histogram
@@ -205,13 +205,13 @@ namespace ImageProcessingAlgorithms.Algorithms
         #endregion
 
         #region Vector median filtering
-        public static Image<Bgr, byte> VectorMedianFiltering(Image<Bgr, byte> inputImage, int maskSize)
+        public static Image<Bgr, byte> VectorMedianFiltering(Image<Bgr, byte> inputImage, double maskSize)
         {
-            Image<Bgr, byte> borderedImage = BorderReplicate(inputImage, maskSize - 1);
+            Image<Bgr, byte> borderedImage = BorderReplicate(inputImage, (int)(maskSize - 1));
             Image<Bgr, byte> result = new Image<Bgr, byte>(borderedImage.Size);
 
-            int maskRadius = maskSize / 2;
-            int size = maskSize * maskSize;
+            int maskRadius = (int)(maskSize / 2);
+            int size = (int)(maskSize * maskSize);
 
             for (int y = maskRadius; y < borderedImage.Height - maskRadius; ++y)
             {
@@ -467,7 +467,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return gradient;
         }
 
-        public static Image<Gray, byte> Prewitt(Image<Gray, byte> inputImage, int threshold)
+        public static Image<Gray, byte> Prewitt(Image<Gray, byte> inputImage, double threshold)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
             double[,] gradient = PrewittGradient(inputImage);
@@ -534,7 +534,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return angle;
         }
 
-        public static Image<Gray, byte> Sobel(Image<Gray, byte> inputImage, int threshold)
+        public static Image<Gray, byte> Sobel(Image<Gray, byte> inputImage, double threshold)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
             double[,] gradient = SobelGradient(inputImage);
@@ -600,7 +600,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return gradient;
         }
 
-        public static Image<Gray, byte> Sobel(Image<Bgr, byte> inputImage, int threshold)
+        public static Image<Gray, byte> Sobel(Image<Bgr, byte> inputImage, double threshold)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
             double[,] gradient = SobelGradient(inputImage);
@@ -644,7 +644,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return gradient;
         }
 
-        public static Image<Gray, byte> Roberts(Image<Gray, byte> inputImage, int threshold)
+        public static Image<Gray, byte> Roberts(Image<Gray, byte> inputImage, double threshold)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
             double[,] gradient = RobertsGradient(inputImage);
@@ -667,7 +667,7 @@ namespace ImageProcessingAlgorithms.Algorithms
         #region Canny gradient magnitude
 
         #region On grayscale
-        private static double[,] CannyGradient(Image<Gray, byte> smoothImage, int lowThreshold)
+        private static double[,] CannyGradient(Image<Gray, byte> smoothImage, double lowThreshold)
         {
             var gradient = SobelGradient(smoothImage);
 
@@ -683,7 +683,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return gradient;
         }
 
-        public static Image<Gray, byte> CannyGradientForGray(Image<Gray, byte> inputImage, int lowThreshold)
+        public static Image<Gray, byte> CannyGradientForGray(Image<Gray, byte> inputImage, double lowThreshold)
         {
             var smoothImage = GaussianFiltering(inputImage, 1);
             var cannyGradient = CannyGradient(smoothImage, lowThreshold);
@@ -706,7 +706,7 @@ namespace ImageProcessingAlgorithms.Algorithms
         #endregion
 
         #region On color
-        private static double[,] CannyGradient(Image<Bgr, byte> smoothImage, int lowThreshold)
+        private static double[,] CannyGradient(Image<Bgr, byte> smoothImage, double lowThreshold)
         {
             var gradient = MaxVariance(smoothImage);
 
@@ -722,7 +722,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return gradient;
         }
 
-        public static Image<Gray, byte> CannyGradientForColor(Image<Bgr, byte> inputImage, int threshold)
+        public static Image<Gray, byte> CannyGradientForColor(Image<Bgr, byte> inputImage, double threshold)
         {
             var smoothImage = GaussianFiltering(inputImage, 1);
             var cannyGradient = CannyGradient(smoothImage, threshold);
@@ -749,7 +749,7 @@ namespace ImageProcessingAlgorithms.Algorithms
         #region Canny gradient direction
 
         #region On grayscale
-        private static int[,] CannyGradientDirection(Image<Gray, byte> smoothImage, int lowThreshold)
+        private static int[,] CannyGradientDirection(Image<Gray, byte> smoothImage, double lowThreshold)
         {
             var cannyGradient = CannyGradient(smoothImage, lowThreshold);
             var sobelDirection = SobelDirection(smoothImage);
@@ -788,7 +788,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return cannyDirection;
         }
 
-        public static Image<Bgr, byte> CannyGradientDirectionForGray(Image<Gray, byte> inputImage, int lowThreshold)
+        public static Image<Bgr, byte> CannyGradientDirectionForGray(Image<Gray, byte> inputImage, double lowThreshold)
         {
             var smoothImage = GaussianFiltering(inputImage, 1);
             var cannyDirection = CannyGradientDirection(smoothImage, lowThreshold);
@@ -834,7 +834,7 @@ namespace ImageProcessingAlgorithms.Algorithms
         #endregion
 
         #region On color
-        private static int[,] CannyGradientDirection(Image<Bgr, byte> smoothImage, int lowThreshold)
+        private static int[,] CannyGradientDirection(Image<Bgr, byte> smoothImage, double lowThreshold)
         {
             var cannyGradient = CannyGradient(smoothImage, lowThreshold);
             var maxVarianceDirection = MaxVarianceDirection(smoothImage);
@@ -873,7 +873,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return cannyDirection;
         }
 
-        public static Image<Bgr, byte> CannyGradientDirectionForColor(Image<Bgr, byte> inputImage, int lowThreshold)
+        public static Image<Bgr, byte> CannyGradientDirectionForColor(Image<Bgr, byte> inputImage, double lowThreshold)
         {
             var smoothImage = GaussianFiltering(inputImage, 1);
             var cannyDirection = CannyGradientDirection(smoothImage, lowThreshold);
@@ -923,7 +923,7 @@ namespace ImageProcessingAlgorithms.Algorithms
         #region Canny Nonmaxima suppression
 
         #region On grayscale
-        private static double[,] CannyNonmaxSuppression(Image<Gray, byte> smoothImage, int lowThreshold)
+        private static double[,] CannyNonmaxSuppression(Image<Gray, byte> smoothImage, double lowThreshold)
         {
             var cannyGradient = CannyGradient(smoothImage, lowThreshold);
             var cannyDirection = CannyGradientDirection(smoothImage, lowThreshold);
@@ -967,7 +967,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return nonmaxSuppression;
         }
 
-        public static Image<Gray, byte> CannyNonmaxSuppressionForGray(Image<Gray, byte> inputImage, int lowThreshold)
+        public static Image<Gray, byte> CannyNonmaxSuppressionForGray(Image<Gray, byte> inputImage, double lowThreshold)
         {
             var smoothImage = GaussianFiltering(inputImage, 1);
             var cannyNonmaxSuppresion = CannyNonmaxSuppression(smoothImage, lowThreshold);
@@ -990,7 +990,7 @@ namespace ImageProcessingAlgorithms.Algorithms
         #endregion
 
         #region On color
-        private static double[,] CannyNonmaxSuppression(Image<Bgr, byte> smoothImage, int lowThreshold)
+        private static double[,] CannyNonmaxSuppression(Image<Bgr, byte> smoothImage, double lowThreshold)
         {
             var cannyGradient = CannyGradient(smoothImage, lowThreshold);
             var cannyDirection = CannyGradientDirection(smoothImage, lowThreshold);
@@ -1034,7 +1034,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             return nonmaxSuppression;
         }
 
-        public static Image<Gray, byte> CannyNonmaxSuppressionForColor(Image<Bgr, byte> inputImage, int lowThreshold)
+        public static Image<Gray, byte> CannyNonmaxSuppressionForColor(Image<Bgr, byte> inputImage, double lowThreshold)
         {
             var smoothImage = GaussianFiltering(inputImage, 1);
             var cannyNonmaxSuppresion = CannyNonmaxSuppression(smoothImage, lowThreshold);

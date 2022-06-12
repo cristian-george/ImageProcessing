@@ -33,9 +33,11 @@ namespace ImageProcessingFramework.ViewModel
         {
             List<int> channelValues = new List<int>();
 
-            for (int y = 0; y < colorImage.Height; y++)
-                if (LastPosition.X < colorImage.Width)
+            if (LastPosition.X < colorImage.Width)
+            {
+                for (int y = 0; y < colorImage.Height; y++)
                     channelValues.Add(colorImage.Data[y, (int)LastPosition.X, channel]);
+            }
 
             if (color.Equals("Blue"))
             {
@@ -95,9 +97,11 @@ namespace ImageProcessingFramework.ViewModel
         {
             List<int> channelValues = new List<int>();
 
-            for (int y = 0; y < grayImage.Height; y++)
-                if (LastPosition.X < grayImage.Width)
+            if (LastPosition.X < grayImage.Width)
+            {
+                for (int y = 0; y < grayImage.Height; y++)
                     channelValues.Add(grayImage.Data[y, (int)LastPosition.X, channel]);
+            }
 
             if (color.Equals("Gray"))
             {

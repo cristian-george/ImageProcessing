@@ -10,11 +10,11 @@ namespace ImageProcessingFramework.ViewModel
     {
         public MainCommands MainCommands;
 
-        public Func<Image<Gray, byte>, int, Image<Gray, byte>> GrayToGrayAlgorithm = null;
-        public Func<Image<Gray, byte>, int, Image<Bgr, byte>> GrayToColorAlgorithm = null;
+        public Func<Image<Gray, byte>, double, Image<Gray, byte>> GrayToGrayAlgorithm = null;
+        public Func<Image<Gray, byte>, double, Image<Bgr, byte>> GrayToColorAlgorithm = null;
 
-        public Func<Image<Bgr, byte>, int, Image<Gray, byte>> ColorToGrayAlgorithm = null;
-        public Func<Image<Bgr, byte>, int, Image<Bgr, byte>> ColorToColorAlgorithm = null;
+        public Func<Image<Bgr, byte>, double, Image<Gray, byte>> ColorToGrayAlgorithm = null;
+        public Func<Image<Bgr, byte>, double, Image<Bgr, byte>> ColorToColorAlgorithm = null;
 
         public Image<Gray, byte> GrayImage;
         public Image<Bgr, byte> ColorImage;
@@ -100,12 +100,12 @@ namespace ImageProcessingFramework.ViewModel
             {
                 if (GrayToGrayAlgorithm != null)
                 {
-                    GrayProcessedImage = GrayToGrayAlgorithm(GrayImage, (int)Value);
+                    GrayProcessedImage = GrayToGrayAlgorithm(GrayImage, Value);
                     MainCommands.ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
                 else
                 {
-                    ColorProcessedImage = GrayToColorAlgorithm(GrayImage, (int)Value);
+                    ColorProcessedImage = GrayToColorAlgorithm(GrayImage, Value);
                     MainCommands.ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                 }
             }
@@ -113,12 +113,12 @@ namespace ImageProcessingFramework.ViewModel
             {
                 if (ColorToGrayAlgorithm != null)
                 {
-                    GrayProcessedImage = ColorToGrayAlgorithm(ColorImage, (int)Value);
+                    GrayProcessedImage = ColorToGrayAlgorithm(ColorImage, Value);
                     MainCommands.ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
                 else
                 {
-                    ColorProcessedImage = ColorToColorAlgorithm(ColorImage, (int)Value);
+                    ColorProcessedImage = ColorToColorAlgorithm(ColorImage, Value);
                     MainCommands.ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                 }
             }

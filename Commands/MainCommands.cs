@@ -1617,12 +1617,12 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                sliderWindow.SetAlgorithmToApply(GrayInitialImage, Thresholding.ThresholdingForGray);
+                sliderWindow.SetAlgorithmToApply(GrayInitialImage, Thresholding.InputThresholding);
             }
             else if (ColorInitialImage != null)
             {
                 GrayProcessedImage = Tools.Convert(ColorInitialImage);
-                sliderWindow.SetAlgorithmToApply(GrayProcessedImage, Thresholding.ThresholdingForGray);
+                sliderWindow.SetAlgorithmToApply(GrayProcessedImage, Thresholding.InputThresholding);
             }
 
             sliderWindow.Show();
@@ -1662,7 +1662,7 @@ namespace ImageProcessingFramework.ViewModel
                     if (0 <= percent && percent <= 1)
                     {
                         int threshold = Thresholding.QuantileThreshold(GrayInitialImage, percent);
-                        GrayProcessedImage = Thresholding.ThresholdingForGray(GrayInitialImage, threshold);
+                        GrayProcessedImage = Thresholding.InputThresholding(GrayInitialImage, threshold);
                         ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                     }
                     else MessageBox.Show("Please add a threshold value first.");
@@ -1689,7 +1689,7 @@ namespace ImageProcessingFramework.ViewModel
             if (GrayInitialImage != null)
             {
                 int threshold = Thresholding.MedianThreshold(GrayInitialImage);
-                GrayProcessedImage = Thresholding.ThresholdingForGray(GrayInitialImage, threshold);
+                GrayProcessedImage = Thresholding.InputThresholding(GrayInitialImage, threshold);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
             else MessageBox.Show("No grayscale image!");
@@ -1713,7 +1713,7 @@ namespace ImageProcessingFramework.ViewModel
             if (GrayInitialImage != null)
             {
                 int threshold = Thresholding.IntermeansThreshold(GrayInitialImage);
-                GrayProcessedImage = Thresholding.ThresholdingForGray(GrayInitialImage, threshold);
+                GrayProcessedImage = Thresholding.InputThresholding(GrayInitialImage, threshold);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
             else MessageBox.Show("No grayscale image!");
@@ -1945,12 +1945,6 @@ namespace ImageProcessingFramework.ViewModel
         public void VectorMedianFiltering(object parameter)
         {
             if (SliderOn == true) return;
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
             if (GrayInitialImage != null)
             {
                 MessageBox.Show("Please add a color image!");
@@ -1993,35 +1987,20 @@ namespace ImageProcessingFramework.ViewModel
 
             ClearProcessedCanvas(parameter);
 
-            DialogBox dialogBox = new DialogBox();
-            List<string> prop = new List<string>
-                {
-                    "Variance value:",
-                };
+            SliderWindow sliderWindow = new SliderWindow(this, "Variance value: ");
+            sliderWindow.ConfigureSlider(0, 10, 0, 0.5);
 
-            dialogBox.CreateDialogBox(prop);
-            dialogBox.ShowDialog();
-
-            List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
+            if (GrayInitialImage != null)
             {
-                double variance = response[0];
-
-                if (variance > 0)
-                {
-                    if (ColorInitialImage != null)
-                    {
-                        ColorProcessedImage = Filters.GaussianFiltering(ColorInitialImage, variance);
-                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                    }
-                    else if (GrayInitialImage != null)
-                    {
-                        GrayProcessedImage = Filters.GaussianFiltering(GrayInitialImage, variance);
-                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    }
-                }
-                else MessageBox.Show("Please add a valid dimension first.");
+                sliderWindow.SetAlgorithmToApply(GrayInitialImage, Filters.GaussianFiltering);
             }
+            else if (ColorInitialImage != null)
+            {
+                sliderWindow.SetAlgorithmToApply(ColorInitialImage, Filters.GaussianFiltering);
+            }
+
+            sliderWindow.Show();
+            SliderOn = true;
         }
         #endregion
 
