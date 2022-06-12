@@ -3086,6 +3086,62 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #region Ripple transformation
+        private ICommand m_rippleTransform;
+        public ICommand RippleTransform
+        {
+            get
+            {
+                if (m_rippleTransform == null)
+                    m_rippleTransform = new RelayCommand(RippleTransformation);
+                return m_rippleTransform;
+            }
+        }
+
+        public void RippleTransformation(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ClearProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            List<string> prop = new List<string>
+                {
+                    "tx: ",
+                    "ty: ",
+                    "ax: ",
+                    "ay: "
+                };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            List<double> response = dialogBox.GetResponseTexts();
+
+            double tx = response[0];
+            double ty = response[1];
+            double ax = response[2];
+            double ay = response[3];
+
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = GeometricTransformations.RippleTransformation(
+                    GrayInitialImage, tx, ty, ax, ay);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+            }
+            else if (ColorInitialImage != null)
+            {
+                ColorProcessedImage = GeometricTransformations.RippleTransformation(
+                    ColorInitialImage, tx, ty, ax, ay);
+                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+            }
+        }
+        #endregion
+
         #region Projective transformation
         private ICommand m_projTransform;
         public ICommand ProjTransform

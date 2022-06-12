@@ -177,8 +177,8 @@ namespace ImageProcessingAlgorithms.Algorithms
 
                     if (radius <= maxRadius)
                     {
-                        double Y = y0 + radius * Math.Cos(angle);
-                        double X = x0 + radius * Math.Sin(angle);
+                        double Y = y0 + radius * Math.Sin(angle);
+                        double X = x0 + radius * Math.Cos(angle);
 
                         if (Y > 0 && Y < inputImage.Height - 1 && X > 0 && X < inputImage.Width - 1)
                         {
@@ -216,8 +216,8 @@ namespace ImageProcessingAlgorithms.Algorithms
 
                     if (radius <= maxRadius)
                     {
-                        double Y = y0 + radius * Math.Cos(angle);
-                        double X = x0 + radius * Math.Sin(angle);
+                        double Y = y0 + radius * Math.Sin(angle);
+                        double X = x0 + radius * Math.Cos(angle);
 
                         if (Y > 0 && Y < inputImage.Height - 1 && X > 0 && X < inputImage.Width - 1)
                         {
@@ -231,6 +231,54 @@ namespace ImageProcessingAlgorithms.Algorithms
                         result.Data[y, x, 0] = inputImage.Data[y, x, 0];
                         result.Data[y, x, 1] = inputImage.Data[y, x, 1];
                         result.Data[y, x, 2] = inputImage.Data[y, x, 2];
+                    }
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region Ripple transformation
+        public static Image<Gray, byte> RippleTransformation(Image<Gray, byte> inputImage,
+            double tx, double ty, double ax, double ay)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+
+            for (int y = 0; y < result.Height; ++y)
+            {
+                for (int x = 0; x < result.Width; ++x)
+                {
+                    double Y = y + ay * Math.Sin(2 * Math.PI * x / ty);
+                    double X = x + ax * Math.Sin(2 * Math.PI * y / tx);
+
+                    if (Y > 0 && Y < inputImage.Height - 1 && X > 0 && X < inputImage.Width - 1)
+                    {
+                        result.Data[y, x, 0] = (byte)BilinearInterpolation(inputImage, X, Y);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public static Image<Bgr, byte> RippleTransformation(Image<Bgr, byte> inputImage,
+    double tx, double ty, double ax, double ay)
+        {
+            Image<Bgr, byte> result = new Image<Bgr, byte>(inputImage.Size);
+
+            for (int y = 0; y < result.Height; ++y)
+            {
+                for (int x = 0; x < result.Width; ++x)
+                {
+                    double Y = y + ay * Math.Sin(2 * Math.PI * x / ty);
+                    double X = x + ax * Math.Sin(2 * Math.PI * y / tx);
+
+                    if (Y > 0 && Y < inputImage.Height - 1 && X > 0 && X < inputImage.Width - 1)
+                    {
+                        result.Data[y, x, 0] = (byte)BilinearInterpolation(inputImage, X, Y, 0);
+                        result.Data[y, x, 1] = (byte)BilinearInterpolation(inputImage, X, Y, 1);
+                        result.Data[y, x, 2] = (byte)BilinearInterpolation(inputImage, X, Y, 2);
                     }
                 }
             }

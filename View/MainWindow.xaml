@@ -285,6 +285,9 @@
                 <MenuItem Header="Twirl transformation"
                           Foreground="#1E1E1E"
                           Command="{Binding Path=TwirlTransform}"/>
+                <MenuItem Header="Ripple transformation"
+                          Foreground="#1E1E1E"
+                          Command="{Binding Path=RippleTransform}"/>
                 <MenuItem Header="Projective transformation"
                           Foreground="#1E1E1E"
                           Command="{Binding Path=ProjTransform}"
