@@ -93,6 +93,68 @@ namespace ImageProcessingAlgorithms.Algorithms
         }
         #endregion
 
+        #region Rotate
+        public static Image<Gray, byte> Rotate(Image<Gray, byte> inputImage, double angle)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+
+            double angleRadians = angle * Math.PI / 180;
+
+            double xCenter = inputImage.Width / 2;
+            double yCenter = inputImage.Height / 2;
+
+            for (int y = 0; y < result.Height; ++y)
+            {
+                for (int x = 0; x < result.Width; ++x)
+                {
+                    double Y = -(x - xCenter) * Math.Sin(angleRadians) + 
+                                (y - yCenter) * Math.Cos(angleRadians) + yCenter;
+
+                    double X = (x - xCenter) * Math.Cos(angleRadians) +
+                                (y - yCenter) * Math.Sin(angleRadians) + xCenter;
+
+                    if (Y > 0 && Y < inputImage.Height - 1 && X > 0 && X < inputImage.Width - 1)
+                    {
+                        result.Data[y, x, 0] = (byte)BilinearInterpolation(inputImage, X, Y);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public static Image<Bgr, byte> Rotate(Image<Bgr, byte> inputImage, double angle)
+        {
+            Image<Bgr, byte> result = new Image<Bgr, byte>(inputImage.Size);
+
+            double angleRadians = angle * Math.PI / 180;
+
+            double xCenter = inputImage.Width / 2;
+            double yCenter = inputImage.Height / 2;
+
+            for (int y = 0; y < result.Height; ++y)
+            {
+                for (int x = 0; x < result.Width; ++x)
+                {
+                    double Y = -(x - xCenter) * Math.Sin(angleRadians) +
+                                (y - yCenter) * Math.Cos(angleRadians) + yCenter;
+
+                    double X = (x - xCenter) * Math.Cos(angleRadians) +
+                                (y - yCenter) * Math.Sin(angleRadians) + xCenter;
+
+                    if (Y > 0 && Y < inputImage.Height - 1 && X > 0 && X < inputImage.Width - 1)
+                    {
+                        result.Data[y, x, 0] = (byte)BilinearInterpolation(inputImage, X, Y, 0);
+                        result.Data[y, x, 1] = (byte)BilinearInterpolation(inputImage, X, Y, 1);
+                        result.Data[y, x, 2] = (byte)BilinearInterpolation(inputImage, X, Y, 2);
+                    }
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
         #region Twirl transformation
         public static Image<Gray, byte> TwirlTransformation(Image<Gray, byte> inputImage,
             double rotationAngle, double maxRadius)

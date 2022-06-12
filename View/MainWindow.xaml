@@ -279,6 +279,9 @@
                 <MenuItem Header="Scale"
                           Foreground="#1E1E1E"
                           Command="{Binding Path=ScaleTransform}"/>
+                <MenuItem Header="Rotate"
+                          Foreground="#1E1E1E"
+                          Command="{Binding Path=RotateTransform}"/>
                 <MenuItem Header="Twirl transformation"
                           Foreground="#1E1E1E"
                           Command="{Binding Path=TwirlTransform}"/>

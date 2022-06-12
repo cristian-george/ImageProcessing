@@ -2996,6 +2996,47 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #region Rotate transformation
+        private ICommand m_rotateTransform;
+        public ICommand RotateTransform
+        {
+            get
+            {
+                if (m_rotateTransform == null)
+                    m_rotateTransform = new RelayCommand(Rotate);
+                return m_rotateTransform;
+            }
+        }
+
+        public void Rotate(object parameter)
+        {
+            if (SliderOn == true) return;
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ClearProcessedCanvas(parameter);
+
+            SliderWindow sliderWindow = new SliderWindow(this, "Rotation angle: ");
+            sliderWindow.ConfigureSlider(0, 360, 0, 5);
+
+            if (GrayInitialImage != null)
+            {
+                sliderWindow.SetAlgorithmToApply(GrayInitialImage, GeometricTransformations.Rotate);
+            }
+            else if (ColorInitialImage != null)
+            {
+                sliderWindow.SetAlgorithmToApply(ColorInitialImage, GeometricTransformations.Rotate);
+            }
+
+            sliderWindow.Show();
+            SliderOn = true;
+        }
+        #endregion
+
+
         #region Twirl transformation
         private ICommand m_twirlTransform;
         public ICommand TwirlTransform
