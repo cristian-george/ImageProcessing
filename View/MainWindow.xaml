@@ -197,6 +197,12 @@
                 <MenuItem Header="Adaptive threshold"
                           Foreground="#1E1E1E"
                               Command="{Binding Path=AdaptiveThreshold}"/>
+                <MenuItem Header="3D Color threshold"
+                          Foreground="#1E1E1E"
+                              Command="{Binding Path=Thresholding3D}"/>
+                <MenuItem Header="2D Color threshold"
+                          Foreground="#1E1E1E"
+                              Command="{Binding Path=Thresholding2D}"/>
             </MenuItem>
 
             <MenuItem Header="Filters" 

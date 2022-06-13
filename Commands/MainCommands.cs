@@ -1804,6 +1804,98 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #region 3D Color Thresholding
+        private ICommand m_thresholding3D;
+        public ICommand Thresholding3D
+        {
+            get
+            {
+                if (m_thresholding3D == null)
+                    m_thresholding3D = new RelayCommand(ColorThresholding3D);
+                return m_thresholding3D;
+            }
+        }
+
+        public void ColorThresholding3D(object parameter)
+        {
+            if (ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add a color image!");
+                return;
+            }
+
+            if (VectorOfMousePosition.Count == 0)
+            {
+                MessageBox.Show("Please select a color first!");
+                return;
+            }
+
+            ClearProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            List<string> prop = new List<string>
+            {
+                "Threshold: "
+            };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            List<double> response = dialogBox.GetResponseTexts();
+            int threshold = (int)response[0];
+
+            GrayProcessedImage = Thresholding.Thresholding3D(
+                ColorInitialImage, LastPosition.X, LastPosition.Y, threshold);
+            ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+        }
+        #endregion
+
+        #region 2D Color Thresholding
+        private ICommand m_thresholding2D;
+        public ICommand Thresholding2D
+        {
+            get
+            {
+                if (m_thresholding2D == null)
+                    m_thresholding2D = new RelayCommand(ColorThresholding2D);
+                return m_thresholding2D;
+            }
+        }
+
+        public void ColorThresholding2D(object parameter)
+        {
+            if (ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add a color image!");
+                return;
+            }
+
+            if (VectorOfMousePosition.Count == 0)
+            {
+                MessageBox.Show("Please select a color first!");
+                return;
+            }
+
+            ClearProcessedCanvas(parameter);
+
+            DialogBox dialogBox = new DialogBox();
+            List<string> prop = new List<string>
+            {
+                "Threshold: "
+            };
+
+            dialogBox.CreateDialogBox(prop);
+            dialogBox.ShowDialog();
+
+            List<double> response = dialogBox.GetResponseTexts();
+            double threshold = response[0];
+
+            GrayProcessedImage = Thresholding.Thresholding2D(
+                ColorInitialImage, LastPosition.X, LastPosition.Y, threshold);
+            ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+        }
+        #endregion
+
         #endregion
 
         #region Low-pass filters

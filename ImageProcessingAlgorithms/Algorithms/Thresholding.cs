@@ -210,5 +210,72 @@ namespace ImageProcessingAlgorithms.Algorithms
         }
 
         #endregion
+
+        #region 3D Color Thresholding
+        public static Image<Gray, byte> Thresholding3D(Image<Bgr, byte> inputImage, double Xpos, double Ypos, int threshold)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+
+            byte B0 = inputImage.Data[(int)Ypos, (int)Xpos, 0];
+            byte G0 = inputImage.Data[(int)Ypos, (int)Xpos, 1];
+            byte R0 = inputImage.Data[(int)Ypos, (int)Xpos, 2];
+
+            for (int y = 0; y < inputImage.Height; y++)
+            {
+                for (int x = 0; x < inputImage.Width; x++)
+                {
+                    byte B = inputImage.Data[y, x, 0];
+                    byte G = inputImage.Data[y, x, 1];
+                    byte R = inputImage.Data[y, x, 2];
+
+                    double distance = System.Math.Sqrt(
+                        System.Math.Pow(R - R0, 2) +
+                        System.Math.Pow(G - G0, 2) +
+                        System.Math.Pow(B - B0, 2));
+
+                    if (distance <= threshold)
+                        result.Data[y, x, 0] = 255;
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region 2D Color Thresholding
+        public static Image<Gray, byte> Thresholding2D(Image<Bgr, byte> inputImage, double Xpos, double Ypos, double threshold)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+
+            byte B0 = inputImage.Data[(int)Ypos, (int)Xpos, 0];
+            byte G0 = inputImage.Data[(int)Ypos, (int)Xpos, 1];
+            byte R0 = inputImage.Data[(int)Ypos, (int)Xpos, 2];
+
+            double r0 = R0 / (R0 + G0 + B0);
+            double g0 = G0 / (R0 + G0 + B0);
+
+            for (int y = 0; y < inputImage.Height; y++)
+            {
+                for (int x = 0; x < inputImage.Width; x++)
+                {
+                    byte B = inputImage.Data[y, x, 0];
+                    byte G = inputImage.Data[y, x, 1];
+                    byte R = inputImage.Data[y, x, 2];
+
+                    double r = (double)R / (R + G + B);
+                    double g = (double)G / (R + G + B);
+
+                    double distance = System.Math.Sqrt(
+                        System.Math.Pow(r - r0, 2) +
+                        System.Math.Pow(g - g0, 2));
+
+                    if (distance <= threshold)
+                        result.Data[y, x, 0] = 255;
+                }
+            }
+
+            return result;
+        }
+        #endregion
     }
 }
