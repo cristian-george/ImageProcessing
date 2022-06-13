@@ -243,6 +243,8 @@
                         <MenuItem Header="Canny"
                                   Command="{Binding Path=Canny}"/>
                     </MenuItem>
+                    <MenuItem Header="Emboss"
+                              Command="{Binding Path=Emboss}"/>
                 </MenuItem>
             </MenuItem>
 

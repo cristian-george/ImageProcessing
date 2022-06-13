@@ -2479,6 +2479,46 @@ namespace ImageProcessingFramework.ViewModel
 
         #endregion
 
+        #region Emboss
+        private ICommand m_emboss;
+        public ICommand Emboss
+        {
+            get
+            {
+                if (m_emboss == null)
+                    m_emboss = new RelayCommand(EmbossFilter);
+                return m_emboss;
+            }
+        }
+
+        public void EmbossFilter(object parameter)
+        {
+            if (SliderOn == true) return;
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ClearProcessedCanvas(parameter);
+
+            SliderWindow sliderWindow = new SliderWindow(this, "Threshold value: ");
+
+            if (GrayInitialImage != null)
+            {
+                sliderWindow.SetAlgorithmToApply(GrayInitialImage, Filters.Emboss);
+            }
+            else if (ColorInitialImage != null)
+            {
+                sliderWindow.SetAlgorithmToApply(ColorInitialImage, Filters.Emboss);
+            }
+
+            sliderWindow.ConfigureSlider(3, 7, 3, 2);
+            sliderWindow.Show();
+            SliderOn = true;
+        }
+        #endregion
+
         #endregion
 
         #region Morphological operations

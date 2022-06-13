@@ -1234,6 +1234,96 @@ namespace ImageProcessingAlgorithms.Algorithms
 
         #endregion
 
+        #region Emboss
+        public static Image<Gray, byte> Emboss(Image<Gray, byte> inputImage, double maskSize)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+
+            int[,] mask = new int[(int)maskSize, (int)maskSize];
+            for (int i = 0; i < maskSize; ++i)
+            {
+                for (int j = 0; j < maskSize; ++j)
+                {
+                    if (i + j < maskSize - 1)
+                    {
+                        mask[i, j] = -1;
+                    }
+                    else if (i + j > maskSize - 1)
+                    {
+                        mask[i, j] = 1;
+                    }
+                }
+            }
+
+            int maskRadius = (int)maskSize / 2;
+
+            for (int y = maskRadius; y < inputImage.Height - maskRadius; ++y)
+            {
+                for (int x = maskRadius; x < inputImage.Width - maskRadius; ++x)
+                {
+                    int value = 0;
+                    for (int i = -maskRadius; i <= maskRadius; ++i)
+                    {
+                        for (int j = -maskRadius; j <= maskRadius; ++j)
+                        {
+                            value += mask[i + maskRadius, j + maskRadius] * inputImage.Data[y + i, x + j, 0];
+                        }
+                    }
+
+                    result.Data[y, x, 0] = (byte)System.Math.Min(255, value + 128);
+                }
+            }
+
+            return result;
+        }
+
+        public static Image<Bgr, byte> Emboss(Image<Bgr, byte> inputImage, double maskSize)
+        {
+            Image<Bgr, byte> result = new Image<Bgr, byte>(inputImage.Size);
+
+            int[,] mask = new int[(int)maskSize, (int)maskSize];
+            for (int i = 0; i < maskSize; ++i)
+            {
+                for (int j = 0; j < maskSize; ++j)
+                {
+                    if (i + j < maskSize - 1)
+                    {
+                        mask[i, j] = -1;
+                    }
+                    else if (i + j > maskSize - 1)
+                    {
+                        mask[i, j] = 1;
+                    }
+                }
+            }
+
+            int maskRadius = (int)maskSize / 2;
+
+            for (int y = maskRadius; y < inputImage.Height - maskRadius; ++y)
+            {
+                for (int x = maskRadius; x < inputImage.Width - maskRadius; ++x)
+                {
+                    int valueB = 0, valueG = 0, valueR = 0;
+                    for (int i = -maskRadius; i <= maskRadius; ++i)
+                    {
+                        for (int j = -maskRadius; j <= maskRadius; ++j)
+                        {
+                            valueB += mask[i + maskRadius, j + maskRadius] * inputImage.Data[y + i, x + j, 0];
+                            valueG += mask[i + maskRadius, j + maskRadius] * inputImage.Data[y + i, x + j, 1];
+                            valueR += mask[i + maskRadius, j + maskRadius] * inputImage.Data[y + i, x + j, 2];
+                        }
+                    }
+
+                    result.Data[y, x, 0] = (byte)System.Math.Min(255, valueB + 128);
+                    result.Data[y, x, 1] = (byte)System.Math.Min(255, valueG + 128);
+                    result.Data[y, x, 2] = (byte)System.Math.Min(255, valueR + 128);
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
         #endregion
     }
 }
