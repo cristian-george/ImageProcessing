@@ -251,8 +251,8 @@ namespace ImageProcessingAlgorithms.Algorithms
             byte G0 = inputImage.Data[(int)Ypos, (int)Xpos, 1];
             byte R0 = inputImage.Data[(int)Ypos, (int)Xpos, 2];
 
-            double r0 = R0 / (R0 + G0 + B0);
-            double g0 = G0 / (R0 + G0 + B0);
+            double r0 = (double)R0 / (R0 + G0 + B0);
+            double g0 = (double)G0 / (R0 + G0 + B0);
 
             for (int y = 0; y < inputImage.Height; y++)
             {
