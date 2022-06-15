@@ -2153,6 +2153,42 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #region Kuwahara
+        private ICommand m_kuwahara;
+        public ICommand Kuwahara
+        {
+            get
+            {
+                if (m_kuwahara == null)
+                    m_kuwahara = new RelayCommand(KuwaharaFiltering);
+                return m_kuwahara;
+            }
+        }
+
+        public void KuwaharaFiltering(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image!");
+                return;
+            }
+
+            ClearProcessedCanvas(parameter);
+
+            if (GrayInitialImage != null)
+            {
+                GrayProcessedImage = Filters.Kuwahara(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+            }
+            else if (ColorInitialImage != null)
+            {
+                GrayProcessedImage = Tools.Convert(ColorInitialImage);
+                GrayProcessedImage = Filters.Kuwahara(GrayProcessedImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+            }
+        }
+        #endregion
+
         #endregion
 
         #region High-pass filters

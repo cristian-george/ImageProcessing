@@ -222,6 +222,8 @@
                               Command="{Binding Path=Gaussian}"/>
                     <MenuItem Header="Gaussian bilateral filtering"
                               Command="{Binding Path=GaussianBilateral}"/>
+                    <MenuItem Header="Kuwahara filtering"
+                              Command="{Binding Path=Kuwahara}"/>
                 </MenuItem>
                 <MenuItem Header="High-pass"
                           Foreground="#1E1E1E">

@@ -439,6 +439,50 @@ namespace ImageProcessingAlgorithms.Algorithms
 
         #endregion
 
+        #region Kuwahara filtering
+        public static Image<Gray, byte> Kuwahara(Image<Gray, byte> inputImage)
+        {
+            int maskSize = 5;
+            int maskRadius = maskSize / 2;
+
+            Image<Gray, byte> borderedImage = BorderReplicate(inputImage, maskSize);
+            Image<Gray, byte> result = new Image<Gray, byte>(borderedImage.Size);
+
+            double[,] meanAroundPixels = MeanAroundPixels(borderedImage, maskRadius + 1);
+            double[,] varianceAroundPixels = VarianceAroundPixels(borderedImage, meanAroundPixels, maskRadius + 1);
+
+            for (int y = maskRadius; y < borderedImage.Height - maskRadius; ++y)
+            {
+                for (int x = maskRadius; x < borderedImage.Width - maskRadius; ++x)
+                {
+                    List<(double, double)> variances = new List<(double, double)>
+                    {
+                        (varianceAroundPixels[y - 1, x - 1], meanAroundPixels[y - 1, x - 1]),
+                        (varianceAroundPixels[y - 1, x + 1], meanAroundPixels[y - 1, x + 1]),
+                        (varianceAroundPixels[y + 1, x + 1], meanAroundPixels[y + 1, x + 1]),
+                        (varianceAroundPixels[y + 1, x - 1], meanAroundPixels[y + 1, x - 1])
+                    };
+
+                    double minVariance = double.MaxValue;
+                    double mean = 0;
+                    foreach (var pair in variances)
+                    {
+                        if (pair.Item1 < minVariance)
+                        {
+                            minVariance = pair.Item1;
+                            mean = pair.Item2;
+                        }
+                    }
+
+                    result.Data[y, x, 0] = (byte)System.Math.Min(255, mean + 0.5);
+                }
+            }
+
+            return CropImage(result, maskRadius, maskRadius, inputImage.Width + maskRadius, inputImage.Height + maskRadius);
+        }
+
+        #endregion
+
         #endregion
 
         #region High-pass filters
