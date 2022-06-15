@@ -325,6 +325,37 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
             return integralImage;
         }
 
+        public static Image<Gray, double> IntegralImage(Image<Gray, int> inputImage)
+        {
+            Image<Gray, double> integralImage = new Image<Gray, double>(inputImage.Size);
+
+            for (int y = 0; y < inputImage.Height; ++y)
+            {
+                for (int x = 0; x < inputImage.Width; ++x)
+                {
+                    if (x == 0 && y == 0)
+                    {
+                        integralImage.Data[y, x, 0] = inputImage.Data[0, 0, 0];
+                    }
+                    else if (x == 0 && y != 0)
+                    {
+                        integralImage.Data[y, x, 0] = integralImage.Data[y - 1, 0, 0] + inputImage.Data[y, 0, 0];
+                    }
+                    else if (y == 0 && x != 0)
+                    {
+                        integralImage.Data[y, x, 0] = integralImage.Data[0, x - 1, 0] + inputImage.Data[0, x, 0];
+                    }
+                    else
+                    {
+                        integralImage.Data[y, x, 0] = integralImage.Data[y, x - 1, 0] + integralImage.Data[y - 1, x, 0] -
+                                                      integralImage.Data[y - 1, x - 1, 0] + inputImage.Data[y, x, 0];
+                    }
+                }
+            }
+
+            return integralImage;
+        }
+
         public static Image<Bgr, int> IntegralImage(Image<Bgr, byte> inputImage)
         {
             Image<Bgr, int> integralImage = new Image<Bgr, int>(inputImage.Size);
@@ -387,6 +418,25 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
                    integralImage.Data[y1, x0 - 1, 0] - integralImage.Data[y0 - 1, x1, 0];
         }
 
+        public static double SumArea(Image<Gray, double> integralImage, int x0, int y0, int x1, int y1)
+        {
+            if (x0 == 0 && y0 == 0)
+            {
+                return integralImage.Data[x1, y1, 0];
+            }
+            else if (x0 != 0 && y0 == 0)
+            {
+                return integralImage.Data[y1, x1, 0] - integralImage.Data[y1, x0 - 1, 0];
+            }
+            else if (x0 == 0 && y0 != 0)
+            {
+                return integralImage.Data[y1, x1, 0] - integralImage.Data[y0 - 1, x1, 0];
+            }
+
+            return integralImage.Data[y1, x1, 0] + integralImage.Data[y0 - 1, x0 - 1, 0] -
+                   integralImage.Data[y1, x0 - 1, 0] - integralImage.Data[y0 - 1, x1, 0];
+        }
+
         public static int SumArea(Image<Bgr, int> integralImage, int x0, int y0, int x1, int y1, int channel)
         {
             if (x0 == 0 && y0 == 0)
@@ -412,6 +462,14 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
         {
             int resolution = (x1 - x0 + 1) * (y1 - y0 + 1);
             int sumArea = SumArea(integralImage, x0, y0, x1, y1);
+
+            return sumArea / resolution;
+        }
+
+        public static double MeanArea(Image<Gray, double> integralImage, int x0, int y0, int x1, int y1)
+        {
+            int resolution = (x1 - x0 + 1) * (y1 - y0 + 1);
+            double sumArea = SumArea(integralImage, x0, y0, x1, y1);
 
             return sumArea / resolution;
         }
@@ -588,6 +646,83 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
             }
 
             return product;
+        }
+        #endregion
+
+        #region Square every pixel in image
+
+        public static Image<Gray, int> ImageSquared(Image<Gray, byte> inputImage)
+        {
+            Image<Gray, int> result = new Image<Gray, int>(inputImage.Size);
+
+            for (int y = 0; y < inputImage.Height; ++y)
+            {
+                for (int x = 0; x < inputImage.Width; ++x)
+                {
+                    result.Data[y, x, 0] = (int)System.Math.Pow(inputImage.Data[y, x, 0], 2);
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region Compute mean and variance of gray levels in adiacent blocks around a centered pixel
+        public static double[,] MeanAroundPixels(Image<Gray, byte> image, int maskSize)
+        {
+            Image<Gray, int> integralImage = IntegralImage(image);
+
+            double[,] meanAroundPixels = new double[image.Height, image.Width];
+            int maskRadius = maskSize / 2;
+
+            for (int y = maskRadius; y < image.Height - maskRadius; ++y)
+            {
+                for (int x = maskRadius; x < image.Width - maskRadius; ++x)
+                {
+                    meanAroundPixels[y, x] = MeanArea(integralImage,
+                        x - maskRadius, y - maskRadius,
+                        x + maskRadius, y + maskRadius);
+                }
+            }
+
+            return meanAroundPixels;
+        }
+
+        public static double[,] MeanAroundPixels(Image<Gray, int> image, int maskSize)
+        {
+            Image<Gray, double> integralImage = IntegralImage(image);
+
+            double[,] meanAroundPixels = new double[image.Height, image.Width];
+            int maskRadius = maskSize / 2;
+
+            for (int y = maskRadius; y < image.Height - maskRadius; ++y)
+            {
+                for (int x = maskRadius; x < image.Width - maskRadius; ++x)
+                {
+                    meanAroundPixels[y, x] = MeanArea(integralImage,
+                        x - maskRadius, y - maskRadius,
+                        x + maskRadius, y + maskRadius);
+                }
+            }
+
+            return meanAroundPixels;
+        }
+
+        public static double[,] VarianceAroundPixels(Image<Gray, byte> image, double[,] meanAroundPixels, int maskSize)
+        {
+            double[,] meanAroundPixelsSquared = MeanAroundPixels(ImageSquared(image), maskSize);
+            double[,] varianceAroundPixels = new double[image.Height, image.Width];
+            int maskRadius = maskSize / 2;
+
+            for (int y = maskRadius; y < image.Height - maskRadius; ++y)
+            {
+                for (int x = maskRadius; x < image.Width - maskRadius; ++x)
+                {
+                    varianceAroundPixels[y, x] = meanAroundPixelsSquared[y, x] - meanAroundPixels[y, x];
+                }
+            }
+
+            return varianceAroundPixels;
         }
         #endregion
     }
