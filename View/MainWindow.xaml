@@ -8,7 +8,7 @@
         MouseMove="WindowMouseMove"
         Title="Image Processing" 
         Height="685" 
-        Width="1124"
+        Width="1125"
         Left="125" 
         Top="0"
         Icon="../Images/Icon.png">
@@ -17,20 +17,20 @@
         <local:MainCommands/>
     </Window.DataContext>
 
-    <Grid Background="#1E1E1E">
+    <Grid Background="#FF1F1F1F">
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
             <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="100"/>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Menu Background="#533370"
+        <Menu Background="#FF3A503A"
               Grid.Row="0" 
               Grid.ColumnSpan="2">
             <Menu.ItemsPanel>
@@ -317,6 +317,11 @@
                     <MenuItem Header="Hough (2 quadrants)"
                               Command="{Binding Path=HoughTransformTwoQuadrants}"/>
                 </MenuItem>
+                <MenuItem Header="Detecting circles"
+                          Foreground="#1E1E1E">
+                    <MenuItem Header="Hough (given radius)"
+                              Command="{Binding Path=HoughTransformGivenRadius}"/>
+                </MenuItem>
             </MenuItem>
 
             <MenuItem Header="Save as original image" 
@@ -331,7 +336,7 @@
                Width="auto" 
                Height="auto" 
                Margin="10,10,30,10"
-               BorderBrush="#4E4492" 
+               BorderBrush="#FF629A62" 
                BorderThickness="5.0"
                VerticalContentAlignment="Center" 
                HorizontalContentAlignment="Center"
@@ -365,7 +370,7 @@
                Width="auto" 
                Height="auto" 
                Margin="30,10,10,10"
-               BorderBrush="#4E4492" 
+               BorderBrush="#FF629A62" 
                BorderThickness="5.0"
                VerticalContentAlignment="Center" 
                HorizontalContentAlignment="Center">
@@ -399,7 +404,7 @@
                 CommandParameter="{Binding ElementName=sliderZoom}" 
                 Background="AliceBlue"
                 BorderThickness="2"
-                BorderBrush="#4E4492"
+                BorderBrush="#A0B4CF"
                 Grid.Row="4" 
                 Margin="10,26,0,42"
                 Width="80"

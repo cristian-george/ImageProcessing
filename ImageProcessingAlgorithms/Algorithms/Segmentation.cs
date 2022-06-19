@@ -1,5 +1,6 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
+using static System.Math;
 
 namespace ImageProcessingAlgorithms.Algorithms
 {
@@ -93,6 +94,58 @@ namespace ImageProcessingAlgorithms.Algorithms
         public static Image<Gray, byte> HoughTransformTwoQuadrants(Image<Gray, byte> binaryImage)
         {
             var houghMatrix = GetHoughMatrixTwoQuadrants(binaryImage);
+
+            int height = houghMatrix.GetLength(0);
+            int width = houghMatrix.GetLength(1);
+
+            var result = new Image<Gray, byte>(width, height);
+
+            for (int y = 0; y < height; ++y)
+            {
+                for (int x = 0; x < width; ++x)
+                {
+                    result.Data[y, x, 0] = (byte)System.Math.Min(255, houghMatrix[y, x]);
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #endregion
+
+        #region Detecting circles
+
+        #region Hough transformation (slow & given radius)
+
+        private static int[,] GetSlowHoughMatrix_GivenRadius(Image<Gray, byte> binaryImage, double radius)
+        {
+            int[,] houghMatrix = new int[binaryImage.Height, binaryImage.Width];
+
+            for (int y = 0; y < binaryImage.Height; ++y)
+            {
+                for (int x = 0; x < binaryImage.Width; ++x)
+                {
+                    if (binaryImage.Data[y, x, 0] == 255)
+                    {
+                        for (int a = 0; a < binaryImage.Width; ++a)
+                        {
+                            double b = y - Sqrt(Pow(radius, 2) - Pow(x - a, 2));
+
+                            if (b >= 0 && b < binaryImage.Height)
+                                houghMatrix[(int)b, a]++;
+
+                        }
+                    }
+                }
+            }
+
+            return houghMatrix;
+        }
+
+        public static Image<Gray, byte> SlowHoughTransform_GivenRadius(Image<Gray, byte> binaryImage, double radius)
+        {
+            var houghMatrix = GetSlowHoughMatrix_GivenRadius(binaryImage, radius);
 
             int height = houghMatrix.GetLength(0);
             int width = houghMatrix.GetLength(1);

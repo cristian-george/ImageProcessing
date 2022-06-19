@@ -213,9 +213,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="License-LGPL.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\Icon.png" />
   </ItemGroup>
   <ItemGroup>

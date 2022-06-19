@@ -3449,7 +3449,6 @@ namespace ImageProcessingFramework.ViewModel
 
             ClearProcessedCanvas(parameter);
 
-
             if (GrayInitialImage != null)
             {
                 if (!Helper.IsBinaryImage(GrayInitialImage))
@@ -3500,6 +3499,54 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #endregion
+
+        #region Detecting circles
+        private ICommand m_houghGivenRadius;
+        public ICommand HoughTransformGivenRadius
+        {
+            get
+            {
+                if (m_houghGivenRadius == null)
+                    m_houghGivenRadius = new RelayCommand(SlowHoughForCircles_GivenRadius);
+                return m_houghGivenRadius;
+            }
+        }
+
+        public void SlowHoughForCircles_GivenRadius(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("Please add an image.");
+                return;
+            }
+
+            if (VectorOfMousePosition.Count < 2)
+            {
+                MessageBox.Show("Please select the approximation of the radius");
+                return;
+            }
+
+            ClearProcessedCanvas(parameter);
+
+            System.Windows.Point firstPosition = VectorOfMousePosition[VectorOfMousePosition.Count - 2];
+
+            double radius = System.Math.Sqrt(
+                System.Math.Pow(LastPosition.X - firstPosition.X, 2) +
+                System.Math.Pow(LastPosition.Y - firstPosition.Y, 2));
+
+            if (GrayInitialImage != null)
+            {
+                if (!Helper.IsBinaryImage(GrayInitialImage))
+                {
+                    MessageBox.Show("Please add a binary image.");
+                    return;
+                }
+
+                GrayProcessedImage = Segmentation.SlowHoughTransform_GivenRadius(GrayInitialImage, radius);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+            }
+        }
         #endregion
 
         #endregion
