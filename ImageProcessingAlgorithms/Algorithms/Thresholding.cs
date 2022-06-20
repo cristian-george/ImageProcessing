@@ -2,6 +2,7 @@
 using Emgu.CV.Structure;
 using static ImageProcessingAlgorithms.Tools.Tools;
 using static ImageProcessingAlgorithms.AlgorithmsHelper.Helper;
+using static System.Math;
 
 namespace ImageProcessingAlgorithms.Algorithms
 {
@@ -133,9 +134,9 @@ namespace ImageProcessingAlgorithms.Algorithms
                         mu3 /= P3;
 
                     double interclassVariance =
-                        (P1 * System.Math.Pow(mu1 - mu, 2)) +
-                        (P2 * System.Math.Pow(mu2 - mu, 2)) +
-                        (P3 * System.Math.Pow(mu3 - mu, 2));
+                        (P1 * Pow(mu1 - mu, 2)) +
+                        (P2 * Pow(mu2 - mu, 2)) +
+                        (P3 * Pow(mu3 - mu, 2));
 
                     if (interclassVariance > maxInterclassVariance)
                     {
@@ -228,10 +229,10 @@ namespace ImageProcessingAlgorithms.Algorithms
                     byte G = inputImage.Data[y, x, 1];
                     byte R = inputImage.Data[y, x, 2];
 
-                    double distance = System.Math.Sqrt(
-                        System.Math.Pow(R - R0, 2) +
-                        System.Math.Pow(G - G0, 2) +
-                        System.Math.Pow(B - B0, 2));
+                    double distance = Sqrt(
+                        Pow(R - R0, 2) +
+                        Pow(G - G0, 2) +
+                        Pow(B - B0, 2));
 
                     if (distance <= threshold)
                         result.Data[y, x, 0] = 255;
@@ -265,9 +266,9 @@ namespace ImageProcessingAlgorithms.Algorithms
                     double r = (double)R / (R + G + B);
                     double g = (double)G / (R + G + B);
 
-                    double distance = System.Math.Sqrt(
-                        System.Math.Pow(r - r0, 2) +
-                        System.Math.Pow(g - g0, 2));
+                    double distance = Sqrt(
+                        Pow(r - r0, 2) +
+                        Pow(g - g0, 2));
 
                     if (distance <= threshold)
                         result.Data[y, x, 0] = 255;

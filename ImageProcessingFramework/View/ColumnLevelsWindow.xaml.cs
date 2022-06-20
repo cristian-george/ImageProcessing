@@ -123,7 +123,7 @@ namespace ImageProcessingFramework.View
 
         private void ColumnDisplayClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            ColumnLevelsOn = false;
+            DisplayColumnLevelsOn = false;
         }
     }
 }

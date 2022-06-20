@@ -16,7 +16,7 @@
         <local:SliderVM/>
     </Window.DataContext>
 
-    <Grid Background="#1E1E1E">
+    <Grid Background="#FF1F1F1F">
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>

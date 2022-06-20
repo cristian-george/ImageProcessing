@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageProcessingFramework", "ImageProcessingFramework.csproj", "{E9283722-EEEB-4EC8-B1D5-AF972CF6A350}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageProcessingFramework", "ImageProcessingFramework\ImageProcessingFramework.csproj", "{E9283722-EEEB-4EC8-B1D5-AF972CF6A350}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageProcessingAlgorithms", "ImageProcessingAlgorithms\ImageProcessingAlgorithms.csproj", "{ABE2E6C4-C85D-4405-9773-49DA48FDB174}"
 EndProject

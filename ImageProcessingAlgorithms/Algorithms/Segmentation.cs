@@ -12,8 +12,8 @@ namespace ImageProcessingAlgorithms.Algorithms
 
         private static int[,] GetHoughMatrixThreeQuadrants(Image<Gray, byte> binaryImage)
         {
-            double diagonalLength = System.Math.Sqrt(System.Math.Pow(binaryImage.Height, 2) +
-                                                     System.Math.Pow(binaryImage.Width, 2));
+            double diagonalLength = Sqrt(Pow(binaryImage.Height, 2) +
+                                                     Pow(binaryImage.Width, 2));
             int[,] houghMatrix = new int[(int)diagonalLength, 271];
 
             for (int y = 0; y < binaryImage.Height; ++y)
@@ -24,10 +24,10 @@ namespace ImageProcessingAlgorithms.Algorithms
                     {
                         for (int angle = -90; angle <= 180; ++angle)
                         {
-                            double radians = angle * System.Math.PI / 180;
+                            double radians = angle * PI / 180;
 
-                            double radius = x * System.Math.Cos(radians) +
-                                            y * System.Math.Sin(radians);
+                            double radius = x * Cos(radians) +
+                                            y * Sin(radians);
 
                             if (radius >= 0)
                             {
@@ -54,7 +54,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             {
                 for (int x = 0; x < width; ++x)
                 {
-                    result.Data[y, x, 0] = (byte)System.Math.Min(255, houghMatrix[y, x]);
+                    result.Data[y, x, 0] = (byte)Min(255, houghMatrix[y, x]);
                 }
             }
 
@@ -65,8 +65,8 @@ namespace ImageProcessingAlgorithms.Algorithms
         #region Hough transformation (2 quadrants)
         private static int[,] GetHoughMatrixTwoQuadrants(Image<Gray, byte> binaryImage)
         {
-            double diagonalLength = System.Math.Sqrt(System.Math.Pow(binaryImage.Height, 2) +
-                                                     System.Math.Pow(binaryImage.Width, 2));
+            double diagonalLength = Sqrt(Pow(binaryImage.Height, 2) +
+                                                     Pow(binaryImage.Width, 2));
             int[,] houghMatrix = new int[2 * (int)diagonalLength, 181];
 
             for (int y = 0; y < binaryImage.Height; ++y)
@@ -77,10 +77,10 @@ namespace ImageProcessingAlgorithms.Algorithms
                     {
                         for (int angle = -90; angle <= 90; ++angle)
                         {
-                            double radians = angle * System.Math.PI / 180;
+                            double radians = angle * PI / 180;
 
-                            double radius = x * System.Math.Cos(radians) +
-                                            y * System.Math.Sin(radians);
+                            double radius = x * Cos(radians) +
+                                            y * Sin(radians);
 
                             ++houghMatrix[(int)(radius + diagonalLength), angle + 90];
                         }
@@ -104,7 +104,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             {
                 for (int x = 0; x < width; ++x)
                 {
-                    result.Data[y, x, 0] = (byte)System.Math.Min(255, houghMatrix[y, x]);
+                    result.Data[y, x, 0] = (byte)Min(255, houghMatrix[y, x]);
                 }
             }
 
@@ -156,7 +156,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             {
                 for (int x = 0; x < width; ++x)
                 {
-                    result.Data[y, x, 0] = (byte)System.Math.Min(255, houghMatrix[y, x]);
+                    result.Data[y, x, 0] = (byte)Min(255, houghMatrix[y, x]);
                 }
             }
 

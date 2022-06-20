@@ -82,7 +82,7 @@ namespace ImageProcessingFramework.View
                 Width = 50,
                 Background = new SolidColorBrush(Colors.AliceBlue),
                 BorderThickness = new Thickness(2),
-                BorderBrush = new SolidColorBrush(Colors.MediumSlateBlue)
+                BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x62, 0x9A, 0x62)),
             };
             OKButton.Click += OKButton_Click;
 

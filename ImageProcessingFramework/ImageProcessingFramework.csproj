@@ -107,6 +107,16 @@
     <Compile Include="Model\DrawingHelper.cs" />
     <Compile Include="Model\ImageConverter.cs" />
     <Compile Include="Model\UiHelper.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\ColumnLevelsVM.cs" />
     <Compile Include="ViewModel\BaseVM.cs" />
     <Compile Include="ViewModel\HermiteSplineVM.cs" />
@@ -188,16 +198,6 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -216,7 +216,7 @@
     <Resource Include="Images\Icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="ImageProcessingAlgorithms\ImageProcessingAlgorithms.csproj">
+    <ProjectReference Include="..\ImageProcessingAlgorithms\ImageProcessingAlgorithms.csproj">
       <Project>{abe2e6c4-c85d-4405-9773-49da48fdb174}</Project>
       <Name>ImageProcessingAlgorithms</Name>
     </ProjectReference>

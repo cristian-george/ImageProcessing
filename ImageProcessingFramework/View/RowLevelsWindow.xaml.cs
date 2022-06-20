@@ -123,7 +123,7 @@ namespace ImageProcessingFramework.View
 
         private void RowDisplayClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            RowLevelsOn = false;
+            DisplayRowLevelsOn = false;
         }
     }
 }

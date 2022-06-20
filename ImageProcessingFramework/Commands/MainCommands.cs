@@ -14,6 +14,7 @@ using static ImageProcessingFramework.Model.DataProvider;
 using ImageProcessingFramework.View;
 using ImageProcessingFramework.Model;
 using System.Collections.Generic;
+using static System.Math;
 
 namespace ImageProcessingFramework.ViewModel
 {
@@ -47,15 +48,29 @@ namespace ImageProcessingFramework.ViewModel
             }
         }
 
+        #region Check if InitialImage is null
+        private bool IsInitialImageNull()
+        {
+            ClearProcessedCanvas(null);
+
+            if (InitialImage == null)
+            {
+                MessageBox.Show("Please add an image !");
+                return true;
+            }
+            return false;
+        }
+        #endregion
+
         #region Reset zoom
-        private ICommand m_resetZoom;
-        public ICommand Reset
+        private ICommand m_resetZoomCommand;
+        public ICommand ResetZoomCommand
         {
             get
             {
-                if (m_resetZoom == null)
-                    m_resetZoom = new RelayCommand(ResetZoom);
-                return m_resetZoom;
+                if (m_resetZoomCommand == null)
+                    m_resetZoomCommand = new RelayCommand(ResetZoom);
+                return m_resetZoomCommand;
             }
         }
 
@@ -84,28 +99,20 @@ namespace ImageProcessingFramework.ViewModel
         #endregion
 
         #region Save processed image as original image
-        private ICommand m_saveAsOriginalImage;
-        public ICommand SaveAsOriginalImage
+        private ICommand m_saveProcessedImageAsOriginalImageCommand;
+        public ICommand SaveProcessedImageAsOriginalImageCommand
         {
             get
             {
-                if (m_saveAsOriginalImage == null)
-                    m_saveAsOriginalImage = new RelayCommand(SaveAsOriginal);
-                return m_saveAsOriginalImage;
+                if (m_saveProcessedImageAsOriginalImageCommand == null)
+                    m_saveProcessedImageAsOriginalImageCommand = new RelayCommand(SaveProcessedImageAsOriginalImage);
+                return m_saveProcessedImageAsOriginalImageCommand;
             }
         }
 
-        public void SaveAsOriginal(object parameter)
+        public void SaveProcessedImageAsOriginalImage(object parameter)
         {
-            RemoveAllDrawnShapes(parameter);
-
-            if (ColorProcessedImage == null && GrayProcessedImage == null)
-            {
-                MessageBox.Show("Doesn't exist a processed image.");
-                return;
-            }
-
-            ClearInitialCanvas(parameter);
+            RemoveDrawnShapes(parameter);
 
             if (GrayProcessedImage != null)
             {
@@ -129,20 +136,20 @@ namespace ImageProcessingFramework.ViewModel
         #region File
 
         #region Load grayscale image
-        private ICommand m_loadGrayImage;
-        public ICommand LoadGrayImage
+        private ICommand m_loadGrayImageCommand;
+        public ICommand LoadGrayImageCommand
         {
             get
             {
-                if (m_loadGrayImage == null)
-                    m_loadGrayImage = new RelayCommand(LoadingGrayImage);
-                return m_loadGrayImage;
+                if (m_loadGrayImageCommand == null)
+                    m_loadGrayImageCommand = new RelayCommand(LoadGrayImage);
+                return m_loadGrayImageCommand;
             }
         }
 
-        public void LoadingGrayImage(object parameter)
+        public void LoadGrayImage(object parameter)
         {
-            ClearUi(parameter);
+            ClearAll(parameter);
 
             var openFileDialog = new OpenFileDialog
             {
@@ -159,20 +166,20 @@ namespace ImageProcessingFramework.ViewModel
         #endregion
 
         #region Load color image
-        private ICommand m_loadColorImage;
-        public ICommand LoadColorImage
+        private ICommand m_loadColorImageCommand;
+        public ICommand LoadColorImageCommand
         {
             get
             {
-                if (m_loadColorImage == null)
-                    m_loadColorImage = new RelayCommand(LoadingColorImage);
-                return m_loadColorImage;
+                if (m_loadColorImageCommand == null)
+                    m_loadColorImageCommand = new RelayCommand(LoadColorImage);
+                return m_loadColorImageCommand;
             }
         }
 
-        public void LoadingColorImage(object parameter)
+        public void LoadColorImage(object parameter)
         {
-            ClearUi(parameter);
+            ClearAll(parameter);
 
             var openFileDialog = new OpenFileDialog
             {
@@ -189,22 +196,23 @@ namespace ImageProcessingFramework.ViewModel
         #endregion
 
         #region Save processed image
-        private ICommand m_saveImage;
-        public ICommand SaveImage
+        private ICommand m_saveProcessedImageCommand;
+        public ICommand SaveProcessedImageCommand
         {
             get
             {
-                if (m_saveImage == null)
-                    m_saveImage = new RelayCommand(SavingImage);
-                return m_saveImage;
+                if (m_saveProcessedImageCommand == null)
+                    m_saveProcessedImageCommand = new RelayCommand(SaveProcessedImage);
+                return m_saveProcessedImageCommand;
             }
         }
 
-        public void SavingImage(object parameter)
+        public void SaveProcessedImage(object parameter)
         {
             if (GrayProcessedImage == null && ColorProcessedImage == null)
             {
-                MessageBox.Show("If you want to save your processed image, please load and process an image first!");
+                MessageBox.Show("If you want to save your processed image, " +
+                    "please load and process an image first!");
                 return;
             }
 
@@ -235,18 +243,18 @@ namespace ImageProcessingFramework.ViewModel
         #endregion
 
         #region Exit
-        private ICommand m_exitWindow;
-        public ICommand Exit
+        private ICommand m_exitCommand;
+        public ICommand ExitCommand
         {
             get
             {
-                if (m_exitWindow == null)
-                    m_exitWindow = new RelayCommand(ExitWindow);
-                return m_exitWindow;
+                if (m_exitCommand == null)
+                    m_exitCommand = new RelayCommand(Exit);
+                return m_exitCommand;
             }
         }
 
-        public void ExitWindow(object parameter)
+        public void Exit(object parameter)
         {
             System.Environment.Exit(0);
         }
@@ -254,8 +262,8 @@ namespace ImageProcessingFramework.ViewModel
         private static void CloseAllWindows()
         {
             MagnifierOn = false;
-            RowLevelsOn = false;
-            ColumnLevelsOn = false;
+            DisplayRowLevelsOn = false;
+            DisplayColumnLevelsOn = false;
             SliderOn = false;
 
             for (int intCounter = App.Current.Windows.Count - 1; intCounter >= 1; intCounter--)
@@ -267,21 +275,21 @@ namespace ImageProcessingFramework.ViewModel
 
         #region Edit
 
-        #region Reset initial canvas
-        private ICommand m_resetInitialCanvas;
-        public ICommand ResetInitialCanvas
+        #region Clear initial canvas
+        private ICommand m_clearInitialCanvasCommand;
+        public ICommand ClearInitialCanvasCommand
         {
             get
             {
-                if (m_resetInitialCanvas == null)
-                    m_resetInitialCanvas = new RelayCommand(ClearInitialCanvas);
-                return m_resetInitialCanvas;
+                if (m_clearInitialCanvasCommand == null)
+                    m_clearInitialCanvasCommand = new RelayCommand(ClearInitialCanvas);
+                return m_clearInitialCanvasCommand;
             }
         }
 
         public void ClearInitialCanvas(object parameter)
         {
-            RemoveAllDrawnShapes(parameter);
+            RemoveDrawnShapes(parameter);
 
             GrayInitialImage = null;
             ColorInitialImage = null;
@@ -289,21 +297,21 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
-        #region Reset processed canvas
-        private ICommand m_resetProcessedCanvas;
-        public ICommand ResetProcessedCanvas
+        #region Clear processed canvas
+        private ICommand m_clearProcessedCanvasCommand;
+        public ICommand ClearProcessedCanvasCommand
         {
             get
             {
-                if (m_resetProcessedCanvas == null)
-                    m_resetProcessedCanvas = new RelayCommand(ClearProcessedCanvas);
-                return m_resetProcessedCanvas;
+                if (m_clearProcessedCanvasCommand == null)
+                    m_clearProcessedCanvasCommand = new RelayCommand(ClearProcessedCanvas);
+                return m_clearProcessedCanvasCommand;
             }
         }
 
         public void ClearProcessedCanvas(object parameter)
         {
-            RemoveAllDrawnShapes(parameter);
+            RemoveDrawnShapes(parameter);
 
             GrayProcessedImage = null;
             ColorProcessedImage = null;
@@ -311,42 +319,42 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
-        #region Remove drawn elements
-        private ICommand m_removeDrawnShapes;
-        public ICommand RemoveDrawnShapes
+        #region Remove drawn shapes
+        private ICommand m_removeDrawnShapesCommand;
+        public ICommand RemoveDrawnShapesCommand
         {
             get
             {
-                if (m_removeDrawnShapes == null)
-                    m_removeDrawnShapes = new RelayCommand(RemoveAllDrawnShapes);
-                return m_removeDrawnShapes;
+                if (m_removeDrawnShapesCommand == null)
+                    m_removeDrawnShapesCommand = new RelayCommand(RemoveDrawnShapes);
+                return m_removeDrawnShapesCommand;
             }
         }
 
-        public void RemoveAllDrawnShapes(object parameter)
+        public void RemoveDrawnShapes(object parameter)
         {
             UiHelper.RemoveAllDrawnShapes();
         }
         #endregion
 
         #region Clear all
-        private ICommand m_clearUi;
-        public ICommand Clear
+        private ICommand m_clearAllCommand;
+        public ICommand ClearAllCommand
         {
             get
             {
-                if (m_clearUi == null)
-                    m_clearUi = new RelayCommand(ClearUi);
-                return m_clearUi;
+                if (m_clearAllCommand == null)
+                    m_clearAllCommand = new RelayCommand(ClearAll);
+                return m_clearAllCommand;
             }
         }
 
-        public void ClearUi(object parameter)
+        public void ClearAll(object parameter)
         {
             CloseAllWindows();
             UiHelper.RemoveAllUiElements();
 
-            RemoveAllDrawnShapes(parameter);
+            RemoveDrawnShapes(parameter);
             ClearInitialCanvas(parameter);
             ClearProcessedCanvas(parameter);
 
@@ -359,26 +367,21 @@ namespace ImageProcessingFramework.ViewModel
         #region Tools
 
         #region Magnifier
-        private ICommand m_magnifier;
-        public ICommand Magnifier
+        private ICommand m_magnifierCommand;
+        public ICommand MagnifierCommand
         {
             get
             {
-                if (m_magnifier == null)
-                    m_magnifier = new RelayCommand(MagnifierShow);
-                return m_magnifier;
+                if (m_magnifierCommand == null)
+                    m_magnifierCommand = new RelayCommand(Magnifier);
+                return m_magnifierCommand;
             }
         }
 
-        public void MagnifierShow(object parameter)
+        public void Magnifier(object parameter)
         {
             if (MagnifierOn == true) return;
-
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
+            if (IsInitialImageNull()) return;
 
             if (VectorOfMousePosition.Count == 0)
             {
@@ -392,29 +395,25 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
-        #region Gray/Color levels
+        #region Display Gray/Color levels
 
         #region On row
-        private ICommand m_rowDisplay;
-        public ICommand RowDisplay
+        private ICommand m_displayLevelsOnRowCommand;
+        public ICommand DisplayLevelsOnRowCommand
         {
             get
             {
-                if (m_rowDisplay == null)
-                    m_rowDisplay = new RelayCommand(RowLevels);
-                return m_rowDisplay;
+                if (m_displayLevelsOnRowCommand == null)
+                    m_displayLevelsOnRowCommand = new RelayCommand(DisplayLevelsOnRow);
+                return m_displayLevelsOnRowCommand;
             }
         }
 
-        public void RowLevels(object parameter)
+        public void DisplayLevelsOnRow(object parameter)
         {
-            if (RowLevelsOn == true) return;
+            if (DisplayRowLevelsOn == true) return;
 
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
+            if (IsInitialImageNull()) return;
 
             if (VectorOfMousePosition.Count == 0)
             {
@@ -424,31 +423,27 @@ namespace ImageProcessingFramework.ViewModel
 
             RowLevelsWindow rowLevelsWindow = new RowLevelsWindow();
             rowLevelsWindow.Show();
-            RowLevelsOn = true;
+            DisplayRowLevelsOn = true;
         }
         #endregion
 
         #region On column
-        private ICommand m_columnDisplay;
-        public ICommand ColumnDisplay
+        private ICommand m_displayLevelsOnColumnCommand;
+        public ICommand DisplayLevelsOnColumnCommand
         {
             get
             {
-                if (m_columnDisplay == null)
-                    m_columnDisplay = new RelayCommand(ColumnLevels);
-                return m_columnDisplay;
+                if (m_displayLevelsOnColumnCommand == null)
+                    m_displayLevelsOnColumnCommand = new RelayCommand(DisplayLevelsOnColumn);
+                return m_displayLevelsOnColumnCommand;
             }
         }
 
-        public void ColumnLevels(object parameter)
+        public void DisplayLevelsOnColumn(object parameter)
         {
-            if (ColumnLevelsOn == true) return;
+            if (DisplayColumnLevelsOn == true) return;
 
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
+            if (IsInitialImageNull()) return;
 
             if (VectorOfMousePosition.Count == 0)
             {
@@ -458,33 +453,27 @@ namespace ImageProcessingFramework.ViewModel
 
             ColumnLevelsWindow columnLevelsWindow = new ColumnLevelsWindow();
             columnLevelsWindow.Show();
-            ColumnLevelsOn = true;
+            DisplayColumnLevelsOn = true;
         }
         #endregion
 
         #endregion
 
-        #region Copy
-        private ICommand m_copyImage;
-        public ICommand Copy
+        #region Copy image
+        private ICommand m_copyImageCommand;
+        public ICommand CopyImageCommand
         {
             get
             {
-                if (m_copyImage == null)
-                    m_copyImage = new RelayCommand(CopyImage);
-                return m_copyImage;
+                if (m_copyImageCommand == null)
+                    m_copyImageCommand = new RelayCommand(CopyImage);
+                return m_copyImageCommand;
             }
         }
 
         public void CopyImage(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             if (ColorInitialImage != null)
             {
@@ -499,27 +488,21 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
-        #region Invert
-        private ICommand m_invertImage;
-        public ICommand Invert
+        #region Invert image
+        private ICommand m_invertImageCommand;
+        public ICommand InvertImageCommand
         {
             get
             {
-                if (m_invertImage == null)
-                    m_invertImage = new RelayCommand(InvertImage);
-                return m_invertImage;
+                if (m_invertImageCommand == null)
+                    m_invertImageCommand = new RelayCommand(InvertImage);
+                return m_invertImageCommand;
             }
         }
 
         public void InvertImage(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             if (GrayInitialImage != null)
             {
@@ -534,54 +517,48 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
-        #region Transform image to grayscale
-        private ICommand m_convertToGrayImage;
-        public ICommand ConvertToGrayImage
+        #region Convert image to grayscale
+        private ICommand m_convertImageToGrayscaleCommand;
+        public ICommand ConvertImageToGrayscaleCommand
         {
             get
             {
-                if (m_convertToGrayImage == null)
-                    m_convertToGrayImage = new RelayCommand(ConvertToGray);
-                return m_convertToGrayImage;
+                if (m_convertImageToGrayscaleCommand == null)
+                    m_convertImageToGrayscaleCommand = new RelayCommand(ConvertImageToGrayscale);
+                return m_convertImageToGrayscaleCommand;
             }
         }
 
-        public void ConvertToGray(object parameter)
+        public void ConvertImageToGrayscale(object parameter)
         {
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             if (ColorInitialImage != null)
             {
                 GrayProcessedImage = Tools.Convert(ColorInitialImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                return;
             }
-
-            MessageBox.Show(ColorInitialImage != null
-               ? "It is possible to convert only color images."
-               : "Please add a color image first.");
+            else
+                MessageBox.Show("It is possible to convert only color images. " +
+                    "Please add a color image first.");
         }
         #endregion
 
         #region Crop image
-        private ICommand m_cropImage;
-        public ICommand Crop
+        private ICommand m_cropImageCommand;
+        public ICommand CropImageCommand
         {
             get
             {
-                if (m_cropImage == null)
-                    m_cropImage = new RelayCommand(CropImage);
-                return m_cropImage;
+                if (m_cropImageCommand == null)
+                    m_cropImageCommand = new RelayCommand(CropImage);
+                return m_cropImageCommand;
             }
         }
 
         public void CropImage(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
+            if (IsInitialImageNull()) return;
 
             if (VectorOfMousePosition.Count < 2)
             {
@@ -591,12 +568,10 @@ namespace ImageProcessingFramework.ViewModel
 
             System.Windows.Point firstPosition = VectorOfMousePosition[VectorOfMousePosition.Count - 2];
 
-            double leftTopX = System.Math.Min(firstPosition.X, LastPosition.X);
-            double leftTopY = System.Math.Min(firstPosition.Y, LastPosition.Y);
-            double rightBottomX = System.Math.Max(firstPosition.X, LastPosition.X);
-            double rightBottomY = System.Math.Max(firstPosition.Y, LastPosition.Y);
-
-            ClearProcessedCanvas(parameter);
+            double leftTopX = Min(firstPosition.X, LastPosition.X);
+            double leftTopY = Min(firstPosition.Y, LastPosition.Y);
+            double rightBottomX = Max(firstPosition.X, LastPosition.X);
+            double rightBottomY = Max(firstPosition.Y, LastPosition.Y);
 
             VectorOfRectangles.Add(DrawingHelper.DrawRectangle(InitialCanvas, leftTopX, leftTopY, rightBottomX, rightBottomY, 1, Brushes.Red));
             UpdateZoom(parameter);
@@ -627,26 +602,20 @@ namespace ImageProcessingFramework.ViewModel
         #region Mirror image
 
         #region Mirror vertically
-        private ICommand m_mirrorVertically;
-        public ICommand MirrorVertically
+        private ICommand m_mirrorImageVerticallyCommand;
+        public ICommand MirrorImageVerticallyCommand
         {
             get
             {
-                if (m_mirrorVertically == null)
-                    m_mirrorVertically = new RelayCommand(MirrorImageVertically);
-                return m_mirrorVertically;
+                if (m_mirrorImageVerticallyCommand == null)
+                    m_mirrorImageVerticallyCommand = new RelayCommand(MirrorImageVertically);
+                return m_mirrorImageVerticallyCommand;
             }
         }
 
         public void MirrorImageVertically(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             if (GrayInitialImage != null)
             {
@@ -662,26 +631,20 @@ namespace ImageProcessingFramework.ViewModel
         #endregion
 
         #region Mirror horizontally
-        private ICommand m_mirrorHorizontally;
-        public ICommand MirrorHorizontally
+        private ICommand m_mirrorImageHorizontallyCommand;
+        public ICommand MirrorImageHorizontallyCommand
         {
             get
             {
-                if (m_mirrorHorizontally == null)
-                    m_mirrorHorizontally = new RelayCommand(MirrorImageHorizontally);
-                return m_mirrorHorizontally;
+                if (m_mirrorImageHorizontallyCommand == null)
+                    m_mirrorImageHorizontallyCommand = new RelayCommand(MirrorImageHorizontally);
+                return m_mirrorImageHorizontallyCommand;
             }
         }
 
         public void MirrorImageHorizontally(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             if (GrayInitialImage != null)
             {
@@ -701,26 +664,20 @@ namespace ImageProcessingFramework.ViewModel
         #region Rotate image
 
         #region Rotate clockwise
-        private ICommand m_rotateClockwise;
-        public ICommand RotateClockwise
+        private ICommand m_rotateImageClockwiseCommand;
+        public ICommand RotateImageClockwiseCommand
         {
             get
             {
-                if (m_rotateClockwise == null)
-                    m_rotateClockwise = new RelayCommand(RotateImageClockwise);
-                return m_rotateClockwise;
+                if (m_rotateImageClockwiseCommand == null)
+                    m_rotateImageClockwiseCommand = new RelayCommand(RotateImageClockwise);
+                return m_rotateImageClockwiseCommand;
             }
         }
 
         public void RotateImageClockwise(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             if (GrayInitialImage != null)
             {
@@ -736,26 +693,20 @@ namespace ImageProcessingFramework.ViewModel
         #endregion
 
         #region Rotate anti-clockwise
-        private ICommand m_rotateAntiClockwise;
-        public ICommand RotateAntiClockwise
+        private ICommand m_rotateImageAntiClockwiseCommand;
+        public ICommand RotateImageAntiClockwiseCommand
         {
             get
             {
-                if (m_rotateAntiClockwise == null)
-                    m_rotateAntiClockwise = new RelayCommand(RotateImageAntiClockwise);
-                return m_rotateAntiClockwise;
+                if (m_rotateImageAntiClockwiseCommand == null)
+                    m_rotateImageAntiClockwiseCommand = new RelayCommand(RotateImageAntiClockwise);
+                return m_rotateImageAntiClockwiseCommand;
             }
         }
 
         public void RotateImageAntiClockwise(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             if (GrayInitialImage != null)
             {
@@ -773,31 +724,25 @@ namespace ImageProcessingFramework.ViewModel
         #endregion
 
         #region Replicate padding
-        private ICommand m_replicatePadding;
-        public ICommand ReplicatePadding
+        private ICommand m_replicatePaddingCommand;
+        public ICommand ReplicatePaddingCommand
         {
             get
             {
-                if (m_replicatePadding == null)
-                    m_replicatePadding = new RelayCommand(ReplicatePaddingMethod);
-                return m_replicatePadding;
+                if (m_replicatePaddingCommand == null)
+                    m_replicatePaddingCommand = new RelayCommand(ReplicatePadding);
+                return m_replicatePaddingCommand;
             }
         }
 
-        public void ReplicatePaddingMethod(object parameter)
+        public void ReplicatePadding(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
             {
-                "Thickness value"
+                "Thickness value: "
             };
 
             dialogBox.CreateDialogBox(prop);
@@ -847,13 +792,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void BrightnessPlus(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -901,13 +840,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void IncBrightnessKeepBlack(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -955,13 +888,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void IncBrightnessMultiplicationKeepWhite(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -1013,13 +940,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void BrightnessMinus(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -1067,13 +988,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void DecrBrightnessKeepBlack(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -1121,13 +1036,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void DecrBrightnessKeepWhite(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -1179,13 +1088,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void LogarithmicOperator(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             int[] lookUpTable = PointwiseOperations.LogarithmicOperator();
             if (GrayInitialImage != null)
@@ -1215,13 +1118,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void ExponentialOperator(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             int[] lookUpTable = PointwiseOperations.ExponentialOperator();
             if (GrayInitialImage != null)
@@ -1251,13 +1148,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void GammaCorrection(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -1305,13 +1196,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void PiecewiseLinearOperator(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -1371,13 +1256,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void SinusoidalOperator(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             int[] lookUpTable = PointwiseOperations.SinusoidalOperator();
             if (GrayInitialImage != null)
@@ -1407,13 +1286,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void PolynomialOperator(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             int[] lookUpTable = PointwiseOperations.PolynomialOperator();
             if (GrayInitialImage != null)
@@ -1443,13 +1316,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void EmOperator(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -1504,13 +1371,7 @@ namespace ImageProcessingFramework.ViewModel
         {
             if (HermiteSplineOn == true) return;
 
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             SplineWindow splineShow = new SplineWindow(this);
             splineShow.Show();
@@ -1532,13 +1393,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void HistogramEqualization(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             if (GrayInitialImage != null)
             {
@@ -1572,13 +1427,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void ColorHistogramEqualization(object parameter)
         {
-            if (ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add a color image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             ColorProcessedImage = PointwiseOperations.ColorHistogramEqualization(ColorInitialImage);
             ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
@@ -1604,13 +1453,7 @@ namespace ImageProcessingFramework.ViewModel
         public void ThresholdingImage(object parameter)
         {
             if (SliderOn == true) return;
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             SliderWindow sliderWindow = new SliderWindow(this, "Threshold value: ");
             sliderWindow.ConfigureSlider();
@@ -1644,6 +1487,8 @@ namespace ImageProcessingFramework.ViewModel
 
         public void QuantileThresholding(object parameter)
         {
+            if (IsInitialImageNull()) return;
+
             if (GrayInitialImage != null)
             {
                 DialogBox dialogBox = new DialogBox();
@@ -1686,6 +1531,8 @@ namespace ImageProcessingFramework.ViewModel
 
         public void MedianThresholding(object parameter)
         {
+            if (IsInitialImageNull()) return;
+
             if (GrayInitialImage != null)
             {
                 int threshold = Thresholding.MedianThreshold(GrayInitialImage);
@@ -1710,6 +1557,8 @@ namespace ImageProcessingFramework.ViewModel
 
         public void IntermeansThresholding(object parameter)
         {
+            if (IsInitialImageNull()) return;
+
             if (GrayInitialImage != null)
             {
                 int threshold = Thresholding.IntermeansThreshold(GrayInitialImage);
@@ -1734,13 +1583,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void OtsuThreshold(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             if (GrayInitialImage != null)
             {
@@ -1771,13 +1614,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void AdaptiveThresholding(object parameter)
         {
-            if (GrayInitialImage == null)
-            {
-                MessageBox.Show("Please add a gray image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -1818,19 +1655,13 @@ namespace ImageProcessingFramework.ViewModel
 
         public void ColorThresholding3D(object parameter)
         {
-            if (ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add a color image!");
-                return;
-            }
+            if (IsInitialImageNull()) return;
 
             if (VectorOfMousePosition.Count == 0)
             {
                 MessageBox.Show("Please select a color first!");
                 return;
             }
-
-            ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -1864,19 +1695,13 @@ namespace ImageProcessingFramework.ViewModel
 
         public void ColorThresholding2D(object parameter)
         {
-            if (ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add a color image!");
-                return;
-            }
+            if (IsInitialImageNull()) return;
 
             if (VectorOfMousePosition.Count == 0)
             {
                 MessageBox.Show("Please select a color first!");
                 return;
             }
-
-            ClearProcessedCanvas(parameter);
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -1915,13 +1740,7 @@ namespace ImageProcessingFramework.ViewModel
         public void MeanFiltering(object parameter)
         {
             if (SliderOn == true) return;
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             SliderWindow sliderWindow = new SliderWindow(this, "Mask size: ");
             sliderWindow.ConfigureSlider(1, 101, 1, 2);
@@ -1955,19 +1774,7 @@ namespace ImageProcessingFramework.ViewModel
         public void MedianFiltering(object parameter)
         {
             if (SliderOn == true) return;
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            if (ColorInitialImage != null)
-            {
-                MessageBox.Show("Please add a gray image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             SliderWindow sliderWindow = new SliderWindow(this, "Mask size: ");
             if (GrayInitialImage != null)
@@ -1996,19 +1803,7 @@ namespace ImageProcessingFramework.ViewModel
         public void FastMedianFiltering(object parameter)
         {
             if (SliderOn == true) return;
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            if (ColorInitialImage != null)
-            {
-                MessageBox.Show("Please add a gray image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             SliderWindow sliderWindow = new SliderWindow(this, "Mask size: ");
             if (GrayInitialImage != null)
@@ -2037,13 +1832,7 @@ namespace ImageProcessingFramework.ViewModel
         public void VectorMedianFiltering(object parameter)
         {
             if (SliderOn == true) return;
-            if (GrayInitialImage != null)
-            {
-                MessageBox.Show("Please add a color image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             SliderWindow sliderWindow = new SliderWindow(this, "Mask size: ");
             if (ColorInitialImage != null)
@@ -2071,13 +1860,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void GaussianFiltering(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image.");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             SliderWindow sliderWindow = new SliderWindow(this, "Variance value: ");
             sliderWindow.ConfigureSlider(0, 10, 0, 0.5);
@@ -2110,13 +1893,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void GaussianBilateralFiltering(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image.");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -2167,13 +1944,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void KuwaharaFiltering(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             if (GrayInitialImage != null)
             {
@@ -2208,13 +1979,7 @@ namespace ImageProcessingFramework.ViewModel
         public void PrewittOperator(object parameter)
         {
             if (SliderOn == true) return;
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             SliderWindow sliderWindow = new SliderWindow(this, "Threshold value: ");
             if (GrayInitialImage != null)
@@ -2248,13 +2013,7 @@ namespace ImageProcessingFramework.ViewModel
         public void SobelOperator(object parameter)
         {
             if (SliderOn == true) return;
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             SliderWindow sliderWindow = new SliderWindow(this, "Threshold value: ");
             if (GrayInitialImage != null)
@@ -2287,13 +2046,7 @@ namespace ImageProcessingFramework.ViewModel
         public void RobertsOperator(object parameter)
         {
             if (SliderOn == true) return;
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             SliderWindow sliderWindow = new SliderWindow(this, "Threshold value: ");
             if (GrayInitialImage != null)
@@ -2329,13 +2082,7 @@ namespace ImageProcessingFramework.ViewModel
         public void CannyGradientImage(object parameter)
         {
             if (SliderOn == true) return;
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             SliderWindow sliderWindow = new SliderWindow(this, "Low threshold value: ");
             if (GrayInitialImage != null)
@@ -2368,13 +2115,7 @@ namespace ImageProcessingFramework.ViewModel
         public void CannyDirectionImage(object parameter)
         {
             if (SliderOn == true) return;
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             SliderWindow sliderWindow = new SliderWindow(this, "Low threshold value: ");
             if (GrayInitialImage != null)
@@ -2407,13 +2148,7 @@ namespace ImageProcessingFramework.ViewModel
         public void CannyNonmaximaSuppression(object parameter)
         {
             if (SliderOn == true) return;
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             SliderWindow sliderWindow = new SliderWindow(this, "Low threshold value: ");
             if (GrayInitialImage != null)
@@ -2445,13 +2180,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void CannyHysteresisThresholding(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image.");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -2498,14 +2227,7 @@ namespace ImageProcessingFramework.ViewModel
         public void CannyOperator(object parameter)
         {
             if (CannyWindowOn == true) return;
-
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image.");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             CannySliders cannySliders = new CannySliders(this);
             cannySliders.Show();
@@ -2530,13 +2252,7 @@ namespace ImageProcessingFramework.ViewModel
         public void EmbossFilter(object parameter)
         {
             if (SliderOn == true) return;
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             SliderWindow sliderWindow = new SliderWindow(this, "Threshold value: ");
 
@@ -2575,13 +2291,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void Dilation(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image.");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             if (GrayInitialImage != null)
             {
@@ -2634,13 +2344,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void Erosion(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image.");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             if (GrayInitialImage != null)
             {
@@ -2693,13 +2397,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void Opening(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image.");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             if (GrayInitialImage != null)
             {
@@ -2752,13 +2450,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void Closing(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image.");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             if (GrayInitialImage != null)
             {
@@ -2811,13 +2503,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void ConnectedComponents(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image.");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             if (GrayInitialImage != null)
             {
@@ -2852,13 +2538,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void DilationOnGrayscale(object parameter)
         {
-            if (GrayInitialImage == null)
-            {
-                MessageBox.Show("No grayscale image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -2897,13 +2577,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void ErosionOnGrayscale(object parameter)
         {
-            if (GrayInitialImage == null)
-            {
-                MessageBox.Show("No grayscale image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -2942,13 +2616,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void OpeningOnGrayscale(object parameter)
         {
-            if (GrayInitialImage == null)
-            {
-                MessageBox.Show("No grayscale image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -2987,13 +2655,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void ClosingOnGrayscale(object parameter)
         {
-            if (GrayInitialImage == null)
-            {
-                MessageBox.Show("No grayscale image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -3032,13 +2694,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void MorfologicSmoothing(object parameter)
         {
-            if (GrayInitialImage == null)
-            {
-                MessageBox.Show("No grayscale image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -3077,13 +2733,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void MorfologicGradient(object parameter)
         {
-            if (GrayInitialImage == null)
-            {
-                MessageBox.Show("No grayscale image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -3128,13 +2778,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void Scale(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -3179,13 +2823,7 @@ namespace ImageProcessingFramework.ViewModel
         public void Rotate(object parameter)
         {
             if (SliderOn == true) return;
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             SliderWindow sliderWindow = new SliderWindow(this, "Rotation angle: ");
             sliderWindow.ConfigureSlider(0, 360, 0, 5);
@@ -3218,13 +2856,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void TwirlTransformation(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -3270,13 +2902,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void RippleTransformation(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -3326,13 +2952,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void SphericalDeformation(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
@@ -3378,11 +2998,9 @@ namespace ImageProcessingFramework.ViewModel
 
         public void ProjectiveTransformation(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image!");
-                return;
-            }
+            RemoveDrawnShapes(parameter);
+
+            if (IsInitialImageNull()) return;
 
             if (VectorOfMousePosition.Count < 4)
             {
@@ -3394,9 +3012,6 @@ namespace ImageProcessingFramework.ViewModel
             System.Windows.Point sourceP2 = VectorOfMousePosition[VectorOfMousePosition.Count - 3];
             System.Windows.Point sourceP3 = VectorOfMousePosition[VectorOfMousePosition.Count - 2];
             System.Windows.Point sourceP4 = VectorOfMousePosition[VectorOfMousePosition.Count - 1];
-
-            RemoveAllDrawnShapes(parameter);
-            ClearProcessedCanvas(parameter);
 
             System.Windows.Media.PointCollection pointCollection = new System.Windows.Media.PointCollection()
             {
@@ -3441,13 +3056,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void HoughThreeQuadrants(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image.");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             if (GrayInitialImage != null)
             {
@@ -3477,13 +3086,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void HoughTwoQuadrants(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image.");
-                return;
-            }
-
-            ClearProcessedCanvas(parameter);
+            if (IsInitialImageNull()) return;
 
             if (GrayInitialImage != null)
             {
@@ -3515,11 +3118,7 @@ namespace ImageProcessingFramework.ViewModel
 
         public void SlowHoughForCircles_GivenRadius(object parameter)
         {
-            if (GrayInitialImage == null && ColorInitialImage == null)
-            {
-                MessageBox.Show("Please add an image.");
-                return;
-            }
+            if (IsInitialImageNull()) return;
 
             if (VectorOfMousePosition.Count < 2)
             {
@@ -3527,13 +3126,11 @@ namespace ImageProcessingFramework.ViewModel
                 return;
             }
 
-            ClearProcessedCanvas(parameter);
-
             System.Windows.Point firstPosition = VectorOfMousePosition[VectorOfMousePosition.Count - 2];
 
-            double radius = System.Math.Sqrt(
-                System.Math.Pow(LastPosition.X - firstPosition.X, 2) +
-                System.Math.Pow(LastPosition.Y - firstPosition.Y, 2));
+            double radius = Sqrt(
+                Pow(LastPosition.X - firstPosition.X, 2) +
+                Pow(LastPosition.Y - firstPosition.Y, 2));
 
             if (GrayInitialImage != null)
             {

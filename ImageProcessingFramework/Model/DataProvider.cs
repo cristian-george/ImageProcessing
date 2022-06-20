@@ -95,13 +95,13 @@ namespace ImageProcessingFramework.Model
             set;
         }
 
-        public static bool RowLevelsOn
+        public static bool DisplayRowLevelsOn
         {
             get;
             set;
         }
 
-        public static bool ColumnLevelsOn
+        public static bool DisplayColumnLevelsOn
         {
             get;
             set;

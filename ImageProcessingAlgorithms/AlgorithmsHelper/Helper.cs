@@ -1,6 +1,7 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
 using System.Collections.Generic;
+using static System.Math;
 
 namespace ImageProcessingAlgorithms.AlgorithmsHelper
 {
@@ -64,11 +65,11 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
             {
                 for (int x = 0; x < image.Width; x++)
                 {
-                    sumOfSquares += System.Math.Pow(image.Data[y, x, 0] - mean, 2);
+                    sumOfSquares += Pow(image.Data[y, x, 0] - mean, 2);
                 }
             }
 
-            return System.Math.Sqrt(sumOfSquares / (image.Height * image.Width));
+            return Sqrt(sumOfSquares / (image.Height * image.Width));
         }
 
         public static double StandardDeviation(Image<Bgr, byte> image)
@@ -80,11 +81,11 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
             {
                 for (int x = 0; x < image.Width; x++)
                 {
-                    sumOfSquares += System.Math.Pow((image.Data[y, x, 0] + image.Data[y, x, 1] + image.Data[y, x, 2]) / 3 - mean, 2);
+                    sumOfSquares += Pow((image.Data[y, x, 0] + image.Data[y, x, 1] + image.Data[y, x, 2]) / 3 - mean, 2);
                 }
             }
 
-            return System.Math.Sqrt(sumOfSquares / (image.Height * image.Width));
+            return Sqrt(sumOfSquares / (image.Height * image.Width));
         }
         #endregion
 
@@ -552,18 +553,18 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
                                2 * inputImage.Data[y - 1, x, 2] + inputImage.Data[y + 1, x + 1, 2] - inputImage.Data[y - 1, x + 1, 2];
 
                     double[,] maxVariance = new double[2, 2];
-                    maxVariance[0, 0] = System.Math.Pow(dxR, 2) + System.Math.Pow(dxG, 2) + System.Math.Pow(dxB, 2);
+                    maxVariance[0, 0] = Pow(dxR, 2) + Pow(dxG, 2) + Pow(dxB, 2);
                     maxVariance[0, 1] = maxVariance[1, 0] = dxR * dyR + dxG * dyG + dxB * dyB;
-                    maxVariance[1, 1] = System.Math.Pow(dyR, 2) + System.Math.Pow(dyG, 2) + System.Math.Pow(dyB, 2);
+                    maxVariance[1, 1] = Pow(dyR, 2) + Pow(dyG, 2) + Pow(dyB, 2);
 
                     double maxProperValue = 0.5 * (maxVariance[0, 0] + maxVariance[1, 1] +
-                        System.Math.Sqrt
+                        Sqrt
                         (
-                            System.Math.Pow(maxVariance[0, 0] - maxVariance[1, 1], 2) +
-                        4 * System.Math.Pow(maxVariance[1, 0], 2)
+                            Pow(maxVariance[0, 0] - maxVariance[1, 1], 2) +
+                        4 * Pow(maxVariance[1, 0], 2)
                         ));
 
-                    gradient[y, x] = System.Math.Sqrt(maxProperValue);
+                    gradient[y, x] = Sqrt(maxProperValue);
                 }
             }
 
@@ -598,20 +599,20 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
                                2 * inputImage.Data[y - 1, x, 2] + inputImage.Data[y + 1, x + 1, 2] - inputImage.Data[y - 1, x + 1, 2];
 
                     double[,] maxVariance = new double[2, 2];
-                    maxVariance[0, 0] = System.Math.Pow(dxR, 2) + System.Math.Pow(dxG, 2) + System.Math.Pow(dxB, 2);
+                    maxVariance[0, 0] = Pow(dxR, 2) + Pow(dxG, 2) + Pow(dxB, 2);
                     maxVariance[0, 1] = maxVariance[1, 0] = dxR * dyR + dxG * dyG + dxB * dyB;
-                    maxVariance[1, 1] = System.Math.Pow(dyR, 2) + System.Math.Pow(dyG, 2) + System.Math.Pow(dyB, 2);
+                    maxVariance[1, 1] = Pow(dyR, 2) + Pow(dyG, 2) + Pow(dyB, 2);
 
-                    if (maxVariance[0, 0] - maxVariance[1, 1] + System.Math.Sqrt
+                    if (maxVariance[0, 0] - maxVariance[1, 1] + Sqrt
                         (
-                            System.Math.Pow(maxVariance[0, 0] - maxVariance[1, 1], 2) +
-                        4 * System.Math.Pow(maxVariance[1, 0], 2)) == 0)
-                        angle[y, x] = System.Math.PI / 2;
+                            Pow(maxVariance[0, 0] - maxVariance[1, 1], 2) +
+                        4 * Pow(maxVariance[1, 0], 2)) == 0)
+                        angle[y, x] = PI / 2;
                     else
-                        angle[y, x] = System.Math.Atan(2 * maxVariance[0, 1] / (maxVariance[0, 0] - maxVariance[1, 1] + System.Math.Sqrt
+                        angle[y, x] = Atan(2 * maxVariance[0, 1] / (maxVariance[0, 0] - maxVariance[1, 1] + Sqrt
                         (
-                            System.Math.Pow(maxVariance[0, 0] - maxVariance[1, 1], 2) +
-                        4 * System.Math.Pow(maxVariance[1, 0], 2))
+                            Pow(maxVariance[0, 0] - maxVariance[1, 1], 2) +
+                        4 * Pow(maxVariance[1, 0], 2))
                         ));
                 }
             }
@@ -659,7 +660,7 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
             {
                 for (int x = 0; x < inputImage.Width; ++x)
                 {
-                    result.Data[y, x, 0] = (int)System.Math.Pow(inputImage.Data[y, x, 0], 2);
+                    result.Data[y, x, 0] = (int)Pow(inputImage.Data[y, x, 0], 2);
                 }
             }
 

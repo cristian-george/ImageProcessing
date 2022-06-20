@@ -20,7 +20,7 @@
         <local:HermiteSplineVM/>
     </Window.DataContext>
 
-    <Grid Background="#1E1E1E">
+    <Grid Background="#FF1F1F1F">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
@@ -102,7 +102,7 @@
                 Grid.Column="1"
                 Background="AliceBlue"
                 BorderThickness="2"
-                BorderBrush="MediumSlateBlue"
+                BorderBrush="#FF629A62"
                 Name="clearButton"
                 Content="Clear plots"
                 Margin="40,50,40,320"
@@ -113,7 +113,7 @@
                 Grid.Column="1"
                 Background="AliceBlue"
                 BorderThickness="2"
-                BorderBrush="MediumSlateBlue"
+                BorderBrush="#FF629A62"
                 Name="applyButton"
                 Content="Apply"
                 Margin="40,50,40,250"

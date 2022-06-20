@@ -48,10 +48,10 @@ namespace ImageProcessingFramework.View
             if (MagnifierOn == false)
                 RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialSquare, ProcessedSquare);
 
-            if (RowLevelsOn == false)
+            if (DisplayRowLevelsOn == false)
                 RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialRowLine, ProcessedRowLine);
 
-            if (ColumnLevelsOn == false)
+            if (DisplayColumnLevelsOn == false)
                 RemoveUiElements(canvasOriginalImage, canvasProcessedImage, InitialColumnLine, ProcessedColumnLine);
         }
 
@@ -130,10 +130,10 @@ namespace ImageProcessingFramework.View
                 DrawColumnLine();
             }
 
-            if (RowLevelsOn == true)
+            if (DisplayRowLevelsOn == true)
                 DrawRowLine();
 
-            if (ColumnLevelsOn == true)
+            if (DisplayColumnLevelsOn == true)
                 DrawColumnLine();
         }
 

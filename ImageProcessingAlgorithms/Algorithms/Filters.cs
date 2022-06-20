@@ -3,6 +3,7 @@ using Emgu.CV.Structure;
 using static ImageProcessingAlgorithms.Tools.Tools;
 using static ImageProcessingAlgorithms.AlgorithmsHelper.Helper;
 using System.Collections.Generic;
+using static System.Math;
 
 namespace ImageProcessingAlgorithms.Algorithms
 {
@@ -241,11 +242,11 @@ namespace ImageProcessingAlgorithms.Algorithms
                     {
                         for (int j = i + 1; j < size; ++j)
                         {
-                            int blue = (int)System.Math.Pow(neighbourhood[i].Item1 - neighbourhood[j].Item1, 2);
-                            int green = (int)System.Math.Pow(neighbourhood[i].Item2 - neighbourhood[j].Item2, 2);
-                            int red = (int)System.Math.Pow(neighbourhood[i].Item3 - neighbourhood[j].Item3, 2);
+                            int blue = (int)Pow(neighbourhood[i].Item1 - neighbourhood[j].Item1, 2);
+                            int green = (int)Pow(neighbourhood[i].Item2 - neighbourhood[j].Item2, 2);
+                            int red = (int)Pow(neighbourhood[i].Item3 - neighbourhood[j].Item3, 2);
 
-                            distances[i, j] = distances[j, i] = System.Math.Sqrt(blue + green + red);
+                            distances[i, j] = distances[j, i] = Sqrt(blue + green + red);
                         }
                     }
 
@@ -285,7 +286,7 @@ namespace ImageProcessingAlgorithms.Algorithms
             {
                 for (int j = -maskRadius; j <= maskRadius; ++j)
                 {
-                    gaussianMask[i + maskRadius, j + maskRadius] = System.Math.Exp(-(i * i + j * j) / (2 * variance * variance));
+                    gaussianMask[i + maskRadius, j + maskRadius] = Exp(-(i * i + j * j) / (2 * variance * variance));
                     maskCoefficient += gaussianMask[i + maskRadius, j + maskRadius];
                 }
             }
@@ -303,7 +304,7 @@ namespace ImageProcessingAlgorithms.Algorithms
 
         public static Image<Gray, byte> GaussianFiltering(Image<Gray, byte> inputImage, double variance)
         {
-            int maskSize = (int)System.Math.Ceiling(4 * variance);
+            int maskSize = (int)Ceiling(4 * variance);
             if (maskSize % 2 == 0) maskSize++;
 
             Image<Gray, byte> borderedImage = BorderReplicate(inputImage, maskSize - 1);
@@ -337,7 +338,7 @@ namespace ImageProcessingAlgorithms.Algorithms
 
         public static Image<Bgr, byte> GaussianFiltering(Image<Bgr, byte> inputImage, double variance)
         {
-            int maskSize = (int)System.Math.Ceiling(4 * variance);
+            int maskSize = (int)Ceiling(4 * variance);
             if (maskSize % 2 == 0) maskSize++;
 
             Image<Bgr, byte> borderedImage = BorderReplicate(inputImage, maskSize);
@@ -380,18 +381,18 @@ namespace ImageProcessingAlgorithms.Algorithms
         #region Bilateral gaussian filtering
         private static double MedianMask(int i, int j, double variance_d)
         {
-            return System.Math.Exp(-((i * i) + (j * j)) / (2 * variance_d * variance_d));
+            return Exp(-((i * i) + (j * j)) / (2 * variance_d * variance_d));
         }
 
         private static double RangeMask(Image<Gray, byte> image, int y, int x, int i, int j, double variance_r)
         {
             int value = image.Data[y + i, x + j, 0] - image.Data[y, x, 0];
-            return System.Math.Exp(-(value * value) / (2 * variance_r * variance_r));
+            return Exp(-(value * value) / (2 * variance_r * variance_r));
         }
 
         public static Image<Gray, byte> GaussianBilateralFiltering(Image<Gray, byte> inputImage, double variance_d, double variance_r)
         {
-            int maskSize = (int)System.Math.Ceiling(4 * variance_d);
+            int maskSize = (int)Ceiling(4 * variance_d);
             if (maskSize % 2 == 0) maskSize++;
 
             Image<Gray, byte> borderedImage = BorderReplicate(inputImage, maskSize);
@@ -474,7 +475,7 @@ namespace ImageProcessingAlgorithms.Algorithms
                         }
                     }
 
-                    result.Data[y, x, 0] = (byte)System.Math.Min(255, mean + 0.5);
+                    result.Data[y, x, 0] = (byte)Min(255, mean + 0.5);
                 }
             }
 
@@ -503,7 +504,7 @@ namespace ImageProcessingAlgorithms.Algorithms
                     int fy = borderedImage.Data[y + 1, x - 1, 0] - borderedImage.Data[y - 1, x - 1, 0] + borderedImage.Data[y + 1, x, 0] -
                              borderedImage.Data[y - 1, x, 0] + borderedImage.Data[y + 1, x + 1, 0] - borderedImage.Data[y - 1, x + 1, 0];
 
-                    double grad = System.Math.Sqrt((fx * fx) + (fy * fy));
+                    double grad = Sqrt((fx * fx) + (fy * fy));
                     gradient[y - 1, x - 1] = grad;
                 }
             }
@@ -544,7 +545,7 @@ namespace ImageProcessingAlgorithms.Algorithms
                     int fy = inputImage.Data[y + 1, x - 1, 0] - inputImage.Data[y - 1, x - 1, 0] + 2 * inputImage.Data[y + 1, x, 0] -
                              2 * inputImage.Data[y - 1, x, 0] + inputImage.Data[y + 1, x + 1, 0] - inputImage.Data[y - 1, x + 1, 0];
 
-                    gradient[y, x] = System.Math.Sqrt((fx * fx) + (fy * fy));
+                    gradient[y, x] = Sqrt((fx * fx) + (fy * fy));
                 }
             }
 
@@ -567,11 +568,11 @@ namespace ImageProcessingAlgorithms.Algorithms
 
                     if (fx == 0)
                     {
-                        if (fy < 0) angle[y, x] = -System.Math.PI / 2;
-                        if (fy > 0) angle[y, x] = System.Math.PI / 2;
+                        if (fy < 0) angle[y, x] = -PI / 2;
+                        if (fy > 0) angle[y, x] = PI / 2;
                     }
                     else
-                        angle[y, x] = System.Math.Atan(fy / fx);
+                        angle[y, x] = Atan(fy / fx);
                 }
             }
 
@@ -602,10 +603,10 @@ namespace ImageProcessingAlgorithms.Algorithms
         #region Sobel on color using Euclidean distance
         private static double EuclideanDistance(byte red1, byte green1, byte blue1, byte red2, byte green2, byte blue2)
         {
-            return System.Math.Sqrt(
-                System.Math.Pow(red1 - red2, 2) +
-                System.Math.Pow(green1 - green2, 2) +
-                System.Math.Pow(blue1 - blue2, 2));
+            return Sqrt(
+                Pow(red1 - red2, 2) +
+                Pow(green1 - green2, 2) +
+                Pow(blue1 - blue2, 2));
         }
 
         public static double[,] SobelGradient(Image<Bgr, byte> inputImage)
@@ -680,7 +681,7 @@ namespace ImageProcessingAlgorithms.Algorithms
                     int diagonal2 = -2 * borderedImage.Data[y - 1, x + 1, 0] - borderedImage.Data[y - 1, x, 0] - borderedImage.Data[y, x + 1, 0] +
                                      2 * borderedImage.Data[y + 1, x - 1, 0] + borderedImage.Data[y + 1, x, 0] + borderedImage.Data[y, x - 1, 0];
 
-                    double grad = System.Math.Sqrt((diagonal1 * diagonal1) + (diagonal2 * diagonal2));
+                    double grad = Sqrt((diagonal1 * diagonal1) + (diagonal2 * diagonal2));
                     gradient[y - 1, x - 1] = grad;
                 }
             }
@@ -806,7 +807,7 @@ namespace ImageProcessingAlgorithms.Algorithms
                 {
                     if (cannyGradient[y, x] > lowThreshold)
                     {
-                        double dir = sobelDirection[y, x] * 180 / System.Math.PI;
+                        double dir = sobelDirection[y, x] * 180 / PI;
 
                         // Direction 0 (horizontal)
                         if (-22.5 <= dir && dir < 22.5)
@@ -891,7 +892,7 @@ namespace ImageProcessingAlgorithms.Algorithms
                 {
                     if (cannyGradient[y, x] > lowThreshold)
                     {
-                        double dir = maxVarianceDirection[y, x] * 180 / System.Math.PI;
+                        double dir = maxVarianceDirection[y, x] * 180 / PI;
 
                         // Direction 0 (horizontal)
                         if (-22.5 <= dir && dir < 22.5)
@@ -1314,7 +1315,7 @@ namespace ImageProcessingAlgorithms.Algorithms
                         }
                     }
 
-                    result.Data[y, x, 0] = (byte)System.Math.Min(255, value + 128);
+                    result.Data[y, x, 0] = (byte)Min(255, value + 128);
                 }
             }
 
@@ -1358,9 +1359,9 @@ namespace ImageProcessingAlgorithms.Algorithms
                         }
                     }
 
-                    result.Data[y, x, 0] = (byte)System.Math.Min(255, valueB + 128);
-                    result.Data[y, x, 1] = (byte)System.Math.Min(255, valueG + 128);
-                    result.Data[y, x, 2] = (byte)System.Math.Min(255, valueR + 128);
+                    result.Data[y, x, 0] = (byte)Min(255, valueB + 128);
+                    result.Data[y, x, 1] = (byte)Min(255, valueG + 128);
+                    result.Data[y, x, 2] = (byte)Min(255, valueR + 128);
                 }
             }
 

@@ -44,38 +44,38 @@
                       Foreground="AliceBlue">
                 <MenuItem Header="Load grayscale image"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=LoadGrayImage}"
+                          Command="{Binding Path=LoadGrayImageCommand}"
                           CommandParameter="{Binding ElementName=sliderZoom}"/>
                 <MenuItem Header="Load color image" 
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=LoadColorImage}"
+                          Command="{Binding Path=LoadColorImageCommand}"
                           CommandParameter="{Binding ElementName=sliderZoom}"/>
                 <Separator/>
                 <MenuItem Header="Save processed image" 
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=SaveImage}"/>
+                          Command="{Binding Path=SaveProcessedImageCommand}"/>
                 <Separator/>
                 <MenuItem Header="Exit" 
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=Exit}"/>
+                          Command="{Binding Path=ExitCommand}"/>
             </MenuItem>
 
             <MenuItem Header="Edit"
                       Background="Transparent"
                       Foreground="AliceBlue">
-                <MenuItem Header="Reset initial canvas"
+                <MenuItem Header="Clear initial canvas"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=ResetInitialCanvas}"/>
-                <MenuItem Header="Reset processed canvas"
+                          Command="{Binding Path=ClearInitialCanvasCommand}"/>
+                <MenuItem Header="Clear processed canvas"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=ResetProcessedCanvas}"/>
+                          Command="{Binding Path=ClearProcessedCanvasCommand}"/>
                 <Separator/>
-                <MenuItem Header="Remove drawn elements"
+                <MenuItem Header="Remove drawn shapes"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=RemoveDrawnShapes}"/>
-                <MenuItem Header="Clear all elements"
+                          Command="{Binding Path=RemoveDrawnShapesCommand}"/>
+                <MenuItem Header="Clear all"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=Clear}"/>
+                          Command="{Binding Path=ClearAllCommand}"/>
             </MenuItem>
 
             <MenuItem Header="Tools" 
@@ -83,46 +83,46 @@
                       Foreground="AliceBlue">
                 <MenuItem Header="Magnifier"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=Magnifier}"/>
+                          Command="{Binding Path=MagnifierCommand}"/>
                 <MenuItem Header="GLevelsRow" 
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=RowDisplay}"/>
+                          Command="{Binding Path=DisplayLevelsOnRowCommand}"/>
                 <MenuItem Header="GLevelsColumn" 
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=ColumnDisplay}"/>
+                          Command="{Binding Path=DisplayLevelsOnColumnCommand}"/>
                 <Separator/>
                 <MenuItem Header="Copy" 
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=Copy}"/>
+                          Command="{Binding Path=CopyImageCommand}"/>
                 <MenuItem Header="Invert" 
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=Invert}"/>
+                          Command="{Binding Path=InvertImageCommand}"/>
                 <MenuItem Header="Transform to gray image"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=ConvertToGrayImage}"/>
+                          Command="{Binding Path=ConvertImageToGrayscaleCommand}"/>
                 <Separator/>
                 <MenuItem Header="Crop image"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=Crop}"
+                          Command="{Binding Path=CropImageCommand}"
                           CommandParameter="{Binding ElementName=sliderZoom}"/>
                 <MenuItem Header="Mirror image"
                           Foreground="#1E1E1E">
                     <MenuItem Header="Vertically"
-                              Command="{Binding Path=MirrorVertically}"/>
+                              Command="{Binding Path=MirrorImageVerticallyCommand}"/>
                     <MenuItem Header="Horizontally"
-                              Command="{Binding Path=MirrorHorizontally}"/>
+                              Command="{Binding Path=MirrorImageHorizontallyCommand}"/>
                 </MenuItem>
                 <MenuItem Header="Rotate image"
                           Foreground="#1E1E1E">
                     <MenuItem Header="Clockwise"
-                              Command="{Binding Path=RotateClockwise}"/>
+                              Command="{Binding Path=RotateImageClockwiseCommand}"/>
                     <MenuItem Header="Anti-clockwise"
-                              Command="{Binding Path=RotateAntiClockwise}"/>
+                              Command="{Binding Path=RotateImageAntiClockwiseCommand}"/>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="Replicate padding"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=ReplicatePadding}"/>
+                          Command="{Binding Path=ReplicatePaddingCommand}"/>
             </MenuItem>
 
             <MenuItem Header="Pointwise operations"
@@ -328,7 +328,7 @@
                       Background="Transparent"
                       Foreground="AliceBlue"
                       HorizontalAlignment="Right" 
-                      Command="{Binding Path=SaveAsOriginalImage}"/>
+                      Command="{Binding Path=SaveProcessedImageAsOriginalImageCommand}"/>
         </Menu>
 
         <Label Grid.Column="0" 
@@ -404,7 +404,7 @@
                 CommandParameter="{Binding ElementName=sliderZoom}" 
                 Background="AliceBlue"
                 BorderThickness="2"
-                BorderBrush="#A0B4CF"
+                BorderBrush="#FF629A62"
                 Grid.Row="4" 
                 Margin="10,26,0,42"
                 Width="80"

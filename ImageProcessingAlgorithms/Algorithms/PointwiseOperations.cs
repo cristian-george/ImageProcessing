@@ -1,6 +1,7 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
 using static ImageProcessingAlgorithms.AlgorithmsHelper.Helper;
+using static System.Math;
 
 namespace ImageProcessingAlgorithms.Algorithms
 {
@@ -114,11 +115,11 @@ namespace ImageProcessingAlgorithms.Algorithms
         public static int[] LogarithmicOperator()
         {
             int[] lookUpTable = new int[256];
-            double c = 255 / System.Math.Log(256);
+            double c = 255 / Log(256);
 
             for (int pixel = 0; pixel <= 255; ++pixel)
             {
-                lookUpTable[pixel] = (int)(c * System.Math.Log(pixel + 1) + 0.5);
+                lookUpTable[pixel] = (int)(c * Log(pixel + 1) + 0.5);
             }
 
             return lookUpTable;
@@ -130,11 +131,11 @@ namespace ImageProcessingAlgorithms.Algorithms
         public static int[] ExponentialOperator()
         {
             int[] lookUpTable = new int[256];
-            double c = 255 / System.Math.Log(256);
+            double c = 255 / Log(256);
 
             for (int pixel = 0; pixel <= 255; ++pixel)
             {
-                lookUpTable[pixel] = (int)(System.Math.Exp(pixel / c) - 1 + 0.5);
+                lookUpTable[pixel] = (int)(Exp(pixel / c) - 1 + 0.5);
             }
 
             return lookUpTable;
@@ -145,11 +146,11 @@ namespace ImageProcessingAlgorithms.Algorithms
         public static int[] GammaCorrection(double gamma)
         {
             int[] lookUpTable = new int[256];
-            double a = System.Math.Pow(255, 1 - gamma);
+            double a = Pow(255, 1 - gamma);
 
             for (int pixel = 0; pixel <= 255; ++pixel)
             {
-                lookUpTable[pixel] = (int)(a * System.Math.Pow(pixel, gamma) + 0.5);
+                lookUpTable[pixel] = (int)(a * Pow(pixel, gamma) + 0.5);
             }
 
             return lookUpTable;
@@ -189,12 +190,12 @@ namespace ImageProcessingAlgorithms.Algorithms
         {
             int[] lookUpTable = new int[256];
             double alfa = 127.5;
-            double beta = System.Math.PI / 255;
-            double gamma = -System.Math.PI / 2;
+            double beta = PI / 255;
+            double gamma = -PI / 2;
 
             for (int pixel = 0; pixel <= 255; ++pixel)
             {
-                lookUpTable[pixel] = (int)(alfa * (System.Math.Sin(beta * pixel + gamma) + 1) + 0.5);
+                lookUpTable[pixel] = (int)(alfa * (Sin(beta * pixel + gamma) + 1) + 0.5);
             }
 
             return lookUpTable;
@@ -205,12 +206,12 @@ namespace ImageProcessingAlgorithms.Algorithms
         public static int[] PolynomialOperator()
         {
             int[] lookUpTable = new int[256];
-            double a = -2 * System.Math.Pow(255, -2);
-            double b = System.Math.Pow(85, -1);
+            double a = -2 * Pow(255, -2);
+            double b = Pow(85, -1);
 
             for (int pixel = 0; pixel <= 255; ++pixel)
             {
-                lookUpTable[pixel] = (int)(System.Math.Pow(pixel, 2) * (a * pixel + b) + 0.5);
+                lookUpTable[pixel] = (int)(Pow(pixel, 2) * (a * pixel + b) + 0.5);
             }
 
             return lookUpTable;
@@ -221,12 +222,12 @@ namespace ImageProcessingAlgorithms.Algorithms
         public static int[] EmOperator(double m, double E)
         {
             int[] lookUpTable = new int[256];
-            double c = 1 / 255 * System.Math.Pow(m, E) * (System.Math.Pow(255, E) + System.Math.Pow(m, E));
+            double c = 1 / 255 * Pow(m, E) * (Pow(255, E) + Pow(m, E));
 
             for (int pixel = 0; pixel <= 255; ++pixel)
             {
                 lookUpTable[pixel] =
-                (int)(255 * (System.Math.Pow(pixel, E) / (System.Math.Pow(pixel, E) + System.Math.Pow(m, E)) + c * pixel) + 0.5);
+                (int)(255 * (Pow(pixel, E) / (Pow(pixel, E) + Pow(m, E)) + c * pixel) + 0.5);
             }
 
             return lookUpTable;

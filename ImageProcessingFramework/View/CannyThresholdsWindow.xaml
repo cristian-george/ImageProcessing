@@ -12,7 +12,7 @@
         ResizeMode="CanMinimize"
         Icon="../Images/Icon.png">
 
-    <Grid Background="#1E1E1E">
+    <Grid Background="#FF1F1F1F">
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
