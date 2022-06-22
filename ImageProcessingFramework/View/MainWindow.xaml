@@ -40,7 +40,7 @@
             </Menu.ItemsPanel>
 
             <MenuItem Header="File"
-                      Background="Transparent"
+                      Background="#FF496449"
                       Foreground="AliceBlue">
                 <MenuItem Header="Load grayscale image"
                           Foreground="#1E1E1E"
@@ -54,6 +54,9 @@
                 <MenuItem Header="Save processed image" 
                           Foreground="#1E1E1E"
                           Command="{Binding Path=SaveProcessedImageCommand}"/>
+                <MenuItem Header="Save both images" 
+                          Foreground="#1E1E1E"
+                          Command="{Binding Path=SaveBothImagesCommand}"/>
                 <Separator/>
                 <MenuItem Header="Exit" 
                           Foreground="#1E1E1E"
@@ -61,7 +64,7 @@
             </MenuItem>
 
             <MenuItem Header="Edit"
-                      Background="Transparent"
+                      Background="#FF496449"
                       Foreground="AliceBlue">
                 <MenuItem Header="Clear initial canvas"
                           Foreground="#1E1E1E"
@@ -79,7 +82,7 @@
             </MenuItem>
 
             <MenuItem Header="Tools" 
-                      Background="Transparent"
+                      Background="#FF496449"
                       Foreground="AliceBlue">
                 <MenuItem Header="Magnifier"
                           Foreground="#1E1E1E"
@@ -126,7 +129,7 @@
             </MenuItem>
 
             <MenuItem Header="Pointwise operations"
-                      Background="Transparent"
+                      Background="#FF496449"
                       Foreground="AliceBlue">
                 <MenuItem Header="Based on linear operators"
                           Foreground="#1E1E1E">
@@ -177,7 +180,7 @@
             </MenuItem>
 
             <MenuItem Header="Thresholding"
-                      Background="Transparent"
+                      Background="#FF496449"
                       Foreground="AliceBlue">
                 <MenuItem Header="With a given value"
                           Foreground="#1E1E1E"
@@ -206,7 +209,7 @@
             </MenuItem>
 
             <MenuItem Header="Filters" 
-                      Background="Transparent"
+                      Background="#FF496449"
                       Foreground="AliceBlue">
                 <MenuItem Header="Low-pass"
                           Foreground="#1E1E1E">
@@ -251,7 +254,7 @@
             </MenuItem>
 
             <MenuItem Header="Morphological operations"
-                      Background="Transparent"
+                      Background="#FF496449"
                       Foreground="AliceBlue">
                 <MenuItem Header="On binary images"
                           Foreground="#1E1E1E">
@@ -284,7 +287,7 @@
             </MenuItem>
 
             <MenuItem Header="Geometric transformations"
-                      Background="Transparent"
+                      Background="#FF496449"
                       Foreground="AliceBlue">
                 <MenuItem Header="Scale"
                           Foreground="#1E1E1E"
@@ -308,7 +311,7 @@
             </MenuItem>
 
             <MenuItem Header="Segmentation"
-                      Background="Transparent"
+                      Background="#FF496449"
                       Foreground="AliceBlue">
                 <MenuItem Header="Detecting lines"
                           Foreground="#1E1E1E">
@@ -325,7 +328,7 @@
             </MenuItem>
 
             <MenuItem Header="Save as original image" 
-                      Background="Transparent"
+                      Background="#FF496449"
                       Foreground="AliceBlue"
                       HorizontalAlignment="Right" 
                       Command="{Binding Path=SaveProcessedImageAsOriginalImageCommand}"/>

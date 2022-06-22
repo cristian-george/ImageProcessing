@@ -49,9 +49,10 @@ namespace ImageProcessingFramework.ViewModel
         }
 
         #region Check if InitialImage is null
-        private bool IsInitialImageNull()
+        private bool IsInitialImageNull(bool clearProcessedCanvas = true)
         {
-            ClearProcessedCanvas(null);
+            if (clearProcessedCanvas)
+                ClearProcessedCanvas(null);
 
             if (InitialImage == null)
             {
@@ -242,6 +243,70 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #region Save both images as one
+        private ICommand m_saveBothImagesCommand;
+        public ICommand SaveBothImagesCommand
+        {
+            get
+            {
+                if (m_saveBothImagesCommand == null)
+                    m_saveBothImagesCommand = new RelayCommand(SaveBothImages);
+                return m_saveBothImagesCommand;
+            }
+        }
+
+        public void SaveBothImages(object parameter)
+        {
+            if (GrayInitialImage == null && ColorInitialImage == null)
+            {
+                MessageBox.Show("If you want to save both images, " +
+                    "please load and process an image first!");
+                return;
+            }
+
+            if (GrayProcessedImage == null && ColorProcessedImage == null)
+            {
+                MessageBox.Show("If you want to save both images, " +
+                    "please process your image!");
+                return;
+            }
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                FileName = "image.jpg",
+                Filter = "Image files(*.jpg, *.jpeg, *.jfif, *.jpe, *.bmp, *.png) | *.jpg; *.jpeg; *.jfif; *.jpe; *.bmp; *.png"
+            };
+
+            saveFileDialog.ShowDialog();
+
+            var encoderParams = new EncoderParameters(1);
+            encoderParams.Param[0] = new EncoderParameter(
+                Encoder.Quality,
+                (long)100
+            );
+
+            var jpegCodec = (from codec in ImageCodecInfo.GetImageEncoders()
+                             where codec.MimeType == "image/jpeg"
+                             select codec).Single();
+
+            if (GrayInitialImage != null && GrayProcessedImage != null)
+                Tools.Merging(GrayInitialImage, GrayProcessedImage).
+                    Bitmap.Save(saveFileDialog.FileName, jpegCodec, encoderParams);
+
+            if (GrayInitialImage != null && ColorProcessedImage != null)
+                Tools.Merging(GrayInitialImage, ColorProcessedImage).
+                    Bitmap.Save(saveFileDialog.FileName, jpegCodec, encoderParams);
+
+            if (ColorInitialImage != null && GrayProcessedImage != null)
+                Tools.Merging(ColorInitialImage, GrayProcessedImage).
+                    Bitmap.Save(saveFileDialog.FileName, jpegCodec, encoderParams);
+
+            if (ColorInitialImage != null && ColorProcessedImage != null)
+                Tools.Merging(ColorInitialImage, ColorProcessedImage).
+                    Bitmap.Save(saveFileDialog.FileName, jpegCodec, encoderParams);
+        }
+        #endregion
+
         #region Exit
         private ICommand m_exitCommand;
         public ICommand ExitCommand
@@ -381,7 +446,7 @@ namespace ImageProcessingFramework.ViewModel
         public void Magnifier(object parameter)
         {
             if (MagnifierOn == true) return;
-            if (IsInitialImageNull()) return;
+            if (IsInitialImageNull(false)) return;
 
             if (VectorOfMousePosition.Count == 0)
             {
@@ -413,7 +478,7 @@ namespace ImageProcessingFramework.ViewModel
         {
             if (DisplayRowLevelsOn == true) return;
 
-            if (IsInitialImageNull()) return;
+            if (IsInitialImageNull(false)) return;
 
             if (VectorOfMousePosition.Count == 0)
             {
@@ -443,7 +508,7 @@ namespace ImageProcessingFramework.ViewModel
         {
             if (DisplayColumnLevelsOn == true) return;
 
-            if (IsInitialImageNull()) return;
+            if (IsInitialImageNull(false)) return;
 
             if (VectorOfMousePosition.Count == 0)
             {

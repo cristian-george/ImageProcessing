@@ -1,6 +1,7 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
 using static ImageProcessingAlgorithms.AlgorithmsHelper.Helper;
+using static System.Math;
 
 namespace ImageProcessingAlgorithms.Tools
 {
@@ -357,6 +358,196 @@ namespace ImageProcessingAlgorithms.Tools
             return borderedImage;
         }
 
+        #endregion
+
+        #region Merging two images
+        public static Image<Gray, byte> Merging(Image<Gray, byte> img1, Image<Gray, byte> img2)
+        {
+            int imageHeight = Max(img1.Height, img2.Height);
+            int imageWidth = Max(img1.Width, img2.Width);
+
+            int borderWidth = 3;
+
+            Image<Gray, byte> result = new Image<Gray, byte>(2 * imageWidth + borderWidth, imageHeight);
+
+            int remainingHeight = 0, remainingWidth = 0;
+
+            if (img1.Height != imageHeight || img1.Width != imageWidth)
+            {
+                remainingHeight = (imageHeight - img1.Height) / 2;
+                remainingWidth = (imageWidth - img1.Width) / 2;
+            }
+
+            for (int y = remainingHeight; y < img1.Height + remainingHeight; ++y)
+            {
+                for (int x = remainingWidth; x < img1.Width + remainingWidth; ++x)
+                {
+                    result.Data[y, x, 0] = img1.Data[y - remainingHeight, x - remainingWidth, 0];
+                }
+            }
+
+            remainingHeight = remainingWidth = 0;
+
+            if (img2.Height != imageHeight || img2.Width != imageWidth)
+            {
+                remainingHeight = (imageHeight - img2.Height) / 2;
+                remainingWidth = (imageWidth - img2.Width) / 2;
+            }
+
+            for (int y = remainingHeight; y < img2.Height + remainingHeight; ++y)
+            {
+                for (int x = remainingWidth + imageWidth + borderWidth; x < img2.Width + remainingWidth + imageWidth + borderWidth; ++x)
+                {
+                    result.Data[y, x, 0] = img2.Data[y - remainingHeight, x - remainingWidth - imageWidth - borderWidth, 0];
+                }
+            }
+
+            return result;
+        }
+
+        public static Image<Bgr, byte> Merging(Image<Gray, byte> img1, Image<Bgr, byte> img2)
+        {
+            int imageHeight = Max(img1.Height, img2.Height);
+            int imageWidth = Max(img1.Width, img2.Width);
+
+            int borderWidth = 3;
+
+            Image<Bgr, byte> result = new Image<Bgr, byte>(2 * imageWidth + borderWidth, imageHeight);
+
+            int remainingHeight = 0, remainingWidth = 0;
+
+            if (img1.Height != imageHeight || img1.Width != imageWidth)
+            {
+                remainingHeight = (imageHeight - img1.Height) / 2;
+                remainingWidth = (imageWidth - img1.Width) / 2;
+            }
+
+            for (int y = remainingHeight; y < img1.Height + remainingHeight; ++y)
+            {
+                for (int x = remainingWidth; x < img1.Width + remainingWidth; ++x)
+                {
+                    result.Data[y, x, 0] = img1.Data[y - remainingHeight, x - remainingWidth, 0];
+                    result.Data[y, x, 1] = img1.Data[y - remainingHeight, x - remainingWidth, 0];
+                    result.Data[y, x, 2] = img1.Data[y - remainingHeight, x - remainingWidth, 0];
+                }
+            }
+
+            remainingHeight = remainingWidth = 0;
+
+            if (img2.Height != imageHeight || img2.Width != imageWidth)
+            {
+                remainingHeight = (imageHeight - img2.Height) / 2;
+                remainingWidth = (imageWidth - img2.Width) / 2;
+            }
+
+            for (int y = remainingHeight; y < img2.Height + remainingHeight; ++y)
+            {
+                for (int x = remainingWidth + imageWidth + borderWidth; x < img2.Width + remainingWidth + imageWidth + borderWidth; ++x)
+                {
+                    result.Data[y, x, 0] = img2.Data[y - remainingHeight, x - remainingWidth - imageWidth - borderWidth, 0];
+                    result.Data[y, x, 1] = img2.Data[y - remainingHeight, x - remainingWidth - imageWidth - borderWidth, 1];
+                    result.Data[y, x, 2] = img2.Data[y - remainingHeight, x - remainingWidth - imageWidth - borderWidth, 2];
+                }
+            }
+
+            return result;
+        }
+
+        public static Image<Bgr, byte> Merging(Image<Bgr, byte> img1, Image<Gray, byte> img2)
+        {
+            int imageHeight = Max(img1.Height, img2.Height);
+            int imageWidth = Max(img1.Width, img2.Width);
+
+            int borderWidth = 3;
+
+            Image<Bgr, byte> result = new Image<Bgr, byte>(2 * imageWidth + borderWidth, imageHeight);
+
+            int remainingHeight = 0, remainingWidth = 0;
+
+            if (img1.Height != imageHeight || img1.Width != imageWidth)
+            {
+                remainingHeight = (imageHeight - img1.Height) / 2;
+                remainingWidth = (imageWidth - img1.Width) / 2;
+            }
+
+            for (int y = remainingHeight; y < img1.Height + remainingHeight; ++y)
+            {
+                for (int x = remainingWidth; x < img1.Width + remainingWidth; ++x)
+                {
+                    result.Data[y, x, 0] = img1.Data[y - remainingHeight, x - remainingWidth, 0];
+                    result.Data[y, x, 1] = img1.Data[y - remainingHeight, x - remainingWidth, 1];
+                    result.Data[y, x, 2] = img1.Data[y - remainingHeight, x - remainingWidth, 2];
+                }
+            }
+
+            remainingHeight = remainingWidth = 0;
+
+            if (img2.Height != imageHeight || img2.Width != imageWidth)
+            {
+                remainingHeight = (imageHeight - img2.Height) / 2;
+                remainingWidth = (imageWidth - img2.Width) / 2;
+            }
+
+            for (int y = remainingHeight; y < img2.Height + remainingHeight; ++y)
+            {
+                for (int x = remainingWidth + imageWidth + borderWidth; x < img2.Width + remainingWidth + imageWidth + borderWidth; ++x)
+                {
+                    result.Data[y, x, 0] = img2.Data[y - remainingHeight, x - remainingWidth - imageWidth - borderWidth, 0];
+                    result.Data[y, x, 1] = img2.Data[y - remainingHeight, x - remainingWidth - imageWidth - borderWidth, 0];
+                    result.Data[y, x, 2] = img2.Data[y - remainingHeight, x - remainingWidth - imageWidth - borderWidth, 0];
+                }
+            }
+
+            return result;
+        }
+
+        public static Image<Bgr, byte> Merging(Image<Bgr, byte> img1, Image<Bgr, byte> img2)
+        {
+            int imageHeight = Max(img1.Height, img2.Height);
+            int imageWidth = Max(img1.Width, img2.Width);
+
+            int borderWidth = 3;
+
+            Image<Bgr, byte> result = new Image<Bgr, byte>(2 * imageWidth + borderWidth, imageHeight);
+
+            int remainingHeight = 0, remainingWidth = 0;
+
+            if (img1.Height != imageHeight || img1.Width != imageWidth)
+            {
+                remainingHeight = (imageHeight - img1.Height) / 2;
+                remainingWidth = (imageWidth - img1.Width) / 2;
+            }
+
+            for (int y = remainingHeight; y < img1.Height + remainingHeight; ++y)
+            {
+                for (int x = remainingWidth; x < img1.Width + remainingWidth; ++x)
+                {
+                    result.Data[y, x, 0] = img1.Data[y - remainingHeight, x - remainingWidth, 0];
+                    result.Data[y, x, 1] = img1.Data[y - remainingHeight, x - remainingWidth, 1];
+                    result.Data[y, x, 2] = img1.Data[y - remainingHeight, x - remainingWidth, 2];
+                }
+            }
+
+            remainingHeight = remainingWidth = 0;
+
+            if (img2.Height != imageHeight || img2.Width != imageWidth)
+            {
+                remainingHeight = (imageHeight - img2.Height) / 2;
+                remainingWidth = (imageWidth - img2.Width) / 2;
+            }
+
+            for (int y = remainingHeight; y < img2.Height + remainingHeight; ++y)
+            {
+                for (int x = remainingWidth + imageWidth + borderWidth; x < img2.Width + remainingWidth + imageWidth + borderWidth; ++x)
+                {
+                    result.Data[y, x, 0] = img2.Data[y - remainingHeight, x - remainingWidth - imageWidth - borderWidth, 0];
+                    result.Data[y, x, 1] = img2.Data[y - remainingHeight, x - remainingWidth - imageWidth - borderWidth, 1];
+                    result.Data[y, x, 2] = img2.Data[y - remainingHeight, x - remainingWidth - imageWidth - borderWidth, 2];
+                }
+            }
+
+            return result;
+        }
         #endregion
     }
 }
