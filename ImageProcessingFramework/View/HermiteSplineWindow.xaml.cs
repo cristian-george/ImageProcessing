@@ -61,18 +61,18 @@ namespace ImageProcessingFramework.View
             graphView.Model = GraphViewCommands.InteractivePlot(0, 0, 255, 255);
         }
 
-        private void ModifyProcessedImage(int[] lookUpTable)
+        private void ModifyProcessedImage(int[] lookupTable)
         {
-            if (lookUpTable != null)
+            if (lookupTable != null)
             {
                 if (GrayInitialImage != null)
                 {
-                    GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                    GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookupTable);
                     mainCommands.ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
                 else if (ColorInitialImage != null)
                 {
-                    ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                    ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookupTable);
                     mainCommands.ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
                 }
             }
@@ -96,17 +96,17 @@ namespace ImageProcessingFramework.View
                     sumOfValues[pos] += point.Y;
                 }
 
-                int[] lookUpTable = new int[256];
+                int[] lookupTable = new int[256];
                 for (int key = 0; key < 256; key++)
                 {
                     int value = (int)((sumOfValues[key] / frequenceOfKeys[key]) + 0.5);
                     if (value < 0) value = 0;
                     else if (value > 255) value = 255;
 
-                    lookUpTable[key] = (byte)value;
+                    lookupTable[key] = (byte)value;
                 }
 
-                ModifyProcessedImage(lookUpTable);
+                ModifyProcessedImage(lookupTable);
             }
         }
     }

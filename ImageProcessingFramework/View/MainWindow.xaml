@@ -134,49 +134,49 @@
                 <MenuItem Header="Based on linear operators"
                           Foreground="#1E1E1E">
                     <MenuItem Header="Increase brightness +"
-                              Command="{Binding Path=IncreaseBrightnessPlus}"/>
+                              Command="{Binding Path=IncreaseBrightnessPlusCommand}"/>
                     <MenuItem Header="Decrease brightness -"
-                              Command="{Binding Path=DecreaseBrightnessMinus}"/>
+                              Command="{Binding Path=DecreaseBrightnessMinusCommand}"/>
                     <MenuItem Header="Increase brightness * (keep black)"
-                              Command="{Binding Path=IncreaseBrightnessKeepBlack}"/>
+                              Command="{Binding Path=IncreaseBrightnessKeepBlackCommand}"/>
                     <MenuItem Header="Increase brightness * (keep white)"
-                              Command="{Binding Path=IncreaseBrightnessKeepWhite}"/>
+                              Command="{Binding Path=IncreaseBrightnessKeepWhiteCommand}"/>
                     <MenuItem Header="Decrease brightness * (keep black)"
-                              Command="{Binding Path=DecreaseBrightnessKeepBlack}"/>
+                              Command="{Binding Path=DecreaseBrightnessKeepBlackCommand}"/>
                     <MenuItem Header="Decrease brightness * (keep white)"
-                              Command="{Binding Path=DecreaseBrightnessKeepWhite}"/>
+                              Command="{Binding Path=DecreaseBrightnessKeepWhiteCommand}"/>
                 </MenuItem>
                 <MenuItem Header="Based on logarithmic operator"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=LogOperator}"/>
+                          Command="{Binding Path=LogarithmicOperatorCommand}"/>
                 <MenuItem Header="Based on inverse logarithmic operator"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=ExpOperator}"/>
+                          Command="{Binding Path=ExponentialOperatorCommand}"/>
                 <MenuItem Header="Based on gamma operator"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=GammaOperator}"/>
+                          Command="{Binding Path=GammaOperatorCommand}"/>
                 <MenuItem Header="Piecewise linear contrast"
                           Foreground="#1E1E1E"
-                          Command="{Binding Path=PiecewiseLinearContrast}"/>
+                          Command="{Binding Path=PiecewiseLinearOperatorCommand}"/>
                 <MenuItem Header="Based on Nonlinear operators"
                           Foreground="#1E1E1E">
                     <MenuItem Header="Sinusoidal operator"
-                              Command="{Binding Path=SinusoidalOp}"/>
+                              Command="{Binding Path=SinusoidalOperatorCommand}"/>
                     <MenuItem Header="Polynomial operator"
-                              Command="{Binding Path=PolynomialOp}"/>
+                              Command="{Binding Path=PolynomialOperatorCommand}"/>
                     <MenuItem Header="EM - operator"
-                              Command="{Binding Path=EmOp}"/>
+                              Command="{Binding Path=EmOperatorCommand}"/>
                 </MenuItem>
                 <MenuItem Header="Based on Cubic Hermite spline"
                           Foreground="#1E1E1E"
-                              Command="{Binding Path=SplineInterpolation}"/>
+                              Command="{Binding Path=CubicHermiteSplineCommand}"/>
 
                 <MenuItem Header="Histogram Equalization"
                           Foreground="#1E1E1E"
-                              Command="{Binding Path=HistogramEq}"/>
+                              Command="{Binding Path=HistogramEqualizationCommand}"/>
                 <MenuItem Header="Color Histogram Equalization"
                           Foreground="#1E1E1E"
-                              Command="{Binding Path=ColorHistogramEq}"/>
+                              Command="{Binding Path=ColorHistogramEqualizationCommand}"/>
             </MenuItem>
 
             <MenuItem Header="Thresholding"

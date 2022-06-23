@@ -8,9 +8,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using ImageProcessingAlgorithms.Tools;
 using ImageProcessingAlgorithms.Algorithms;
-using ImageProcessingAlgorithms.AlgorithmsHelper;
 using ImageConverter = ImageProcessingFramework.Model.ImageConverter;
 using static ImageProcessingFramework.Model.DataProvider;
+using static ImageProcessingAlgorithms.AlgorithmsHelper.Helper;
 using ImageProcessingFramework.View;
 using ImageProcessingFramework.Model;
 using System.Collections.Generic;
@@ -243,7 +243,7 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
-        #region Save both images as one
+        #region Save both images
         private ICommand m_saveBothImagesCommand;
         public ICommand SaveBothImagesCommand
         {
@@ -844,146 +844,141 @@ namespace ImageProcessingFramework.ViewModel
         #region Increase brightness
 
         #region Operator +
-        private ICommand m_increaseBrightnessPlus;
-        public ICommand IncreaseBrightnessPlus
+        private ICommand m_increaseBrightnessPlusCommand;
+        public ICommand IncreaseBrightnessPlusCommand
         {
             get
             {
-                if (m_increaseBrightnessPlus == null)
-                    m_increaseBrightnessPlus = new RelayCommand(BrightnessPlus);
-                return m_increaseBrightnessPlus;
+                if (m_increaseBrightnessPlusCommand == null)
+                    m_increaseBrightnessPlusCommand = new RelayCommand(IncreaseBrightnessPlus);
+                return m_increaseBrightnessPlusCommand;
             }
         }
 
-        public void BrightnessPlus(object parameter)
+        public void IncreaseBrightnessPlus(object parameter)
         {
             if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
                 {
-                    "b value"
+                    "Intercept value: "
                 };
 
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
             List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
+
+            int intercept = (int)response[0];
+            if (intercept >= 0 && intercept <= 255)
             {
-                int b = (int)response[0];
-                if (b >= 0 && b <= 255)
+                int[] lookupTable = PointwiseOperations.IncreaseBrightnessPlus(intercept);
+                if (GrayInitialImage != null)
                 {
-                    int[] lookUpTable = PointwiseOperations.IncreaseBrightnessPlus(b);
-                    if (GrayInitialImage != null)
-                    {
-                        GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
-                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    }
-                    else if (ColorInitialImage != null)
-                    {
-                        ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
-                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                    }
+                    GrayProcessedImage = AdjustBrightnessAndContrast(GrayInitialImage, lookupTable);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
-                else MessageBox.Show("Please add a valid b value first.");
+                else if (ColorInitialImage != null)
+                {
+                    ColorProcessedImage = AdjustBrightnessAndContrast(ColorInitialImage, lookupTable);
+                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                }
             }
+            else MessageBox.Show("Please add a valid intercept value first.");
         }
         #endregion
 
         #region Operator * (keep black)
-        private ICommand m_increaseBrightnessKeepBlack;
-        public ICommand IncreaseBrightnessKeepBlack
+        private ICommand m_increaseBrightnessKeepBlackCommand;
+        public ICommand IncreaseBrightnessKeepBlackCommand
         {
             get
             {
-                if (m_increaseBrightnessKeepBlack == null)
-                    m_increaseBrightnessKeepBlack = new RelayCommand(IncBrightnessKeepBlack);
-                return m_increaseBrightnessKeepBlack;
+                if (m_increaseBrightnessKeepBlackCommand == null)
+                    m_increaseBrightnessKeepBlackCommand = new RelayCommand(IncreaseBrightnessKeepBlack);
+                return m_increaseBrightnessKeepBlackCommand;
             }
         }
 
-        public void IncBrightnessKeepBlack(object parameter)
+        public void IncreaseBrightnessKeepBlack(object parameter)
         {
             if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
                 {
-                    "a value (a > 1):"
+                    "Slope value (slope > 1): "
                 };
 
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
             List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
+
+            double slope = response[0];
+            if (slope > 1)
             {
-                double a = response[0];
-                if (a > 1)
+                int[] lookupTable = PointwiseOperations.IncreaseBrightnessKeepBlack(slope);
+                if (GrayInitialImage != null)
                 {
-                    int[] lookUpTable = PointwiseOperations.IncreaseBrightnessKeepBlack(a);
-                    if (GrayInitialImage != null)
-                    {
-                        GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
-                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    }
-                    else if (ColorInitialImage != null)
-                    {
-                        ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
-                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                    }
+                    GrayProcessedImage = AdjustBrightnessAndContrast(GrayInitialImage, lookupTable);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
-                else MessageBox.Show("Please add a valid value first.");
+                else if (ColorInitialImage != null)
+                {
+                    ColorProcessedImage = AdjustBrightnessAndContrast(ColorInitialImage, lookupTable);
+                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                }
             }
+            else MessageBox.Show("Please add a valid value first.");
+
         }
         #endregion
 
         #region Operator * (keep white)
-        private ICommand m_increaseBrightnessKeepWhite;
-        public ICommand IncreaseBrightnessKeepWhite
+        private ICommand m_increaseBrightnessKeepWhiteCommand;
+        public ICommand IncreaseBrightnessKeepWhiteCommand
         {
             get
             {
-                if (m_increaseBrightnessKeepWhite == null)
-                    m_increaseBrightnessKeepWhite = new RelayCommand(IncBrightnessMultiplicationKeepWhite);
-                return m_increaseBrightnessKeepWhite;
+                if (m_increaseBrightnessKeepWhiteCommand == null)
+                    m_increaseBrightnessKeepWhiteCommand = new RelayCommand(IncreaseBrightnessKeepWhite);
+                return m_increaseBrightnessKeepWhiteCommand;
             }
         }
 
-        public void IncBrightnessMultiplicationKeepWhite(object parameter)
+        public void IncreaseBrightnessKeepWhite(object parameter)
         {
             if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
                 {
-                    "a value (0 < a < 1):"
+                    "Slope value (0 < slope < 1): "
                 };
 
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
             List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
+
+            double slope = response[0];
+            if (0 < slope && slope < 1)
             {
-                double a = response[0];
-                if (0 < a && a < 1)
+                int[] lookupTable = PointwiseOperations.IncreaseBrightnessKeepWhite(slope);
+                if (GrayInitialImage != null)
                 {
-                    int[] lookUpTable = PointwiseOperations.IncreaseBrightnessKeepWhite(a);
-                    if (GrayInitialImage != null)
-                    {
-                        GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
-                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    }
-                    else if (ColorInitialImage != null)
-                    {
-                        ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
-                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                    }
+                    GrayProcessedImage = AdjustBrightnessAndContrast(GrayInitialImage, lookupTable);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
-                else MessageBox.Show("Please add valid values first.");
+                else if (ColorInitialImage != null)
+                {
+                    ColorProcessedImage = AdjustBrightnessAndContrast(ColorInitialImage, lookupTable);
+                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                }
             }
+            else MessageBox.Show("Please add valid values first.");
         }
         #endregion
 
@@ -992,146 +987,140 @@ namespace ImageProcessingFramework.ViewModel
         #region Decrease brightness
 
         #region Operator -
-        private ICommand m_decreaseBrightnessMinus;
-        public ICommand DecreaseBrightnessMinus
+        private ICommand m_decreaseBrightnessMinusCommand;
+        public ICommand DecreaseBrightnessMinusCommand
         {
             get
             {
-                if (m_decreaseBrightnessMinus == null)
-                    m_decreaseBrightnessMinus = new RelayCommand(BrightnessMinus);
-                return m_decreaseBrightnessMinus;
+                if (m_decreaseBrightnessMinusCommand == null)
+                    m_decreaseBrightnessMinusCommand = new RelayCommand(DecreaseBrightnessMinus);
+                return m_decreaseBrightnessMinusCommand;
             }
         }
 
-        public void BrightnessMinus(object parameter)
+        public void DecreaseBrightnessMinus(object parameter)
         {
             if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
                 {
-                    "b value"
+                    "Intercept value: "
                 };
 
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
             List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
+
+            int intercept = (int)response[0];
+            if (intercept >= 0 && intercept <= 255)
             {
-                int b = (int)response[0];
-                if (b >= 0 && b <= 255)
+                int[] lookupTable = PointwiseOperations.DecreaseBrightnessMinus(intercept);
+                if (GrayInitialImage != null)
                 {
-                    int[] lookUpTable = PointwiseOperations.DecreaseBrightnessMinus(b);
-                    if (GrayInitialImage != null)
-                    {
-                        GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
-                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    }
-                    else if (ColorInitialImage != null)
-                    {
-                        ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
-                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                    }
+                    GrayProcessedImage = AdjustBrightnessAndContrast(GrayInitialImage, lookupTable);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
-                else MessageBox.Show("Please add a valid b value first.");
+                else if (ColorInitialImage != null)
+                {
+                    ColorProcessedImage = AdjustBrightnessAndContrast(ColorInitialImage, lookupTable);
+                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                }
             }
+            else MessageBox.Show("Please add a valid b value first.");
         }
         #endregion
 
         #region Operator * (keep black)
-        private ICommand m_decreaseBrightnessKeepBlack;
-        public ICommand DecreaseBrightnessKeepBlack
+        private ICommand m_decreaseBrightnessKeepBlackCommand;
+        public ICommand DecreaseBrightnessKeepBlackCommand
         {
             get
             {
-                if (m_decreaseBrightnessKeepBlack == null)
-                    m_decreaseBrightnessKeepBlack = new RelayCommand(DecrBrightnessKeepBlack);
-                return m_decreaseBrightnessKeepBlack;
+                if (m_decreaseBrightnessKeepBlackCommand == null)
+                    m_decreaseBrightnessKeepBlackCommand = new RelayCommand(DecreaseBrightnessKeepBlack);
+                return m_decreaseBrightnessKeepBlackCommand;
             }
         }
 
-        public void DecrBrightnessKeepBlack(object parameter)
+        public void DecreaseBrightnessKeepBlack(object parameter)
         {
             if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
                 {
-                    "a value (0 < a < 1):"
+                    "Slope value (0 < slope < 1): "
                 };
 
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
             List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
+
+            double slope = response[0];
+            if (0 < slope && slope < 1)
             {
-                double a = response[0];
-                if (0 < a && a < 1)
+                int[] lookupTable = PointwiseOperations.DecreaseBrightnessKeepBlack(slope);
+                if (GrayInitialImage != null)
                 {
-                    int[] lookUpTable = PointwiseOperations.DecreaseBrightnessKeepBlack(a);
-                    if (GrayInitialImage != null)
-                    {
-                        GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
-                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    }
-                    else if (ColorInitialImage != null)
-                    {
-                        ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
-                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                    }
+                    GrayProcessedImage = AdjustBrightnessAndContrast(GrayInitialImage, lookupTable);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
-                else MessageBox.Show("Please add a valid value first.");
+                else if (ColorInitialImage != null)
+                {
+                    ColorProcessedImage = AdjustBrightnessAndContrast(ColorInitialImage, lookupTable);
+                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                }
             }
+            else MessageBox.Show("Please add a valid value first.");
         }
         #endregion
 
         #region Operator * (keep white)
-        private ICommand m_decreaseBrightnessKeepWhite;
-        public ICommand DecreaseBrightnessKeepWhite
+        private ICommand m_decreaseBrightnessKeepWhiteCommand;
+        public ICommand DecreaseBrightnessKeepWhiteCommand
         {
             get
             {
-                if (m_decreaseBrightnessKeepWhite == null)
-                    m_decreaseBrightnessKeepWhite = new RelayCommand(DecrBrightnessKeepWhite);
-                return m_decreaseBrightnessKeepWhite;
+                if (m_decreaseBrightnessKeepWhiteCommand == null)
+                    m_decreaseBrightnessKeepWhiteCommand = new RelayCommand(DecreaseBrightnessKeepWhite);
+                return m_decreaseBrightnessKeepWhiteCommand;
             }
         }
 
-        public void DecrBrightnessKeepWhite(object parameter)
+        public void DecreaseBrightnessKeepWhite(object parameter)
         {
             if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
                 {
-                    "a value (a > 1):"
+                    "Slope value (slope > 1): "
                 };
 
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
             List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
+
+            double slope = response[0];
+            if (slope > 1)
             {
-                double a = response[0];
-                if (a > 1)
+                int[] lookupTable = PointwiseOperations.DecreaseBrightnessKeepWhite(slope);
+                if (GrayInitialImage != null)
                 {
-                    int[] lookUpTable = PointwiseOperations.DecreaseBrightnessKeepWhite(a);
-                    if (GrayInitialImage != null)
-                    {
-                        GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
-                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    }
-                    else if (ColorInitialImage != null)
-                    {
-                        ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
-                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                    }
+                    GrayProcessedImage = AdjustBrightnessAndContrast(GrayInitialImage, lookupTable);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
-                else MessageBox.Show("Please add valid values first.");
+                else if (ColorInitialImage != null)
+                {
+                    ColorProcessedImage = AdjustBrightnessAndContrast(ColorInitialImage, lookupTable);
+                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                }
             }
+            else MessageBox.Show("Please add valid values first.");
         }
         #endregion
 
@@ -1139,15 +1128,15 @@ namespace ImageProcessingFramework.ViewModel
 
         #endregion
 
-        #region Log operator
-        private ICommand m_logOperator;
-        public ICommand LogOperator
+        #region Logarithmic operator
+        private ICommand m_logarithmicOperatorCommand;
+        public ICommand LogarithmicOperatorCommand
         {
             get
             {
-                if (m_logOperator == null)
-                    m_logOperator = new RelayCommand(LogarithmicOperator);
-                return m_logOperator;
+                if (m_logarithmicOperatorCommand == null)
+                    m_logarithmicOperatorCommand = new RelayCommand(LogarithmicOperator);
+                return m_logarithmicOperatorCommand;
             }
         }
 
@@ -1155,29 +1144,29 @@ namespace ImageProcessingFramework.ViewModel
         {
             if (IsInitialImageNull()) return;
 
-            int[] lookUpTable = PointwiseOperations.LogarithmicOperator();
+            int[] lookupTable = PointwiseOperations.LogarithmicOperator();
             if (GrayInitialImage != null)
             {
-                GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                GrayProcessedImage = AdjustBrightnessAndContrast(GrayInitialImage, lookupTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
             else if (ColorInitialImage != null)
             {
-                ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                ColorProcessedImage = AdjustBrightnessAndContrast(ColorInitialImage, lookupTable);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
             }
         }
         #endregion
 
-        #region Inverse Log operator
-        private ICommand m_expOperator;
-        public ICommand ExpOperator
+        #region Exponential operator
+        private ICommand m_exponentialOperatorCommand;
+        public ICommand ExponentialOperatorCommand
         {
             get
             {
-                if (m_expOperator == null)
-                    m_expOperator = new RelayCommand(ExponentialOperator);
-                return m_expOperator;
+                if (m_exponentialOperatorCommand == null)
+                    m_exponentialOperatorCommand = new RelayCommand(ExponentialOperator);
+                return m_exponentialOperatorCommand;
             }
         }
 
@@ -1185,77 +1174,75 @@ namespace ImageProcessingFramework.ViewModel
         {
             if (IsInitialImageNull()) return;
 
-            int[] lookUpTable = PointwiseOperations.ExponentialOperator();
+            int[] lookupTable = PointwiseOperations.ExponentialOperator();
             if (GrayInitialImage != null)
             {
-                GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                GrayProcessedImage = AdjustBrightnessAndContrast(GrayInitialImage, lookupTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
             else if (ColorInitialImage != null)
             {
-                ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                ColorProcessedImage = AdjustBrightnessAndContrast(ColorInitialImage, lookupTable);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
             }
         }
         #endregion
 
         #region Gamma operator
-        private ICommand m_gammaOperator;
-        public ICommand GammaOperator
+        private ICommand m_gammaOperatorCommand;
+        public ICommand GammaOperatorCommand
         {
             get
             {
-                if (m_gammaOperator == null)
-                    m_gammaOperator = new RelayCommand(GammaCorrection);
-                return m_gammaOperator;
+                if (m_gammaOperatorCommand == null)
+                    m_gammaOperatorCommand = new RelayCommand(GammaOperator);
+                return m_gammaOperatorCommand;
             }
         }
 
-        public void GammaCorrection(object parameter)
+        public void GammaOperator(object parameter)
         {
             if (IsInitialImageNull()) return;
 
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
                 {
-                    "Gamma value:"
+                    "Gamma value: "
                 };
 
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
             List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
+
+            double gamma = response[0];
+            if (gamma > 0)
             {
-                double gamma = response[0];
-                if (gamma > 0)
+                int[] lookupTable = PointwiseOperations.GammaCorrection(gamma);
+                if (GrayInitialImage != null)
                 {
-                    int[] lookUpTable = PointwiseOperations.GammaCorrection(gamma);
-                    if (GrayInitialImage != null)
-                    {
-                        GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
-                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    }
-                    else if (ColorInitialImage != null)
-                    {
-                        ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
-                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                    }
+                    GrayProcessedImage = AdjustBrightnessAndContrast(GrayInitialImage, lookupTable);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
-                else MessageBox.Show("Please add a valid b value first.");
+                else if (ColorInitialImage != null)
+                {
+                    ColorProcessedImage = AdjustBrightnessAndContrast(ColorInitialImage, lookupTable);
+                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                }
             }
+            else MessageBox.Show("Please add a valid b value first.");
         }
         #endregion
 
-        #region Piecewise linear contrast
-        private ICommand m_piecewiseLinearContrast;
-        public ICommand PiecewiseLinearContrast
+        #region Piecewise linear operator
+        private ICommand m_piecewiseLinearOperatorCommand;
+        public ICommand PiecewiseLinearOperatorCommand
         {
             get
             {
-                if (m_piecewiseLinearContrast == null)
-                    m_piecewiseLinearContrast = new RelayCommand(PiecewiseLinearOperator);
-                return m_piecewiseLinearContrast;
+                if (m_piecewiseLinearOperatorCommand == null)
+                    m_piecewiseLinearOperatorCommand = new RelayCommand(PiecewiseLinearOperator);
+                return m_piecewiseLinearOperatorCommand;
             }
         }
 
@@ -1276,46 +1263,44 @@ namespace ImageProcessingFramework.ViewModel
             dialogBox.ShowDialog();
 
             List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
-            {
-                int r1 = (int)response[0];
-                int s1 = (int)response[1];
-                int r2 = (int)response[2];
-                int s2 = (int)response[3];
 
-                if (0 <= r1 && r1 <= r2 && r2 <= 255 &&
-                    0 <= s1 && s1 <= s2 && s2 <= 255)
+            int r1 = (int)response[0];
+            int s1 = (int)response[1];
+            int r2 = (int)response[2];
+            int s2 = (int)response[3];
+
+            if (0 <= r1 && r1 <= r2 && r2 <= 255 &&
+                0 <= s1 && s1 <= s2 && s2 <= 255)
+            {
+                int[] lookupTable = PointwiseOperations.PiecewiseLinearContrast(r1, s1, r2, s2);
+                if (GrayInitialImage != null)
                 {
-                    int[] lookUpTable = PointwiseOperations.PiecewiseLinearContrast(r1, s1, r2, s2);
-                    if (GrayInitialImage != null)
-                    {
-                        GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
-                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    }
-                    else if (ColorInitialImage != null)
-                    {
-                        ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
-                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                    }
+                    GrayProcessedImage = AdjustBrightnessAndContrast(GrayInitialImage, lookupTable);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
-                else MessageBox.Show("Please add valid values first " +
-                    "(0 <= r1 <= r2 <= 255 and " +
-                    "0 <= s1 <= s2 <= 255).");
+                else if (ColorInitialImage != null)
+                {
+                    ColorProcessedImage = AdjustBrightnessAndContrast(ColorInitialImage, lookupTable);
+                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                }
             }
+            else MessageBox.Show("Please add valid values first " +
+                "(0 <= r1 <= r2 <= 255 and " +
+                "0 <= s1 <= s2 <= 255).");
         }
         #endregion
 
         #region Non-linear operators
 
         #region Sinusoidal operator
-        private ICommand m_sinusoidalOp;
-        public ICommand SinusoidalOp
+        private ICommand m_sinusoidalOperatorCommand;
+        public ICommand SinusoidalOperatorCommand
         {
             get
             {
-                if (m_sinusoidalOp == null)
-                    m_sinusoidalOp = new RelayCommand(SinusoidalOperator);
-                return m_sinusoidalOp;
+                if (m_sinusoidalOperatorCommand == null)
+                    m_sinusoidalOperatorCommand = new RelayCommand(SinusoidalOperator);
+                return m_sinusoidalOperatorCommand;
             }
         }
 
@@ -1323,29 +1308,29 @@ namespace ImageProcessingFramework.ViewModel
         {
             if (IsInitialImageNull()) return;
 
-            int[] lookUpTable = PointwiseOperations.SinusoidalOperator();
+            int[] lookupTable = PointwiseOperations.SinusoidalOperator();
             if (GrayInitialImage != null)
             {
-                GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                GrayProcessedImage = AdjustBrightnessAndContrast(GrayInitialImage, lookupTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
             else if (ColorInitialImage != null)
             {
-                ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                ColorProcessedImage = AdjustBrightnessAndContrast(ColorInitialImage, lookupTable);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
             }
         }
         #endregion
 
         #region Polynomial operator
-        private ICommand m_polynomialOp;
-        public ICommand PolynomialOp
+        private ICommand m_polynomialOperatorCommand;
+        public ICommand PolynomialOperatorCommand
         {
             get
             {
-                if (m_polynomialOp == null)
-                    m_polynomialOp = new RelayCommand(PolynomialOperator);
-                return m_polynomialOp;
+                if (m_polynomialOperatorCommand == null)
+                    m_polynomialOperatorCommand = new RelayCommand(PolynomialOperator);
+                return m_polynomialOperatorCommand;
             }
         }
 
@@ -1353,29 +1338,29 @@ namespace ImageProcessingFramework.ViewModel
         {
             if (IsInitialImageNull()) return;
 
-            int[] lookUpTable = PointwiseOperations.PolynomialOperator();
+            int[] lookupTable = PointwiseOperations.PolynomialOperator();
             if (GrayInitialImage != null)
             {
-                GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                GrayProcessedImage = AdjustBrightnessAndContrast(GrayInitialImage, lookupTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
             else if (ColorInitialImage != null)
             {
-                ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
+                ColorProcessedImage = AdjustBrightnessAndContrast(ColorInitialImage, lookupTable);
                 ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
             }
         }
         #endregion
 
         #region EM - operator
-        private ICommand m_emOp;
-        public ICommand EmOp
+        private ICommand m_emOperatorCommand;
+        public ICommand EmOperatorCommand
         {
             get
             {
-                if (m_emOp == null)
-                    m_emOp = new RelayCommand(EmOperator);
-                return m_emOp;
+                if (m_emOperatorCommand == null)
+                    m_emOperatorCommand = new RelayCommand(EmOperator);
+                return m_emOperatorCommand;
             }
         }
 
@@ -1386,34 +1371,32 @@ namespace ImageProcessingFramework.ViewModel
             DialogBox dialogBox = new DialogBox();
             List<string> prop = new List<string>
                 {
-                    "m value:",
-                    "E value:"
+                    "m value: ",
+                    "E value: "
                 };
 
             dialogBox.CreateDialogBox(prop);
             dialogBox.ShowDialog();
 
             List<double> response = dialogBox.GetResponseTexts();
-            if (response != null)
+
+            double m = response[0];
+            double E = response[1];
+            if (m != 0 && E != 0)
             {
-                double m = response[0];
-                double E = response[1];
-                if (m != 0 && E != 0)
+                int[] lookupTable = PointwiseOperations.EmOperator(m, E);
+                if (GrayInitialImage != null)
                 {
-                    int[] lookUpTable = PointwiseOperations.EmOperator(m, E);
-                    if (GrayInitialImage != null)
-                    {
-                        GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
-                        ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
-                    }
-                    else if (ColorInitialImage != null)
-                    {
-                        ColorProcessedImage = Helper.AdjustBrightnessAndContrast(ColorInitialImage, lookUpTable);
-                        ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
-                    }
+                    GrayProcessedImage = AdjustBrightnessAndContrast(GrayInitialImage, lookupTable);
+                    ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
                 }
-                else MessageBox.Show("Please add valid values first.");
+                else if (ColorInitialImage != null)
+                {
+                    ColorProcessedImage = AdjustBrightnessAndContrast(ColorInitialImage, lookupTable);
+                    ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+                }
             }
+            else MessageBox.Show("Please add valid values first.");
         }
         #endregion
 
@@ -1421,38 +1404,38 @@ namespace ImageProcessingFramework.ViewModel
 
         #region Cubic Hermite spline
 
-        private ICommand m_cubicHermite;
-        public ICommand SplineInterpolation
+        private ICommand m_cubicHermiteSplineCommand;
+        public ICommand CubicHermiteSplineCommand
         {
             get
             {
-                if (m_cubicHermite == null)
-                    m_cubicHermite = new RelayCommand(HermiteSpline);
-                return m_cubicHermite;
+                if (m_cubicHermiteSplineCommand == null)
+                    m_cubicHermiteSplineCommand = new RelayCommand(CubicHermiteSpline);
+                return m_cubicHermiteSplineCommand;
             }
         }
 
-        public void HermiteSpline(object parameter)
+        public void CubicHermiteSpline(object parameter)
         {
             if (HermiteSplineOn == true) return;
 
             if (IsInitialImageNull()) return;
 
-            SplineWindow splineShow = new SplineWindow(this);
-            splineShow.Show();
+            SplineWindow splineWindow = new SplineWindow(this);
+            splineWindow.Show();
             HermiteSplineOn = true;
         }
         #endregion
 
         #region Histogram equalization
-        private ICommand m_histogramEq;
-        public ICommand HistogramEq
+        private ICommand m_histogramEqualizationCommand;
+        public ICommand HistogramEqualizationCommand
         {
             get
             {
-                if (m_histogramEq == null)
-                    m_histogramEq = new RelayCommand(HistogramEqualization);
-                return m_histogramEq;
+                if (m_histogramEqualizationCommand == null)
+                    m_histogramEqualizationCommand = new RelayCommand(HistogramEqualization);
+                return m_histogramEqualizationCommand;
             }
         }
 
@@ -1462,31 +1445,30 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                int[] lookUpTable = PointwiseOperations.HistogramEqualization(GrayInitialImage);
-                GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayInitialImage, lookUpTable);
+                int[] lookupTable = PointwiseOperations.HistogramEqualization(GrayInitialImage);
+                GrayProcessedImage = AdjustBrightnessAndContrast(GrayInitialImage, lookupTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
-            else
-            if (ColorInitialImage != null)
+            else if (ColorInitialImage != null)
             {
                 GrayProcessedImage = Tools.Convert(ColorInitialImage);
 
-                int[] lookUpTable = PointwiseOperations.HistogramEqualization(GrayProcessedImage);
-                GrayProcessedImage = Helper.AdjustBrightnessAndContrast(GrayProcessedImage, lookUpTable);
+                int[] lookupTable = PointwiseOperations.HistogramEqualization(GrayProcessedImage);
+                GrayProcessedImage = AdjustBrightnessAndContrast(GrayProcessedImage, lookupTable);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
         }
         #endregion
 
         #region Color histogram equalization
-        private ICommand m_colorHistogramEq;
-        public ICommand ColorHistogramEq
+        private ICommand m_colorHistogramEqualizationCommand;
+        public ICommand ColorHistogramEqualizationCommand
         {
             get
             {
-                if (m_colorHistogramEq == null)
-                    m_colorHistogramEq = new RelayCommand(ColorHistogramEqualization);
-                return m_colorHistogramEq;
+                if (m_colorHistogramEqualizationCommand == null)
+                    m_colorHistogramEqualizationCommand = new RelayCommand(ColorHistogramEqualization);
+                return m_colorHistogramEqualizationCommand;
             }
         }
 
@@ -1494,8 +1476,11 @@ namespace ImageProcessingFramework.ViewModel
         {
             if (IsInitialImageNull()) return;
 
-            ColorProcessedImage = PointwiseOperations.ColorHistogramEqualization(ColorInitialImage);
-            ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+            if (ColorInitialImage != null)
+            {
+                ColorProcessedImage = PointwiseOperations.ColorHistogramEqualization(ColorInitialImage);
+                ProcessedImage = ImageConverter.Convert(ColorProcessedImage);
+            }
         }
         #endregion
 
@@ -2360,7 +2345,7 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                if (!Helper.IsBinaryImage(GrayInitialImage))
+                if (!IsBinaryImage(GrayInitialImage))
                 {
                     MessageBox.Show("The image is not binary!");
                     return;
@@ -2413,7 +2398,7 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                if (!Helper.IsBinaryImage(GrayInitialImage))
+                if (!IsBinaryImage(GrayInitialImage))
                 {
                     MessageBox.Show("The image is not binary!");
                     return;
@@ -2466,7 +2451,7 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                if (!Helper.IsBinaryImage(GrayInitialImage))
+                if (!IsBinaryImage(GrayInitialImage))
                 {
                     MessageBox.Show("The image is not binary!");
                     return;
@@ -2519,7 +2504,7 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                if (!Helper.IsBinaryImage(GrayInitialImage))
+                if (!IsBinaryImage(GrayInitialImage))
                 {
                     MessageBox.Show("The image is not binary!");
                     return;
@@ -2572,7 +2557,7 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                if (!Helper.IsBinaryImage(GrayInitialImage))
+                if (!IsBinaryImage(GrayInitialImage))
                 {
                     MessageBox.Show("The image is not binary!");
                     return;
@@ -3125,7 +3110,7 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                if (!Helper.IsBinaryImage(GrayInitialImage))
+                if (!IsBinaryImage(GrayInitialImage))
                 {
                     MessageBox.Show("Please add a binary image.");
                     return;
@@ -3155,7 +3140,7 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                if (!Helper.IsBinaryImage(GrayInitialImage))
+                if (!IsBinaryImage(GrayInitialImage))
                 {
                     MessageBox.Show("Please add a binary image.");
                     return;
@@ -3199,7 +3184,7 @@ namespace ImageProcessingFramework.ViewModel
 
             if (GrayInitialImage != null)
             {
-                if (!Helper.IsBinaryImage(GrayInitialImage))
+                if (!IsBinaryImage(GrayInitialImage))
                 {
                     MessageBox.Show("Please add a binary image.");
                     return;

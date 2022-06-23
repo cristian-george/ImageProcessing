@@ -124,7 +124,7 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
         #endregion
 
         #region Adjust brightness and contrast
-        public static Image<Gray, byte> AdjustBrightnessAndContrast(Image<Gray, byte> inputImage, int[] lookUpTable)
+        public static Image<Gray, byte> AdjustBrightnessAndContrast(Image<Gray, byte> inputImage, int[] lookupTable)
         {
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
 
@@ -132,14 +132,14 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
             {
                 for (int x = 0; x < inputImage.Width; ++x)
                 {
-                    result.Data[y, x, 0] = (byte)lookUpTable[inputImage.Data[y, x, 0]];
+                    result.Data[y, x, 0] = (byte)lookupTable[inputImage.Data[y, x, 0]];
                 }
             }
 
             return result;
         }
 
-        public static Image<Bgr, byte> AdjustBrightnessAndContrast(Image<Bgr, byte> inputImage, int[] lookUpTable)
+        public static Image<Bgr, byte> AdjustBrightnessAndContrast(Image<Bgr, byte> inputImage, int[] lookupTable)
         {
             Image<Bgr, byte> result = new Image<Bgr, byte>(inputImage.Size);
 
@@ -147,9 +147,9 @@ namespace ImageProcessingAlgorithms.AlgorithmsHelper
             {
                 for (int x = 0; x < inputImage.Width; ++x)
                 {
-                    result.Data[y, x, 0] = (byte)lookUpTable[inputImage.Data[y, x, 0]];
-                    result.Data[y, x, 1] = (byte)lookUpTable[inputImage.Data[y, x, 1]];
-                    result.Data[y, x, 2] = (byte)lookUpTable[inputImage.Data[y, x, 2]];
+                    result.Data[y, x, 0] = (byte)lookupTable[inputImage.Data[y, x, 0]];
+                    result.Data[y, x, 1] = (byte)lookupTable[inputImage.Data[y, x, 1]];
+                    result.Data[y, x, 2] = (byte)lookupTable[inputImage.Data[y, x, 2]];
                 }
             }
 
