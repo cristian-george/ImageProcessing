@@ -308,7 +308,6 @@ namespace ImageProcessingAlgorithms.Algorithms
         #region Skeletonization
 
         #region 8 Masks algorithm
-
         private static bool CheckRegion(Image<Gray, byte> inputImage, int xPos, int yPos, int[,] mask)
         {
             bool isEqual = true;
@@ -384,26 +383,140 @@ namespace ImageProcessingAlgorithms.Algorithms
         #endregion
 
         #region Zhang-Suen algorithm
+
+        static readonly int[] dy = { -1, -1, 0, 1, 1, 1, 0, -1 };
+        static readonly int[] dx = { 0, 1, 1, 1, 0, -1, -1, -1 };
+
+        private static int WhitePixelsCounter(Image<Gray, byte> inputImage, int xPos, int yPos)
+        {
+            int numberOfWhitePixels = 0;
+
+            for (int index = 0; index < 8; ++index)
+            {
+                int X = xPos + dx[index];
+                int Y = yPos + dy[index];
+
+                if (inputImage.Data[Y, X, 0] == 255)
+                    ++numberOfWhitePixels;
+            }
+
+            return numberOfWhitePixels;
+        }
+
+        private static int BlackToWhiteCounter(Image<Gray, byte> inputImage, int xPos, int yPos)
+        {
+            int numberOfTransitions = 0;
+
+            for (int index = 0; index < 8; ++index)
+            {
+                int currentX = xPos + dx[index];
+                int currentY = yPos + dy[index];
+
+                int nextX = xPos + dx[(index + 1) % 8];
+                int nextY = yPos + dy[(index + 1) % 8];
+
+                if (inputImage.Data[currentY, currentX, 0] == 0 &&
+                    inputImage.Data[nextY, nextX, 0] == 255)
+                    ++numberOfTransitions;
+            }
+
+            return numberOfTransitions;
+        }
+
         public static Image<Gray, byte> ZhangSuen(Image<Gray, byte> inputImage)
         {
-            Image<Gray, byte> erosion = ErosionOnBinary(inputImage, 3);
             Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+            inputImage.CopyTo(result);
 
-            for (int y = 0; y < inputImage.Height; ++y)
+            bool isMarked;
+            do
             {
-                for (int x = 0; x < inputImage.Width; ++x)
+                isMarked = false;
+
+                #region First step
+                List<(int, int)> markedPixels = new List<(int, int)>();
+
+                for (int y = 1; y < result.Height - 1; y++)
                 {
-                    bool inputPixel = false, erodedPixel = false;
+                    for (int x = 1; x < result.Width - 1; ++x)
+                    {
+                        if (result.Data[y, x, 0] == 255)
+                        {
+                            if (BlackToWhiteCounter(result, x, y) != 1)
+                                continue;
 
-                    if (inputImage.Data[y, x, 0] == 255)
-                        inputPixel = true;
-                    if (erosion.Data[y, x, 0] == 255)
-                        erodedPixel = true;
+                            int whitePixels = WhitePixelsCounter(result, x, y);
+                            if (whitePixels < 2 || whitePixels > 6)
+                                continue;
 
-                    result.Data[y, x, 0] =
-                        (byte)(inputPixel ^ erodedPixel == true ? 255 : 0);
+                            int pixel2 = result.Data[y + dy[0], x + dx[0], 0];
+                            int pixel4 = result.Data[y + dy[2], x + dx[2], 0];
+                            int pixel6 = result.Data[y + dy[4], x + dx[4], 0];
+                            int pixel8 = result.Data[y + dy[6], x + dx[6], 0];
+
+                            if (pixel2 * pixel4 * pixel6 != 0)
+                                continue;
+
+                            if (pixel4 * pixel6 * pixel8 != 0)
+                                continue;
+
+                            markedPixels.Add((y, x));
+                        }
+                    }
                 }
+
+                if (markedPixels.Count > 0)
+                    isMarked = true;
+
+                foreach (var pixel in markedPixels)
+                {
+                    result.Data[pixel.Item1, pixel.Item2, 0] = 0;
+                }
+                #endregion
+
+                #region Second step
+                markedPixels.Clear();
+
+                for (int y = 1; y < result.Height - 1; y++)
+                {
+                    for (int x = 1; x < result.Width - 1; ++x)
+                    {
+                        if (result.Data[y, x, 0] == 255)
+                        {
+                            if (BlackToWhiteCounter(result, x, y) != 1)
+                                continue;
+
+                            int whitePixels = WhitePixelsCounter(result, x, y);
+                            if (whitePixels < 2 || whitePixels > 6)
+                                continue;
+
+                            int pixel2 = result.Data[y + dy[0], x + dx[0], 0];
+                            int pixel4 = result.Data[y + dy[2], x + dx[2], 0];
+                            int pixel6 = result.Data[y + dy[4], x + dx[4], 0];
+                            int pixel8 = result.Data[y + dy[6], x + dx[6], 0];
+
+                            if (pixel2 * pixel4 * pixel8 != 0)
+                                continue;
+
+                            if (pixel2 * pixel6 * pixel8 != 0)
+                                continue;
+
+                            markedPixels.Add((y, x));
+                        }
+                    }
+                }
+
+                if (markedPixels.Count > 0)
+                    isMarked = true;
+
+                foreach (var pixel in markedPixels)
+                {
+                    result.Data[pixel.Item1, pixel.Item2, 0] = 0;
+                }
+                #endregion
+
             }
+            while (isMarked != false);
 
             return result;
         }

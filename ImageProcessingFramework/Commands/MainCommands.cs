@@ -2658,7 +2658,7 @@ namespace ImageProcessingFramework.ViewModel
                     return;
                 }
 
-                GrayProcessedImage = MorphologicalOperations.XOR(GrayInitialImage);
+                GrayProcessedImage = MorphologicalOperations.ZhangSuen(GrayInitialImage);
                 ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
             }
             else MessageBox.Show("No grayscale image!");
