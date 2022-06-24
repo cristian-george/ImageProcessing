@@ -279,6 +279,32 @@ namespace ImageProcessingAlgorithms.Algorithms
         }
         #endregion
 
+        #region Edge detecting
+        public static Image<Gray, byte> XOR(Image<Gray, byte> inputImage)
+        {
+            Image<Gray, byte> erosion = ErosionOnBinary(inputImage, 3);
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+
+            for (int y = 0; y < inputImage.Height; ++y)
+            {
+                for (int x = 0; x < inputImage.Width; ++x)
+                {
+                    bool inputPixel = false, erodedPixel = false;
+
+                    if (inputImage.Data[y, x, 0] == 255)
+                        inputPixel = true;
+                    if (erosion.Data[y, x, 0] == 255)
+                        erodedPixel = true;
+
+                    result.Data[y, x, 0] = 
+                        (byte)(inputPixel ^ erodedPixel == true ? 255 : 0);
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
         #region Smoothing
         public static Image<Gray, byte> MorfologicSmoothing(Image<Gray, byte> inputImage, int maskDim)
         {

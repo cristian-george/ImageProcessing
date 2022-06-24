@@ -268,6 +268,8 @@
                               Command="{Binding Path=ClosingOp}"/>
                     <MenuItem Header="Connected components"
                               Command="{Binding Path=ConnectedComp}"/>
+                    <MenuItem Header="Edge detecting (XOR operator)"
+                              Command="{Binding Path=EdgeDetectingXORCommand}"/>
                 </MenuItem>
                 <MenuItem Header="On grayscale images"
                           Foreground="#1E1E1E">

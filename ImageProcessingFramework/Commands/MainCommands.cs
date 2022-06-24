@@ -2570,6 +2570,37 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #region Edge detecting
+        private ICommand m_edgeDetectingXORCommand;
+        public ICommand EdgeDetectingXORCommand
+        {
+            get
+            {
+                if (m_edgeDetectingXORCommand == null)
+                    m_edgeDetectingXORCommand = new RelayCommand(EdgeDetecting_XOR);
+                return m_edgeDetectingXORCommand;
+            }
+        }
+
+        public void EdgeDetecting_XOR(object parameter)
+        {
+            if (IsInitialImageNull()) return;
+
+            if (GrayInitialImage != null)
+            {
+                if (!IsBinaryImage(GrayInitialImage))
+                {
+                    MessageBox.Show("The image is not binary!");
+                    return;
+                }
+
+                GrayProcessedImage = MorphologicalOperations.XOR(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+            }
+            else MessageBox.Show("No grayscale image!");
+        }
+        #endregion
+
         #endregion
 
         #region On grayscale images
