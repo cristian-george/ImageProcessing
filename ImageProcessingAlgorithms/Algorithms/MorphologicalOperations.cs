@@ -279,7 +279,7 @@ namespace ImageProcessingAlgorithms.Algorithms
         }
         #endregion
 
-        #region Edge detecting
+        #region Edge detecting using XOR operator
         public static Image<Gray, byte> XOR(Image<Gray, byte> inputImage)
         {
             Image<Gray, byte> erosion = ErosionOnBinary(inputImage, 3);
@@ -296,13 +296,119 @@ namespace ImageProcessingAlgorithms.Algorithms
                     if (erosion.Data[y, x, 0] == 255)
                         erodedPixel = true;
 
-                    result.Data[y, x, 0] = 
+                    result.Data[y, x, 0] =
                         (byte)(inputPixel ^ erodedPixel == true ? 255 : 0);
                 }
             }
 
             return result;
         }
+        #endregion
+
+        #region Skeletonization
+
+        #region 8 Masks algorithm
+
+        private static bool CheckRegion(Image<Gray, byte> inputImage, int xPos, int yPos, int[,] mask)
+        {
+            bool isEqual = true;
+
+            for (int y = yPos - 1; y <= yPos + 1 && isEqual == true; ++y)
+            {
+                for (int x = xPos - 1; x <= xPos + 1 && isEqual == true; ++x)
+                {
+                    if (mask[y - yPos + 1, x - xPos + 1] != -1)
+                    {
+                        if (inputImage.Data[y, x, 0] == 0 &&
+                            mask[y - yPos + 1, x - xPos + 1] != 0)
+                            isEqual = false;
+
+                        if (inputImage.Data[y, x, 0] == 255 &&
+                            mask[y - yPos + 1, x - xPos + 1] != 1)
+                            isEqual = false;
+                    }
+                }
+            }
+
+            return isEqual;
+        }
+
+        public static Image<Gray, byte> Masks8(Image<Gray, byte> inputImage)
+        {
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+            inputImage.CopyTo(result);
+
+            List<int[,]> masks = new List<int[,]>
+            {
+                new int[,] { { 0, 0, -1 }, { 0, 1, 1 }, { -1, 1, -1 } },
+                new int[,] { { 1, -1, 0 }, { 1, 1, 0 }, { 1, -1, 0 } },
+                new int[,] { { -1, 1, -1 }, { 0, 1, 1 }, { 0, 0, -1 } },
+                new int[,] { { 1, 1, 1 }, { -1, 1, -1 }, { 0, 0, 0 } },
+                new int[,] { { 0, 0, 0 }, { -1, 1, -1 }, { 1, 1, 1 } },
+                new int[,] { { -1, 1, -1 }, { 1, 1, 0 }, { -1, 0, 0 } },
+                new int[,] { { 0, -1, 1 }, { 0, 1, 1 }, { 0, -1, 1 } },
+                new int[,] { { -1, 0, 0 }, { 1, 1, 0 }, { -1, 1, -1 } }
+            };
+
+            bool isMarked;
+            do
+            {
+                isMarked = false;
+
+                for (int maskIndex = 0; maskIndex < 8; ++maskIndex)
+                {
+                    List<(int, int)> markedPixels = new List<(int, int)>();
+
+                    for (int y = 1; y < result.Height - 1; ++y)
+                    {
+                        for (int x = 1; x < result.Width - 1; ++x)
+                        {
+                            if (CheckRegion(result, x, y, masks[maskIndex]))
+                            {
+                                markedPixels.Add((y, x));
+                                isMarked = true;
+                            }
+                        }
+                    }
+
+                    foreach (var pixel in markedPixels)
+                    {
+                        result.Data[pixel.Item1, pixel.Item2, 0] = 0;
+                    }
+                }
+
+            } while (isMarked != false);
+
+            return result;
+        }
+        #endregion
+
+        #region Zhang-Suen algorithm
+        public static Image<Gray, byte> ZhangSuen(Image<Gray, byte> inputImage)
+        {
+            Image<Gray, byte> erosion = ErosionOnBinary(inputImage, 3);
+            Image<Gray, byte> result = new Image<Gray, byte>(inputImage.Size);
+
+            for (int y = 0; y < inputImage.Height; ++y)
+            {
+                for (int x = 0; x < inputImage.Width; ++x)
+                {
+                    bool inputPixel = false, erodedPixel = false;
+
+                    if (inputImage.Data[y, x, 0] == 255)
+                        inputPixel = true;
+                    if (erosion.Data[y, x, 0] == 255)
+                        erodedPixel = true;
+
+                    result.Data[y, x, 0] =
+                        (byte)(inputPixel ^ erodedPixel == true ? 255 : 0);
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
         #endregion
 
         #region Smoothing

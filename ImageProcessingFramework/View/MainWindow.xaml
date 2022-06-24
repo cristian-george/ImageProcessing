@@ -270,6 +270,12 @@
                               Command="{Binding Path=ConnectedComp}"/>
                     <MenuItem Header="Edge detecting (XOR operator)"
                               Command="{Binding Path=EdgeDetectingXORCommand}"/>
+                    <MenuItem Header="Skeletonization">
+                        <MenuItem Header="8 Masks algorithm"
+                                  Command="{Binding Path=Masks8Command}"/>
+                        <MenuItem Header="Zhang-Suen"
+                                  Command="{Binding Path=ZhangSuenCommand}"/>
+                    </MenuItem>
                 </MenuItem>
                 <MenuItem Header="On grayscale images"
                           Foreground="#1E1E1E">

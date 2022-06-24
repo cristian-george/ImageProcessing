@@ -2601,6 +2601,72 @@ namespace ImageProcessingFramework.ViewModel
         }
         #endregion
 
+        #region Skeletonization
+
+        #region 8 Masks algorithm
+        private ICommand m_masks8Command;
+        public ICommand Masks8Command
+        {
+            get
+            {
+                if (m_masks8Command == null)
+                    m_masks8Command = new RelayCommand(Masks8);
+                return m_masks8Command;
+            }
+        }
+
+        public void Masks8(object parameter)
+        {
+            if (IsInitialImageNull()) return;
+
+            if (GrayInitialImage != null)
+            {
+                if (!IsBinaryImage(GrayInitialImage))
+                {
+                    MessageBox.Show("The image is not binary!");
+                    return;
+                }
+
+                GrayProcessedImage = MorphologicalOperations.Masks8(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+            }
+            else MessageBox.Show("No grayscale image!");
+        }
+        #endregion
+
+        #region Zhang-Suen algorithm
+        private ICommand m_zhangSuenCommand;
+        public ICommand ZhangSuenCommand
+        {
+            get
+            {
+                if (m_zhangSuenCommand == null)
+                    m_zhangSuenCommand = new RelayCommand(ZhangSuen);
+                return m_zhangSuenCommand;
+            }
+        }
+
+        public void ZhangSuen(object parameter)
+        {
+            if (IsInitialImageNull()) return;
+
+            if (GrayInitialImage != null)
+            {
+                if (!IsBinaryImage(GrayInitialImage))
+                {
+                    MessageBox.Show("The image is not binary!");
+                    return;
+                }
+
+                GrayProcessedImage = MorphologicalOperations.XOR(GrayInitialImage);
+                ProcessedImage = ImageConverter.Convert(GrayProcessedImage);
+            }
+            else MessageBox.Show("No grayscale image!");
+        }
+        #endregion
+
+        #endregion
+
         #endregion
 
         #region On grayscale images
